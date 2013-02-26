@@ -1,0 +1,12 @@
+~*
+.DS_Store
+*.pyc
+build
+dist
+*.egg*
+
+.coverage
+.coveragerc
+.tox
+htmlcov
+__pycache__

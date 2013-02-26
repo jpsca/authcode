@@ -1,0 +1,7 @@
+pytest
+passlib
+sqlalchemy
+orm
+werkzeug
+jinja2
+flask
