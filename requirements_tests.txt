@@ -1,5 +1,4 @@
 pytest
-authorizer
 passlib
 sqlalchemy
 orm
