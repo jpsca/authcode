@@ -3,17 +3,13 @@
 
 Awesome authentication code.
 
-## Community
+### Community
 
-GitHub
-   https://github.com/lucuma/authorizer
+GitHub: https://github.com/lucuma/authorizer
 
-Continuous Integration (Travis CI)
-   http://travis-ci.org/lucuma/authorizer
+Continuous Integration (Travis CI): http://travis-ci.org/lucuma/authorizer
 
-   .. image:: https://secure.travis-ci.org/lucuma/authorizer.png?branch=master
-      :alt: Build Status
-      :target: http://travis-ci.org/lucuma/authorizer
+![build status](https://secure.travis-ci.org/lucuma/authorizer.png?branch=master)
 
 
 ---------------------------------------
