@@ -212,9 +212,8 @@ class Auth(object):
     def logout(self, session=None):
         if session is None:
             session = self.session
-        session.pop(self.session_key, None)
-        if hasattr(session, 'invalidate'):
-            session.invalidate()
+        for key in session.keys():
+            session.pop(key, None)
 
     def get_csfr_token(self, session=None):
         if session is None:
@@ -245,7 +244,7 @@ class Auth(object):
         
         csrf
         :   If `True` (the default), the decorator will check the value
-            of the CSFR token for POST request or for all requests if
+            of the CSFR token for POST or PUT requests, or for all requests if
             `force_csrf` is also True.
             If `False`, the value of the CSFR token will not be checked.
 
@@ -286,7 +285,7 @@ class Auth(object):
                             (user.login, ))
                         return self._login_required(request, url_sign_in)
 
-                if csrf and (force_csrf or self.wsgi.is_post(request)):
+                if csrf and (self.wsgi.is_put_or_post(request) or force_csrf):
                     token = self._get_csrf_token_from_request(request)
                     if not token or not self.csrf_token_is_valid(token):
                         self.logger.info('User `%s`: invalid CSFR token' %

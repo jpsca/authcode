@@ -18,12 +18,16 @@ def is_post(request):
     return request.method.upper() == 'POST'
 
 
+def is_put_or_post(request):
+    return request.method.upper() in ('POST', 'PUT')
+
+
 def redirect(url):
     from webob.exc import HTTPSeeOther
     raise HTTPSeeOther(url)
 
 
-def raise_forbidden(msg=''):
+def raise_forbidden(msg='You are not allowed to access this resource.'):
     from webob.exc import HTTPForbidden
     raise HTTPForbidden(msg)
 

@@ -24,18 +24,22 @@ def is_post(request):
     return request.method.upper() == 'POST'
 
 
+def is_put_or_post(request):
+    return request.method.upper() in ('POST', 'PUT')
+
+
 def redirect(url):
     from werkzeug.utils import redirect
     return redirect(url, code=SEE_OTHER)
 
 
-def raise_forbidden(msg=''):
+def raise_forbidden(msg='You are not allowed to access this resource.'):
     from werkzeug.exceptions import Forbidden
     raise Forbidden(msg)
 
 
 def get_from_values(request, key):
-    return request.values.get(key)
+    request.values.get(key)
     
 
 def get_from_headers(request, key):
