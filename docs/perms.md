@@ -1,4 +1,4 @@
-Permission system & Cross Site Request Forgery protection.
+#Permission system & Cross Site Request Forgery (CSRF) protection.
 
 This extension provides easy-to-use protection against [Cross Site
 Request Forgeries][http://en.wikipedia.org/wiki/Cross-site_request_forgery].
@@ -107,21 +107,3 @@ and later, in your javascript code:
     });
 
 
-
-
-    def protected(self, f, *tests, **options):
-        """Factory of decorators for limit the access to views.
-        
-        sign_in_url: If any required condition fail, redirect to this place.
-            Override the default URL. This can also be a callable.
-        
-        csrf: If `True` (the default), the decorator will check the value of the CSFR
-            token for POST request.
-            If `False`, the value of the CSFR token will not be checked.
-
-        role: Test for the user having a role with this name.
-
-        roles: Test for the user having any role in this list of names.
-
-        tests: One or more functions that takes the request and returns `True` or
-            `False`.

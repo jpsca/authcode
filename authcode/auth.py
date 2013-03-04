@@ -215,7 +215,7 @@ class Auth(object):
         for key in session.keys():
             session.pop(key, None)
 
-    def get_csfr_token(self, session=None):
+    def get_csrf_token(self, session=None):
         if session is None:
             session = self.session
         csrf_token = session.get(self.csrf_key)
@@ -297,7 +297,7 @@ class Auth(object):
         return decorator
 
     def csrf_token_is_valid(self, token, session=None):
-        return self.get_csfr_token(session=session) == token
+        return self.get_csrf_token(session=session) == token
 
     def _login_required(self, request, url_sign_in):
         self.session[self.redirect_key] = self.wsgi.get_full_path(request)

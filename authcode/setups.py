@@ -17,7 +17,10 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=False):
 
     @app.context_processor
     def inject_context():
-        return {'csrf_token': auth.get_csrf_token}
+        return {
+            'auth': auth,
+            'csrf_token': auth.get_csrf_token,
+        }
 
     if views:
         app.route(auth.url_sign_in,
@@ -40,11 +43,12 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=False):
         auth.render = app.render
 
     @app.before_request
-    def set_session(request):
+    def set_auth_info(request):
         auth.session = session
         request.user = auth.get_user()
 
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
+    app.render.env.globals['auth'] = auth
 
     if views:
         app.route(auth.url_sign_in,

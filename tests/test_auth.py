@@ -351,11 +351,11 @@ def test_user_role_model():
         user.remove_role('foobar')
 
 
-def test_get_csfr_token():
+def test_get_csrf_token():
     auth = authcode.Auth(SECRET_KEY)
     session = {}
-    token = auth.get_csfr_token(session=session)
-    assert token == auth.get_csfr_token(session=session)
+    token = auth.get_csrf_token(session=session)
+    assert token == auth.get_csrf_token(session=session)
     session = {}
-    assert token != auth.get_csfr_token(session=session)
+    assert token != auth.get_csrf_token(session=session)
 

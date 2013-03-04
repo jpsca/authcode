@@ -93,7 +93,7 @@ def test_change_password():
     assert r.status == '303 SEE OTHER'
     
     auth.login(user)
-    csrf_token = auth.get_csfr_token()
+    csrf_token = auth.get_csrf_token()
 
     r = client.get(auth.url_change_password)
     assert 'Change password' in r.data

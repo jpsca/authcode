@@ -1,5 +1,11 @@
 
-Adding new hash algorithms
+```python
+db = SQLAlchemy()
+auth = authcode.Auth(SECRET_KEY, db=db, **kwargs)
 
-http://passlib.readthedocs.org/en/latest/password_hash_api
+class User(auth.User):
+    pass
 
+app = Flask('test')
+authcode.setup_for_flask(auth, app)
+```

@@ -119,6 +119,6 @@ def change_password(auth, request, manual=True, **kwargs):
     
     kwargs['auth'] = auth
     kwargs['manual'] = manual
-    kwargs['csrf_token'] = auth.get_csfr_token
+    kwargs['csrf_token'] = auth.get_csrf_token
     return auth.render(auth.template_change_password, **kwargs)
 
