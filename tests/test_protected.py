@@ -22,7 +22,7 @@ def get_flask_app(**kwargs):
     app = Flask('test')
     app.secret_key = os.urandom(32)
     app.testing = True
-    auth.setup_for_flask(app, views=False)
+    authorizer.setup_for_flask(auth, app, views=False)
 
     @app.route('/login')
     def login():
@@ -70,7 +70,7 @@ def test_protected():
         return ''
 
     resp = client.get('/admin')
-    assert resp.status == '302 FOUND'
+    assert resp.status == '303 SEE OTHER'
 
     client.get('/login')
     resp = client.get('/admin')
@@ -99,7 +99,7 @@ def test_signin_url():
     resp = client.get('/admin2')
     assert resp.headers.get('location') == 'http://localhost/users/sign-in/'
 
-    auth.url_sign_in = lambda: '/login'
+    auth.url_sign_in = lambda request: '/login'
     resp = client.get('/admin1')
     assert resp.headers.get('location') == 'http://localhost/login'    
 
@@ -121,9 +121,9 @@ def test_protected_role():
     client.get('/login')
 
     resp = client.get('/admin1')
-    assert resp.status == '302 FOUND'
+    assert resp.status == '303 SEE OTHER'
     resp = client.get('/admin2')
-    assert resp.status == '302 FOUND'
+    assert resp.status == '303 SEE OTHER'
 
     user.add_role('admin')
     auth.db.commit()
@@ -172,7 +172,7 @@ def test_protected_tests():
 
     resp = client.get('/admin2')
     assert log == ['test1', 'test2', 'test1', 'fail']
-    assert resp.status == '302 FOUND'
+    assert resp.status == '303 SEE OTHER'
 
 
 def test_protected_csrf():

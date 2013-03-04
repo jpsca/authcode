@@ -23,7 +23,7 @@ def get_flask_app(**kwargs):
     app.secret_key = os.urandom(32)
     app.testing = True
 
-    auth.setup_for_flask(app)
+    authorizer.setup_for_flask(auth, app)
     auth.session = {}
     return auth, app, user
 
@@ -40,15 +40,15 @@ def test_login():
     assert auth.session_key not in auth.session
 
     r = client.post(auth.url_sign_in, data=dict(login=user.login, password='foobar'))
-    assert r.status == '302 FOUND'
+    assert r.status == '303 SEE OTHER'
     assert auth.session_key in auth.session
 
     auth.session[auth.redirect_key] = 'http://google.com'
     r = client.get(auth.url_sign_in)
-    assert r.status == '302 FOUND'
+    assert r.status == '303 SEE OTHER'
 
     r = client.get(auth.url_sign_out)
-    assert r.status == '302 FOUND'
+    assert r.status == '303 SEE OTHER'
     assert auth.session_key not in auth.session    
 
 
@@ -70,6 +70,7 @@ def test_reset_password():
 
     r = client.post(auth.url_reset_password, data=dict(login=user.login))
     assert 'Please check your inbox' in r.data
+    print r.data
     assert auth.url_reset_password + token + '/' in log[0]
 
     r = client.get(auth.url_reset_password + 'xxx/')
@@ -81,7 +82,7 @@ def test_reset_password():
     assert 'current password' not in r.data
 
     r = client.get(auth.url_reset_password)
-    assert r.status == '302 FOUND' 
+    assert r.status == '303 SEE OTHER' 
 
 
 def test_change_password():
@@ -89,7 +90,7 @@ def test_change_password():
     client = app.test_client()
 
     r = client.get(auth.url_change_password)
-    assert r.status == '302 FOUND'
+    assert r.status == '303 SEE OTHER'
     
     auth.login(user)
     csrf_token = auth.get_csfr_token()

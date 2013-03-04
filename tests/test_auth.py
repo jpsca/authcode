@@ -244,12 +244,12 @@ def test_authenticate_with_token():
     auth_user = auth.authenticate({'token': ''})
     assert not auth_user
 
-    timestamp = time() + 3 * 60 * 60 - 10
+    timestamp = int(time()) - auth.token_life + 1
     token = user.get_token(timestamp)
     auth_user = auth.authenticate({'token':token})
     assert auth_user
 
-    timestamp = time() + 3 * 60 * 60 + 10
+    timestamp = int(time()) - auth.token_life - 1
     token = user.get_token(timestamp)
     auth_user = auth.authenticate({'token':token})
     assert not auth_user

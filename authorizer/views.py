@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from . import compat
-
 
 def sign_in(auth, request, session, **kwargs):
     next = session.get(auth.redirect_key) or auth.sign_in_redirect or '/'
     if callable(next):
-        next = next()
+        next = next(request)
 
     if auth.session_key in session:
         session.pop(auth.redirect_key, None)
-        return compat.redirect(next)
+        return auth.wsgi.redirect(next)
     
     kwargs['error'] = None
-    credentials = compat.get_post_data(request) or {}
+    credentials = auth.wsgi.get_post_data(request) or {}
     
-    if compat.is_post(request):
+    if auth.wsgi.is_post(request):
         user = auth.authenticate(credentials)
         if user:
             if hasattr(user, 'last_sign_in'):
@@ -24,7 +22,7 @@ def sign_in(auth, request, session, **kwargs):
                 auth.db.commit()
             auth.login(user)
             session.pop(auth.redirect_key, None)
-            return compat.redirect(next)
+            return auth.wsgi.redirect(next)
         
         kwargs['error'] = True
     
@@ -40,17 +38,17 @@ def sign_out(auth, request, **kwargs):
 
     next = auth.sign_out_redirect or '/'
     if callable(next):
-        next = next()
-    return compat.redirect(next)
+        next = next(request)
+    return auth.wsgi.redirect(next)
 
 
 def reset_password(auth, request, token=None, **kwargs):
-    credentials = compat.get_post_data(request) or {}
+    credentials = auth.wsgi.get_post_data(request) or {}
     kwargs['ok'] = False
     kwargs['error'] = None
 
     if not token and auth.get_user():
-        return compat.redirect(auth.url_change_password)
+        return auth.wsgi.redirect(auth.url_change_password)
     
     if token:
         user = auth.authenticate({'token': token})
@@ -59,18 +57,18 @@ def reset_password(auth, request, token=None, **kwargs):
             return change_password(auth, request, manual=False, **kwargs)
         kwargs['error'] = 'WRONG TOKEN'
     
-    elif compat.is_post(request):
-        login = compat.get_from_values(request, 'login') or ''
+    elif auth.wsgi.is_post(request):
+        login = auth.wsgi.get_from_values(request, 'login') or ''
         user = auth.User.by_login(login)
         if not user:
             kwargs['error'] = 'NOT FOUND'
         else:
-            reset_url = compat.get_full_url(request, 
+            reset_url = auth.wsgi.make_full_url(request, 
                 auth.url_reset_password + user.get_token() + '/')
             data = {
                 'login': user.login,
                 'reset_url': reset_url,
-                'site_name': compat.get_host(request),
+                'site_name': auth.wsgi.get_site_name(request),
                 'expire_after': auth.token_life,
             }
             _email_token(auth, user, data)
@@ -89,19 +87,19 @@ def _email_token(auth, user, data):
 def change_password(auth, request, manual=True, **kwargs):
     user = auth.get_user()
     if not user:
-        return compat.redirect(auth.url_sign_in)
+        return auth.wsgi.redirect(auth.url_sign_in)
 
     kwargs['ok'] = False
     kwargs['error'] = None
     
-    if compat.is_post(request):
+    if auth.wsgi.is_post(request):
         csrf_token = auth._get_csrf_token_from_request(request)
         if not auth.csrf_token_is_valid(csrf_token):
-            return compat.raise_forbidden()
+            return auth.wsgi.raise_forbidden()
 
-        password = compat.get_from_values(request, 'password') or ''
-        np1 = compat.get_from_values(request, 'np1') or ''
-        np2 = compat.get_from_values(request, 'np2') or ''
+        password = auth.wsgi.get_from_values(request, 'password') or ''
+        np1 = auth.wsgi.get_from_values(request, 'np1') or ''
+        np2 = auth.wsgi.get_from_values(request, 'np2') or ''
         
         # Validate the new password
         if len(np1) < auth.password_minlen:

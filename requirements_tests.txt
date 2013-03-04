@@ -5,3 +5,4 @@ orm
 werkzeug
 jinja2
 flask
+webob

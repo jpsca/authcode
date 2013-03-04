@@ -8,7 +8,7 @@ from passlib import hash as ph
 from passlib.context import CryptContext
 from passlib.exc import MissingBackendError
 
-from . import views, utils, compat
+from . import utils, views, wsgi
 from .exceptions import *
 from .models import get_user_model, get_user_role_model
 
@@ -23,31 +23,37 @@ MIN_SECRET_LENGTH = 20
 
 class Auth(object):
 
-    session_key = '_uhmac'
-    csrf_key = '_csrf_token'
-    csrf_header = 'X-CSRFToken'
-    redirect_key = 'next'
+    defaults = {
+        'session_key': '_uhmac',
+        'csrf_key': '_csrf_token',
+        'csrf_header': 'X-CSRFToken',
+        'redirect_key': 'next',
 
-    sign_in_redirect = '/'
-    sign_out_redirect = '/'
+        'sign_in_redirect': '/',
+        'sign_out_redirect': '/',
 
-    url_sign_in = '/sign-in/'
-    url_sign_out = '/sign-out/'
-    url_reset_password = '/reset-password/'
-    url_change_password = '/change-password/'
+        'url_sign_in': '/sign-in/',
+        'url_sign_out': '/sign-out/',
+        'url_reset_password': '/reset-password/',
+        'url_change_password': '/change-password/',
 
-    template_sign_in = 'auth/sign_in.html'
-    template_sign_out = None
-    template_reset = 'auth/reset_password.html'
-    template_reset_email = 'auth/reset_password_email.html'
-    template_change_password = 'auth/change_password.html'
+        'template_sign_in': 'auth/sign_in.html',
+        'template_sign_out': None,
+        'template_reset': 'auth/reset_password.html',
+        'template_reset_email': 'auth/reset_password_email.html',
+        'template_change_password': 'auth/change_password.html',
 
-    password_minlen = 5
+        'password_minlen': 5,
+        'token_life': 3 * 60, #minutes
+        'update_hash': True,
+
+        'wsgi': wsgi.werkzeug,
+    }
 
     def __init__(self, secret_key, pepper=u'', db=None, roles=False, 
-            hash=None, rounds=None, update_hash=True, token_life=3*60,
-            session=None, request=None, render=None, send_email=None,
-            logger=None):
+            hash=None, rounds=None, logger=None, session=None, request=None,
+            render=None, send_email=None, **kwargs):
+
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
             "`secret_key` must be at least %s chars long" % MIN_SECRET_LENGTH
@@ -59,10 +65,6 @@ class Auth(object):
         self.render = render or utils.default_render
         self.send_email = send_email or utils.default_send_email
 
-        self.update_hash = update_hash
-        self.token_life = float(token_life) * 60
-        assert self.token_life >= 0, \
-            "`token_life` must be a positive number of minutes"
         self.backends = [
             self.auth_password,
             self.auth_token,
@@ -73,6 +75,9 @@ class Auth(object):
             if roles:
                 self.UserRole = get_user_role_model(self, self.User)
         self.logger = logger or logging.getLogger(__name__)
+
+        for key, val in self.defaults.items():
+            setattr(self, key, kwargs.get(key, self.defaults[key]))
 
     def _set_hasher(self, hash, rounds):
         hash = self._get_best_hash(hash)
@@ -167,7 +172,7 @@ class Auth(object):
             return None
 
         valid = user.get_token(timestamp) == token
-        not_expired = timestamp <= int(time()) + self.token_life
+        not_expired = timestamp + self.token_life >= int(time())
         if valid and not_expired:
             return user
         self.logger.info('Invalid auth token')
@@ -260,9 +265,9 @@ class Auth(object):
         def decorator(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
-                url_sign_in = self._get_url_sign_in(options)
                 request = options.get('request') or self.request or \
                     args and args[0]
+                url_sign_in = self._get_url_sign_in(request, options)
 
                 user = self.get_user()
                 if not user:
@@ -281,12 +286,12 @@ class Auth(object):
                             (user.login, ))
                         return self._login_required(request, url_sign_in)
 
-                if csrf and (force_csrf or compat.is_post(request)):
+                if csrf and (force_csrf or self.wsgi.is_post(request)):
                     token = self._get_csrf_token_from_request(request)
                     if not token or not self.csrf_token_is_valid(token):
                         self.logger.info('User `%s`: invalid CSFR token' %
                             (user.login, ))
-                        return compat.raise_forbidden("CSFR token isn't valid")
+                        return self.wsgi.raise_forbidden("CSFR token isn't valid")
 
                 return f(*args, **kwargs)
             return wrapper
@@ -296,18 +301,18 @@ class Auth(object):
         return self.get_csfr_token(session=session) == token
 
     def _login_required(self, request, url_sign_in):
-        self.session[self.redirect_key] = compat.get_current_url(request)
-        return compat.redirect(url_sign_in)
+        self.session[self.redirect_key] = self.wsgi.get_full_path(request)
+        return self.wsgi.redirect(url_sign_in)
 
-    def _get_url_sign_in(self, options):
+    def _get_url_sign_in(self, request, options):
         url_sign_in = options.get('url_sign_in') or self.url_sign_in
         if callable(url_sign_in):
-            url_sign_in = url_sign_in()
+            url_sign_in = url_sign_in(request)
         return url_sign_in or '/'
 
     def _get_csrf_token_from_request(self, request):
-        return compat.get_from_values(request, self.csrf_key) or \
-            compat.get_from_headers(request, self.csrf_header)
+        return self.wsgi.get_from_values(request, self.csrf_key) or \
+            self.wsgi.get_from_headers(request, self.csrf_header)
 
     def view_sign_in(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
@@ -325,7 +330,4 @@ class Auth(object):
     def view_change_password(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.change_password(self, request, **kwargs)
-
-    def setup_for_flask(self, app, views=True, send_email=None):
-        utils.setup_for_flask(self, app, views=views, send_email=send_email)
 
