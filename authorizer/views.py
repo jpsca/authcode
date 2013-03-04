@@ -58,7 +58,7 @@ def reset_password(auth, request, token=None, **kwargs):
         kwargs['error'] = 'WRONG TOKEN'
     
     elif auth.wsgi.is_post(request):
-        login = auth.wsgi.get_from_values(request, 'login') or ''
+        login = auth.wsgi.get_from_params(request, 'login') or ''
         user = auth.User.by_login(login)
         if not user:
             kwargs['error'] = 'NOT FOUND'
@@ -97,9 +97,9 @@ def change_password(auth, request, manual=True, **kwargs):
         if not auth.csrf_token_is_valid(csrf_token):
             return auth.wsgi.raise_forbidden()
 
-        password = auth.wsgi.get_from_values(request, 'password') or ''
-        np1 = auth.wsgi.get_from_values(request, 'np1') or ''
-        np2 = auth.wsgi.get_from_values(request, 'np2') or ''
+        password = auth.wsgi.get_from_params(request, 'password') or ''
+        np1 = auth.wsgi.get_from_params(request, 'np1') or ''
+        np2 = auth.wsgi.get_from_params(request, 'np2') or ''
         
         # Validate the new password
         if len(np1) < auth.password_minlen:

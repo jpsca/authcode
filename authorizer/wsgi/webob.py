@@ -32,7 +32,7 @@ def raise_forbidden(msg='You are not allowed to access this resource.'):
     raise HTTPForbidden(msg)
 
 
-def get_from_values(request, key):
+def get_from_params(request, key):
     return request.params.get(key)
     
 

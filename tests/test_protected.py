@@ -213,10 +213,10 @@ def test_protected_csrf():
     resp = client.get('/gettoken')
     token = resp.data
 
-    resp = client.get('/delete?_csrf_token=' + token)
+    resp = client.get('/delete?' + auth.csrf_key + '=' + token)
     assert resp.status == '200 OK'
 
-    resp = client.post('/update', data={'_csrf_token': token})
+    resp = client.post('/update', data={auth.csrf_key: token})
     assert resp.status == '200 OK'
 
     resp = client.post('/update', headers={'X-CSRFToken': token})

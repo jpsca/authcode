@@ -285,17 +285,12 @@ def test_login_logout():
 
     log = []
 
-    class Session(dict):
-        def invalidate(self):
-            log.append('invalidated')
-
-    session = Session()
+    session = {}
     auth.login(user, session=session)
     print session
     assert session[auth.session_key] == user.get_uhmac()
     auth.logout(session=session)
     assert auth.session_key not in session
-    assert log == ['invalidated']
 
 
 def test_get_user():

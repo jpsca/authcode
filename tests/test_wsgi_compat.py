@@ -22,7 +22,7 @@ def test_webob():
     with pytest.raises(Exception):
         w.raise_forbidden('hello')
 
-    assert w.get_from_values(req, 'foo') == data['foo']
+    assert w.get_from_params(req, 'foo') == data['foo']
     assert w.get_from_headers(req, 'foo') == headers['foo']
     assert 'foo' in w.get_post_data(req)
 
@@ -51,7 +51,7 @@ def test_webob():
 #     with pytest.raises(Exception):
 #         w.raise_forbidden('hello')
 
-#     assert w.get_from_values(req, 'foo') == data['foo']
+#     assert w.get_from_params(req, 'foo') == data['foo']
 #     assert w.get_from_headers(req, 'foo') == headers['foo']
 #     assert 'foo' in w.get_post_data(req)
 
@@ -85,7 +85,7 @@ def test_werkzeug():
     with pytest.raises(Exception):
         w.raise_forbidden('hello')
 
-    assert w.get_from_values(req, 'foo') == data['foo']
+    assert w.get_from_params(req, 'foo') == data['foo']
     assert w.get_from_headers(req, 'foo') == headers['foo']
     assert 'foo' in w.get_post_data(req)
 

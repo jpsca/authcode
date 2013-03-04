@@ -38,8 +38,8 @@ def raise_forbidden(msg='You are not allowed to access this resource.'):
     raise Forbidden(msg)
 
 
-def get_from_values(request, key):
-    request.values.get(key)
+def get_from_params(request, key):
+    return request.values.get(key)
     
 
 def get_from_headers(request, key):

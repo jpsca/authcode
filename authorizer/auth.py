@@ -310,7 +310,7 @@ class Auth(object):
         return url_sign_in or '/'
 
     def _get_csrf_token_from_request(self, request):
-        return self.wsgi.get_from_values(request, self.csrf_key) or \
+        return self.wsgi.get_from_params(request, self.csrf_key) or \
             self.wsgi.get_from_headers(request, self.csrf_header)
 
     def view_sign_in(self, *args, **kwargs):
