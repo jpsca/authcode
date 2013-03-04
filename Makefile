@@ -15,7 +15,7 @@ clean-pyc:
 	find . -name '*~' -delete
 
 test:
-	py.test --cov-config .coveragerc --cov authorizer tests/
+	py.test --cov-config .coveragerc --cov authcode tests/
 
 upload: clean
 	python setup.py sdist upload

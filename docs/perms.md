@@ -47,7 +47,7 @@ is tricked into clicking on the link in their browser.
 
 ## AJAX
 
-To use the CSRF protection with AJAX calls, Authorizer accept the CSRF token
+To use the CSRF protection with AJAX calls, AuthCode accept the CSRF token
 in the custom HTTP header X-CSRFToken, for ease of use with popular JavaScript
 toolkits which allow insertion of custom headers into all AJAX requests.
 

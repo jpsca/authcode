@@ -1,6 +1,6 @@
 ## Updating the hashes
 When the technology change the hardware gets faster, you'll want to update the hash algorithm you are deciding to use now. However, the whole point of store hashes is to make impossible to recover the original password, so you can't simply re-hash the passwords, because you don't know them.
-Authorizer is prepared to deal with that scenario. You just define a new supported hasher in the settings and, when the user logs in again, her password hash will be automatically updated to new format and stored.
+AuthCode is prepared to deal with that scenario. You just define a new supported hasher in the settings and, when the user logs in again, her password hash will be automatically updated to new format and stored.
 
 You can turn this behaviour off by setting the `update_hash` parameter to `False`.
 

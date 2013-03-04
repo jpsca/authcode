@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-import authorizer
+import authcode
 from flask import Flask
 from orm import SQLAlchemy
 
@@ -9,7 +9,7 @@ from helpers import *
 
 def get_flask_app(**kwargs):
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, **kwargs)
+    auth = authcode.Auth(SECRET_KEY, db=db, **kwargs)
 
     class User(auth.User):
         pass
@@ -23,7 +23,7 @@ def get_flask_app(**kwargs):
     app.secret_key = os.urandom(32)
     app.testing = True
 
-    authorizer.setup_for_flask(auth, app)
+    authcode.setup_for_flask(auth, app)
     auth.session = {}
     return auth, app, user
 

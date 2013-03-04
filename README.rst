@@ -1,5 +1,5 @@
 
-# Authorizer
+# AuthCode
 
 Awesome authentication code.
 

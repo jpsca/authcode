@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-import authorizer
+import authcode
 from orm import SQLAlchemy
 from passlib import hash as ph
 from passlib.exc import MissingBackendError
@@ -17,7 +17,7 @@ except MissingBackendError:
 
 def test_user_db():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -34,7 +34,7 @@ def test_user_db():
 
 def test_automatic_password_hashing():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
 
     class User(auth.User):
         pass
@@ -51,35 +51,35 @@ def test_automatic_password_hashing():
 
 
 def test_select_hashing_alg():
-    auth = authorizer.Auth(SECRET_KEY, rounds=0)
+    auth = authcode.Auth(SECRET_KEY, rounds=0)
     assert auth.rounds == 1
 
-    auth = authorizer.Auth(SECRET_KEY)
+    auth = authcode.Auth(SECRET_KEY)
     if bcrypt_available:
         assert auth.hash == 'bcrypt'
     else:
         assert auth.hash == 'pbkdf2-sha512'
-        auth = authorizer.Auth(SECRET_KEY, hash='bcrypt')
+        auth = authcode.Auth(SECRET_KEY, hash='bcrypt')
         assert auth.hash == 'pbkdf2-sha512'
     assert auth.rounds
 
-    auth = authorizer.Auth(SECRET_KEY, hash='sha512_crypt', rounds=1500)
+    auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=1500)
     assert auth.hash == 'sha512-crypt'
     assert auth.rounds == 1500
 
-    with pytest.raises(authorizer.exceptions.WrongHashAlgorithm):
-        auth = authorizer.Auth(SECRET_KEY, hash='lalala')
+    with pytest.raises(authcode.exceptions.WrongHashAlgorithm):
+        auth = authcode.Auth(SECRET_KEY, hash='lalala')
 
 
 def test_exceptions():
-    assert '`bcrypt`' in str(authorizer.exceptions.WrongHashAlgorithm())
-    assert '`pbkdf2_sha512`' in str(authorizer.exceptions.WrongHashAlgorithm())
-    assert '`sha512_crypt`' in str(authorizer.exceptions.WrongHashAlgorithm())
+    assert '`bcrypt`' in str(authcode.exceptions.WrongHashAlgorithm())
+    assert '`pbkdf2_sha512`' in str(authcode.exceptions.WrongHashAlgorithm())
+    assert '`sha512_crypt`' in str(authcode.exceptions.WrongHashAlgorithm())
 
 
 def test_hash_password():
     p = 'password'
-    auth = authorizer.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
+    auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
     hashed = auth.hash_password(p)
     assert hashed.startswith('$pbkdf2-sha512$345$')
     assert auth.password_is_valid(p, hashed)
@@ -88,17 +88,17 @@ def test_hash_password():
 
 def test_use_pepper():
     p = 'password'
-    auth = authorizer.Auth(SECRET_KEY, pepper='123', hash='sha512_crypt')
+    auth = authcode.Auth(SECRET_KEY, pepper='123', hash='sha512_crypt')
     hashed = auth.hash_password(p)
     assert auth.password_is_valid(p, hashed)
-    auth = authorizer.Auth(SECRET_KEY, pepper='abc', hash='sha512_crypt')
+    auth = authcode.Auth(SECRET_KEY, pepper='abc', hash='sha512_crypt')
     assert not auth.password_is_valid(p, hashed)
 
 
 def test_legacy_reader():
     from passlib.hash import hex_sha1, django_salted_sha1
     p = 'password'
-    auth = authorizer.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
+    auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
     hashed1 = hex_sha1.encrypt(p)
     hashed2 = django_salted_sha1.encrypt(p)
     
@@ -108,7 +108,7 @@ def test_legacy_reader():
 
 def test_authenticate_with_password():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -136,7 +136,7 @@ def test_authenticate_with_password():
 
 def test_monkeypatching_authentication():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -159,7 +159,7 @@ def test_monkeypatching_authentication():
 def test_update_on_authenticate():
     from passlib.hash import hex_sha1
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
 
     class User(auth.User):
         pass
@@ -179,7 +179,7 @@ def test_update_on_authenticate():
 def test_disable_update_on_authenticate():
     from passlib.hash import hex_sha1
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10, update_hash=False)
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10, update_hash=False)
 
     class User(auth.User):
         pass
@@ -199,7 +199,7 @@ def test_disable_update_on_authenticate():
 def test_get_token():
     from time import time, sleep
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -223,7 +223,7 @@ def test_get_token():
 def test_authenticate_with_token():
     from time import time
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, token_life=3*60)
+    auth = authcode.Auth(SECRET_KEY, db=db, token_life=3*60)
 
     class User(auth.User):
         pass
@@ -257,7 +257,7 @@ def test_authenticate_with_token():
 
 def test_get_uhmac():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -273,7 +273,7 @@ def test_get_uhmac():
 
 def test_login_logout():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -295,7 +295,7 @@ def test_login_logout():
 
 def test_get_user():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db)
 
     class User(auth.User):
         pass
@@ -322,7 +322,7 @@ def test_get_user():
 
 def test_user_role_model():
     db = SQLAlchemy()
-    auth = authorizer.Auth(SECRET_KEY, db=db, roles=True)
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
 
     class User(auth.User):
         pass
@@ -352,7 +352,7 @@ def test_user_role_model():
 
 
 def test_get_csfr_token():
-    auth = authorizer.Auth(SECRET_KEY)
+    auth = authcode.Auth(SECRET_KEY)
     session = {}
     token = auth.get_csfr_token(session=session)
     assert token == auth.get_csfr_token(session=session)

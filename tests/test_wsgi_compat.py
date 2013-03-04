@@ -3,7 +3,7 @@ import pytest
 
 
 def test_webob():
-    from authorizer.wsgi import webob as w
+    from authcode.wsgi import webob as w
     from webob import Request
 
     path = '/hello?world=1'
@@ -31,7 +31,7 @@ def test_webob():
 
 
 # def test_cherrypy():
-#     from authorizer.wsgi import cherrypy as w
+#     from authcode.wsgi import cherrypy as w
 #     import cherrypy
 
 #     path = '/hello?world=1'
@@ -60,7 +60,7 @@ def test_webob():
 
 
 def test_werkzeug():
-    from authorizer.wsgi import werkzeug as w
+    from authcode.wsgi import werkzeug as w
     from werkzeug.test import EnvironBuilder
     from werkzeug.wrappers import Request
 

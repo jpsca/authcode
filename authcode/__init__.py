@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    # Authorizer
+    # AuthCode
 
     Awesome authentication code
 

@@ -6,9 +6,9 @@ from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
 
-NAME = 'Authorizer'
-PACKAGE = 'authorizer'
-URL = 'http://github.com/lucuma/authorizer'
+NAME = 'AuthCode'
+PACKAGE = 'authcode'
+URL = 'http://github.com/lucuma/authcode'
 DESCRIPTION = "Awesome authentication code"
 AUTHOR = 'Juan-Pablo Scaletti'
 AUTHOR_EMAIL = 'juanpablo@lucumalabs.com'

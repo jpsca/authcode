@@ -1,15 +1,15 @@
 
-# Authorizer
+# AuthCode
 
 Awesome authentication code.
 
 ### Community
 
-GitHub: https://github.com/lucuma/authorizer
+GitHub: https://github.com/lucuma/authcode
 
-Continuous Integration (Travis CI): http://travis-ci.org/lucuma/authorizer
+Continuous Integration (Travis CI): http://travis-ci.org/lucuma/authcode
 
-![build status](https://secure.travis-ci.org/lucuma/authorizer.png?branch=master)
+![build status](https://secure.travis-ci.org/lucuma/authcode.png?branch=master)
 
 
 ---------------------------------------
