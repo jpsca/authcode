@@ -13,6 +13,7 @@ def get_user_model(auth):
     db = auth.db
 
     class User(db.Model):
+        __tablename__ = 'users'
         id = Column(Integer, primary_key=True)
         login = Column(Unicode(255), nullable=False, unique=True)
         _password = Column(String(255), nullable=True)
@@ -59,6 +60,7 @@ def get_user_role_model(auth, User):
     db = auth.db
     
     class Role(db.Model):
+        __tablename__ = 'roles'
         id = Column(Integer, primary_key=True)
         name = Column(Unicode(255), nullable=False, unique=True)
 
