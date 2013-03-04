@@ -58,7 +58,7 @@ def get_user_model(auth):
 def get_user_role_model(auth, User):
     db = auth.db
     
-    class UserRole(db.Model):
+    class Role(db.Model):
         id = Column(Integer, primary_key=True)
         name = Column(Unicode(255), nullable=False, unique=True)
 
@@ -71,28 +71,28 @@ def get_user_role_model(auth, User):
             return '<%s %s>' % (self.__class__.__name__,
                 self.name.encode('utf8'))
     
-    User.roles = relationship(UserRole, secondary='users_roles', lazy='joined',
+    User.roles = relationship(Role, secondary='users_roles', lazy='joined',
         backref=backref('users', lazy='dynamic', enable_typechecks=False))
 
     UsersRolesTable = Table('users_roles', db.metadata,
         Column('user_id', Integer, ForeignKey(User.id)),
-        Column('role_id', Integer, ForeignKey(UserRole.id))
+        Column('role_id', Integer, ForeignKey(Role.id))
     )
 
     def add_role(self, name):
         """Adds a role (by name) to the user."""
-        role = UserRole.by_name(name)
+        role = Role.by_name(name)
         if not role:
-            role = UserRole(name=name)
+            role = Role(name=name)
             db.add(role)
         if role not in self.roles:
             self.roles.append(role)
 
     def remove_role(self, name):
         """Remove a role (by name) from the user."""
-        role = UserRole.by_name(name)
+        role = Role.by_name(name)
         if not role:
-            raise ValueError('UserRole "%s" does not exists' % (name,))
+            raise ValueError('Role "%s" does not exists' % (name,))
         if role in self.roles:
             self.roles.remove(role)
 
@@ -108,5 +108,5 @@ def get_user_role_model(auth, User):
     User.remove_role = remove_role
     User.has_role = has_role
 
-    return UserRole
+    return Role
 

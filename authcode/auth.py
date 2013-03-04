@@ -73,7 +73,7 @@ class Auth(object):
         if db:
             self.User = get_user_model(self)
             if roles:
-                self.UserRole = get_user_role_model(self, self.User)
+                self.Role = get_user_role_model(self, self.User)
         self.logger = logger or logging.getLogger(__name__)
 
         for key, val in self.defaults.items():

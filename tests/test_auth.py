@@ -332,13 +332,13 @@ def test_user_role_model():
     db.add(user)
     db.commit()
 
-    assert hasattr(auth, 'UserRole')
+    assert hasattr(auth, 'Role')
     assert hasattr(User, 'roles')
 
     user.add_role('admin')
     db.commit()
     assert user.has_role('admin')
-    assert repr(user.roles[0]) == '<UserRole admin>'
+    assert repr(user.roles[0]) == '<Role admin>'
 
     user.remove_role('admin')
     db.commit()
