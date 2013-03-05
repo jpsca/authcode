@@ -17,27 +17,59 @@ except MissingBackendError:
 
 def test_user_db():
     db = SQLAlchemy()
+
     auth = authcode.Auth(SECRET_KEY, db=db)
+    User = auth.User
 
-    class User(auth.User):
-        pass
-
+    db.create_all()
     user = User(login=u'meh', password='foobar')
+    db.add(user)
+    db.flush()
     
-    assert hasattr(User, 'login')
-    assert hasattr(User, 'password')
-    assert hasattr(User, 'created_at')
-    assert hasattr(User, 'modified_at')
-    assert hasattr(User, 'last_sign_in')
+    assert user.login == u'meh'
+    assert hasattr(user, 'password')
+    assert hasattr(user, 'created_at')
+    assert hasattr(user, 'modified_at')
+    assert hasattr(user, 'last_sign_in')
     assert repr(user) == '<User meh>'
+
+
+def test_extended_user_db():
+    db = SQLAlchemy()
+
+    class UserMixin(object):
+        email = db.Column(db.Unicode(300))
+
+    class RoleMixin(object):
+        description = db.Column(db.UnicodeText)
+
+    auth = authcode.Auth(SECRET_KEY, db=db,
+        UserMixin=UserMixin, RoleMixin=RoleMixin)
+    User = auth.User
+    Role = auth.Role
+
+    db.create_all()
+    user = User(login=u'meh', password='foobar', email=u'text@example.com')
+    db.add(user)
+    db.flush()
+    
+    assert User.__tablename__ == 'users'
+    assert user.login == u'meh'
+    assert user.email == u'text@example.com'
+    assert hasattr(user, 'password')
+    assert hasattr(user, 'created_at')
+    assert hasattr(user, 'modified_at')
+    assert hasattr(user, 'last_sign_in')
+    assert repr(user) == '<User meh>'
+
+    assert hasattr(Role, 'description')
 
 
 def test_automatic_password_hashing():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -110,8 +142,7 @@ def test_authenticate_with_password():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     credentials = {'login':u'meh', 'password':'foobar'}
@@ -138,8 +169,7 @@ def test_monkeypatching_authentication():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh')
@@ -161,8 +191,7 @@ def test_update_on_authenticate():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     credentials = {'login':u'meh', 'password':'foobar'}
@@ -181,8 +210,7 @@ def test_disable_update_on_authenticate():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10, update_hash=False)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     credentials = {'login':u'meh', 'password':'foobar'}
@@ -201,8 +229,7 @@ def test_get_token():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -225,8 +252,7 @@ def test_authenticate_with_token():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, token_life=3*60)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -259,8 +285,7 @@ def test_get_uhmac():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -275,8 +300,7 @@ def test_login_logout():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -297,8 +321,7 @@ def test_get_user():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -324,8 +347,7 @@ def test_user_role_model():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
 
-    class User(auth.User):
-        pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')

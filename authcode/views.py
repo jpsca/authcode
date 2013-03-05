@@ -2,13 +2,15 @@
 from datetime import datetime
 
 
-def sign_in(auth, request, session, **kwargs):
-    next = session.get(auth.redirect_key) or auth.sign_in_redirect or '/'
+def pop_next_url(auth, session):
+    next = session.pop(auth.redirect_key, None) or auth.sign_in_redirect or '/'
     if callable(next):
         next = next(request)
 
-    if auth.session_key in session:
-        session.pop(auth.redirect_key, None)
+
+def sign_in(auth, request, session, *args, **kwargs):
+    if auth.get_user():
+        next = pop_next_url(auth, session)
         return auth.wsgi.redirect(next)
     
     kwargs['error'] = None
@@ -21,7 +23,7 @@ def sign_in(auth, request, session, **kwargs):
                 user.last_sign_in = datetime.utcnow()
                 auth.db.commit()
             auth.login(user)
-            session.pop(auth.redirect_key, None)
+            next = pop_next_url(auth, session)
             return auth.wsgi.redirect(next)
         
         kwargs['error'] = True
@@ -31,7 +33,7 @@ def sign_in(auth, request, session, **kwargs):
     return auth.render(auth.template_sign_in, **kwargs)
 
 
-def sign_out(auth, request, **kwargs):
+def sign_out(auth, request, *args, **kwargs):
     auth.logout()
     if auth.template_sign_out:
         return auth.render(auth.template_sign_out, **kwargs)
@@ -42,7 +44,7 @@ def sign_out(auth, request, **kwargs):
     return auth.wsgi.redirect(next)
 
 
-def reset_password(auth, request, token=None, **kwargs):
+def reset_password(auth, request, token=None, *args, **kwargs):
     credentials = auth.wsgi.get_post_data(request) or {}
     kwargs['ok'] = False
     kwargs['error'] = None
@@ -84,7 +86,7 @@ def _email_token(auth, user, data):
     auth.send_email(user, 'Reset your password', msg)
 
 
-def change_password(auth, request, manual=True, **kwargs):
+def change_password(auth, request, manual=True, *args, **kwargs):
     user = auth.get_user()
     if not user:
         return auth.wsgi.redirect(auth.url_sign_in)

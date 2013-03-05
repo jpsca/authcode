@@ -7,12 +7,16 @@ from orm import SQLAlchemy
 from helpers import *
 
 
-def get_flask_app(**kwargs):
+def get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, **kwargs)
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
 
     class User(auth.User):
         pass
+
+    if roles:
+        class Role(auth.Role):
+            pass
 
     db.create_all()
     user = User(login=u'meh', password='foobar')

@@ -10,7 +10,7 @@ from passlib.exc import MissingBackendError
 
 from . import utils, views, wsgi
 from .exceptions import *
-from .models import get_user_model, get_user_role_model
+from .models import extend_user_model, extend_role_model
 
 
 VALID_HASHERS = ['bcrypt', 'pbkdf2_sha512', 'sha512_crypt']
@@ -50,8 +50,9 @@ class Auth(object):
         'wsgi': wsgi.werkzeug,
     }
 
-    def __init__(self, secret_key, pepper=u'', db=None, roles=False, 
-            hash=None, rounds=None, logger=None, session=None, request=None,
+    def __init__(self, secret_key, pepper=u'', hash=None, rounds=None, 
+            db=None, UserMixin=None, RoleMixin=None, roles=False, 
+            logger=None, session=None, request=None,
             render=None, send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
@@ -71,9 +72,9 @@ class Auth(object):
         ]
         self._set_hasher(hash, rounds)
         if db:
-            self.User = get_user_model(self)
-            if roles:
-                self.Role = get_user_role_model(self, self.User)
+            self.User = extend_user_model(self, UserMixin)
+            if roles or RoleMixin:
+                self.Role = extend_role_model(self, self.User, RoleMixin)
         self.logger = logger or logging.getLogger(__name__)
 
         for key, val in self.defaults.items():

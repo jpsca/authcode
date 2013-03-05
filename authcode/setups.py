@@ -36,15 +36,15 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=False):
                 methods=['GET','POST'])(auth.view_reset_password)
 
 
-def setup_for_shake(auth, app, views=True, send_email=None, render=False):
+def setup_for_shake(auth, app, views=True, send_email=None, render=None):
     if send_email:
         auth.send_email = send_email
     if render:
-        auth.render = app.render
+        auth.render = render
 
     @app.before_request
-    def set_auth_info(request):
-        auth.session = session
+    def set_auth_info(request, **kwargs):
+        auth.session = request.session
         request.user = auth.get_user()
 
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
