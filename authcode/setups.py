@@ -28,8 +28,9 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=False):
         app.route(auth.url_sign_out,
             methods=['GET','POST'])(auth.view_sign_out)
 
-        app.route(auth.url_change_password,
-            methods=['GET','POST'])(auth.view_change_password)
+        if auth.url_change_password:
+            app.route(auth.url_change_password,
+                methods=['GET','POST'])(auth.view_change_password)
 
         if auth.url_reset_password:
             app.route(auth.url_reset_password, 
@@ -58,8 +59,9 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
         app.route(auth.url_sign_out,
             methods=['GET','POST'])(auth.view_sign_out)
 
-        app.route(auth.url_change_password,
-            methods=['GET','POST'])(auth.view_change_password)
+        if auth.url_change_password:
+            app.route(auth.url_change_password,
+                methods=['GET','POST'])(auth.view_change_password)
 
         if auth.url_reset_password:
             app.route(auth.url_reset_password, 
