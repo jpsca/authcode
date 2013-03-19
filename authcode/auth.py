@@ -15,8 +15,10 @@ from .models import extend_user_model, extend_role_model
 
 VALID_HASHERS = ['bcrypt', 'pbkdf2_sha512', 'sha512_crypt']
 
-DEPRECATED_HASHERS = ['django_salted_sha1', 'django_salted_md5',
-    'django_des_crypt', 'hex_sha512', 'hex_sha256', 'hex_sha1', 'hex_md5']
+DEPRECATED_HASHERS = [
+    'django_pbkdf2_sha256', 'django_pbkdf2_sha1', 'django_bcrypt',
+    'django_salted_sha1', 'django_salted_md5', 'django_des_crypt',
+    'hex_sha512', 'hex_sha256', 'hex_sha1', 'hex_md5', 'hex_md4']
 
 MIN_SECRET_LENGTH = 20
 
