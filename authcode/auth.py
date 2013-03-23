@@ -211,14 +211,16 @@ class Auth(object):
         if session is None:
             session = self.session
         session[self.session_key] = user.get_uhmac()
-        session.modified = True
+        if hasattr(session, 'modified'):
+            session.modified = True
 
     def logout(self, session=None):
         if session is None:
             session = self.session
         for key in session.keys():
             session.pop(key, None)
-        session.modified = True
+        if hasattr(session, 'modified'):
+            session.modified = True
 
     def get_csrf_token(self, session=None):
         if session is None:
@@ -306,7 +308,8 @@ class Auth(object):
 
     def _login_required(self, request, url_sign_in):
         self.session[self.redirect_key] = self.wsgi.get_full_path(request)
-        self.session.modified = True
+        if hasattr(self.session, 'modified'):
+            self.session.modified = True
         return self.wsgi.redirect(url_sign_in)
 
     def _get_url_sign_in(self, request, options):
