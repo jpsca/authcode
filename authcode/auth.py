@@ -211,12 +211,14 @@ class Auth(object):
         if session is None:
             session = self.session
         session[self.session_key] = user.get_uhmac()
+        session.modified = True
 
     def logout(self, session=None):
         if session is None:
             session = self.session
         for key in session.keys():
             session.pop(key, None)
+        session.modified = True
 
     def get_csrf_token(self, session=None):
         if session is None:
@@ -304,6 +306,7 @@ class Auth(object):
 
     def _login_required(self, request, url_sign_in):
         self.session[self.redirect_key] = self.wsgi.get_full_path(request)
+        self.session.modified = True
         return self.wsgi.redirect(url_sign_in)
 
     def _get_url_sign_in(self, request, options):
@@ -316,20 +319,20 @@ class Auth(object):
         return self.wsgi.get_from_params(request, self.csrf_key) or \
             self.wsgi.get_from_headers(request, self.csrf_header)
 
-    def view_sign_in(self, *args, **kwargs):
+    def auth_sign_in(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.sign_in(self, request, self.session,
             *args, **kwargs)
 
-    def view_sign_out(self, *args, **kwargs):
+    def auth_sign_out(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.sign_out(self, request, **kwargs)
 
-    def view_reset_password(self, *args, **kwargs):
+    def auth_reset_password(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.reset_password(self, request, **kwargs)
 
-    def view_change_password(self, *args, **kwargs):
+    def auth_change_password(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.change_password(self, request, **kwargs)
 

@@ -26,7 +26,7 @@ def get_uhmac(user, secret):
     key = '|'.join([
         secret,
         unicode(getattr(user, 'id', 0)),
-        unicode(getattr(user, 'password', '')[10:20]),
+        unicode((getattr(user, 'password', '') or '')[10:20]),
     ])
     key = key.encode('utf8', 'ignore')
     mac = hmac.new(key, msg=None, digestmod=hashlib.sha512)
@@ -56,7 +56,7 @@ def get_token(user, secret, timestamp=None):
     key = '|'.join([
         secret,
         unicode(getattr(user, 'id', 0)),
-        unicode(getattr(user, 'password', '')[10:20]),
+        unicode((getattr(user, 'password', '') or '')[10:20]),
         unicode(getattr(user, 'last_sign_in', 0)),
         unicode(timestamp),
     ])

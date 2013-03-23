@@ -89,8 +89,7 @@ def extend_role_model(auth, User, RoleMixin=None):
             return relationship(User, lazy='dynamic',
                 secondary='users_roles', enable_typechecks=False,
                 backref=backref('roles', lazy='joined'))
-
-
+    
     if RoleMixin is not None:
         class Role(db.Model, AuthRoleMixin, RoleMixin):
             __tablename__ = 'roles'
