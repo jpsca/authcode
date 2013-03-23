@@ -14,13 +14,9 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=False):
     @app.before_request
     def set_user():
         g.user = auth.get_user()
-
-    @app.context_processor
-    def inject_context():
-        return {
-            'auth': auth,
-            'csrf_token': auth.get_csrf_token,
-        }
+    
+    app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
+    app.jinja_env.globals['auth'] = auth
 
     if views:
         app.route(auth.url_sign_in,
