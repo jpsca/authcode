@@ -49,15 +49,16 @@ def extend_user_model(auth, UserMixin=None):
         def get_token(self, timestamp=None):
             return get_token(self, auth.secret_key, timestamp)
 
+        def __repr__(self):
+            return '<User %s>' % (self.login.encode('utf8'),)
+
 
     if UserMixin is not None:
-        class User(db.Model, AuthUserMixin, UserMixin):
+        class User(UserMixin, AuthUserMixin, db.Model):
             __tablename__ = 'users'
     else:
-        class User(db.Model, AuthUserMixin):
+        class User(AuthUserMixin, db.Model):
             __tablename__ = 'users'
-
-    User.__repr__ = lambda self: '<User %s>' % (self.login.encode('utf8'),)
 
     return User
 
@@ -89,15 +90,16 @@ def extend_role_model(auth, User, RoleMixin=None):
             return relationship(User, lazy='dynamic',
                 secondary='users_roles', enable_typechecks=False,
                 backref=backref('roles', lazy='joined'))
+
+        def __repr__(self):
+            return '<Role %s>' % (self.name.encode('utf8'),)
     
     if RoleMixin is not None:
-        class Role(db.Model, AuthRoleMixin, RoleMixin):
+        class Role(RoleMixin, AuthRoleMixin, db.Model):
             __tablename__ = 'roles'
     else:
-        class Role(db.Model, AuthRoleMixin):
+        class Role(AuthRoleMixin, db.Model):
             __tablename__ = 'roles'
-
-    Role.__repr__ = lambda self: '<Role %s>' % (self.name.encode('utf8'),)
     
     Table('users_roles', db.metadata,
         Column('user_id', Integer, ForeignKey(User.id)),

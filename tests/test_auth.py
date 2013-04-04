@@ -40,6 +40,9 @@ def test_extended_user_db():
     class UserMixin(object):
         email = db.Column(db.Unicode(300))
 
+        def __repr__(self):
+            return 'overwrited'
+
     class RoleMixin(object):
         description = db.Column(db.UnicodeText)
 
@@ -60,7 +63,7 @@ def test_extended_user_db():
     assert hasattr(user, 'created_at')
     assert hasattr(user, 'modified_at')
     assert hasattr(user, 'last_sign_in')
-    assert repr(user) == '<User meh>'
+    assert repr(user) == 'overwrited'
 
     assert hasattr(Role, 'description')
 
