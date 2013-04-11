@@ -7,6 +7,19 @@ from orm import SQLAlchemy
 from helpers import *
 
 
+def test_pop_next_url():
+    auth = authcode.Auth(SECRET_KEY)
+    
+    session = {auth.redirect_key: '/abc'}
+    assert authcode.views.pop_next_url(auth, session) == '/abc'
+
+    auth.sign_in_redirect = '/test'
+    assert authcode.views.pop_next_url(auth, {}) == auth.sign_in_redirect
+
+    auth.sign_in_redirect = None
+    assert authcode.views.pop_next_url(auth, {}) == '/'
+
+
 def get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)

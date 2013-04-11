@@ -6,6 +6,7 @@ def pop_next_url(auth, session):
     next = session.pop(auth.redirect_key, None) or auth.sign_in_redirect or '/'
     if callable(next):
         next = next(request)
+    return next
 
 
 def sign_in(auth, request, session, *args, **kwargs):
