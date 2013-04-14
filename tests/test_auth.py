@@ -68,6 +68,47 @@ def test_extended_user_db():
     assert hasattr(Role, 'description')
 
 
+def test_flask_sqlalchemy():
+    from flask import Flask
+    from flask.ext.sqlalchemy import SQLAlchemy
+
+    app = Flask('test_flask_sqlalchemy')
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+    db = SQLAlchemy(app)
+
+
+    class UserMixin(object):
+        email = db.Column(db.Unicode(300))
+
+        def __init__(self, login, email):
+            self.login = login
+            self.email = email
+            self.password = 'foobar'
+
+
+    class RoleMixin(object):
+        description = db.Column(db.UnicodeText)
+
+
+    auth = authcode.Auth(SECRET_KEY, db=db,
+        UserMixin=UserMixin, RoleMixin=RoleMixin)
+    authcode.setup_for_flask(auth, app)
+    User = auth.User
+
+    db.create_all()
+    user = User(u'meh', u'text@example.com')
+    db.session.add(user)
+    db.session.commit()
+    
+    assert user.login == u'meh'
+    assert user.email == u'text@example.com'
+    assert hasattr(user, 'password')
+    assert hasattr(user, 'created_at')
+    assert hasattr(user, 'modified_at')
+    assert hasattr(user, 'last_sign_in')
+    assert repr(user) == '<User meh>'
+
+
 def test_automatic_password_hashing():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)

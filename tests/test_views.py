@@ -76,23 +76,72 @@ def test_reset_password():
     log = []
     def send_email(user, subject, msg):
         log.append(msg)
+
     auth.send_email = send_email
     token = user.get_token()
 
     r = client.get(auth.url_reset_password)
+    print r.data
     assert 'Reset password' in r.data
 
+
+def test_reset_password_wrong_account():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    log = []
+    def send_email(user, subject, msg):
+        log.append(msg)
+
+    auth.send_email = send_email
+    token = user.get_token()
+
     r = client.post(auth.url_reset_password, data=dict(login=u'nn'))
+    print r.data
     assert 'We couldn\'t find an account for that username' in r.data
 
+
+def test_reset_password_email_sent():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    log = []
+    def send_email(user, subject, msg):
+        log.append(msg)
+
+    auth.send_email = send_email
+    token = user.get_token()
     r = client.post(auth.url_reset_password, data=dict(login=user.login))
     assert 'Please check your inbox' in r.data
-    print r.data
+    print log
     assert auth.url_reset_password + token + '/' in log[0]
 
+
+def test_reset_password_wrong_token():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    log = []
+    def send_email(user, subject, msg):
+        log.append(msg)
+
+    auth.send_email = send_email
+    token = user.get_token()
     r = client.get(auth.url_reset_password + 'xxx/')
+    print r.data
     assert 'Something is wrong' in r.data
 
+
+def test_reset_password_good_token():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    log = []
+    def send_email(user, subject, msg):
+        log.append(msg)
+    
+    auth.send_email = send_email
+    token = user.get_token()
     r = client.get(auth.url_reset_password + token + '/')
     assert auth.session_key in auth.session
     assert 'Change password' in r.data

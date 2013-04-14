@@ -5,4 +5,5 @@ orm
 werkzeug
 jinja2
 flask
+flask-sqlalchemy
 webob
