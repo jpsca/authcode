@@ -5,13 +5,11 @@
 
 Awesome authentication code.
 
-### Community
+### Community & support
 
-GitHub: https://github.com/lucuma/authcode
+Issue tracker: https://github.com/lucuma/authcode/issues
 
-Continuous Integration (Travis CI): http://travis-ci.org/lucuma/authcode
-
-![build status](https://secure.travis-ci.org/lucuma/authcode.png?branch=master)
+IRC channel: #lucuma on irc.freenode.net. AuthCode shares that channel with other Lucuma projects, so please let the others know that you are talking about AuthCode when asking a question.
 
 
 ---------------------------------------
