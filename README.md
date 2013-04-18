@@ -1,6 +1,8 @@
 
 # AuthCode
 
+[![Build Status](https://travis-ci.org/lucuma/authcode.png)](https://travis-ci.org/lucuma/authcode)
+
 Awesome authentication code.
 
 ### Community

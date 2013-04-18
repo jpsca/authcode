@@ -2,15 +2,16 @@
 from flask import url_for
 
 
-SQLALCHEMY_URI = 'sqlite:///test.db'
-
-SECRET_KEY = 'sdsmmp8y3hlkm 4f\xb2\xf7+2oripwfie9fiu29831gelemfop2i3yrp23\x8d'
-
 TWITTER_KEY = '< paste your twitter app key here >'
 TWITTER_SECRET = '< paste your twitter app secret here >'
 
 FACEBOOK_APP_ID = '< paste your facebook app_id here >'
 FACEBOOK_APP_SECRET = '< paste your feacebook app secret here >'
+
+
+SQLALCHEMY_URI = 'sqlite:///test.db'
+
+SECRET_KEY = 'sdsmmp8y3hlkm 4f\xb2\xf7+2oripwfie9fiu29831gelemfop2i3yrp23\x8d'
 
 AUTH_SETTINGS = {
     'pepper': '74e89fd60f735b36181272530e12114587ce3',
