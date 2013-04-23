@@ -9,7 +9,9 @@ Awesome authentication code.
 
 Issue tracker: https://github.com/lucuma/authcode/issues
 
-IRC channel: #lucuma on irc.freenode.net. AuthCode shares that channel with other Lucuma projects, so please let the others know that you are talking about AuthCode when asking a question.
+IRC channel: #lucuma on irc.freenode.net.
+
+AuthCode shares that channel with other Lucuma projects, so please let the others know that you are talking about AuthCode when asking a question.
 
 
 ---------------------------------------
