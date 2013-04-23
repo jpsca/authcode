@@ -25,7 +25,7 @@ def from36(number):
 def get_uhmac(user, secret):
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
-        str(getattr(user, 'id', 0)),
+        str(user.id),
         (getattr(user, 'password', '') or '')[10:20],
     ])
     key = key.encode('utf8', 'ignore')
@@ -55,7 +55,7 @@ def get_token(user, secret, timestamp=None):
     timestamp = int(timestamp or time())
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
-        str(getattr(user, 'id', 0)),
+        str(user.id),
         (getattr(user, 'password', '') or '')[10:20],
         str(getattr(user, 'last_sign_in', 0)),
         str(timestamp),

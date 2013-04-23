@@ -1,6 +1,6 @@
 ~*
 .DS_Store
-*.pyc
+*.py[co]
 build
 dist
 *.egg*

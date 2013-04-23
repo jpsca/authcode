@@ -1,7 +1,7 @@
 
 # Authors
 
-AuthCode is written and maintained by the Lúcuma Team and various contributors.
+AuthCode is written and maintained by the Lúcuma team.
 
 
 Project Leader / Developer:
