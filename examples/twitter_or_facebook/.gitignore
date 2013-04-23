@@ -1,0 +1,9 @@
+~*
+.DS_Store
+*.py[co]
+build
+dist
+*.egg*
+
+_secret.py
+db.sqlite

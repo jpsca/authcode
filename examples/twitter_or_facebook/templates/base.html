@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}AuthCode example{% endblock %}</title>
+  <link href="{{ url_for('static', filename='styles/main.css') }}" rel="stylesheet">
+</head>
+
+<body {% block bodyclass %}{% endblock %}>
+  <header>
+    <div>
+      <a class="logo" href="{{ url_for('index') }}">AuthCode example</a>
+      {% if g.user -%}
+      <a class="sign-in" href="{{ url_for('logout') }}">Sign Out</a></li>
+      {%- else -%}
+      <a class="sign-in" href="{{ url_for('login') }}">Sign In</a></li>
+      {%- endif %}
+    </div>
+  </header>
+
+  <div id="main-content">
+    <div>{% block content %}{% endblock %}</div>
+  </div>
+
+  <footer>
+    <div>This is an example on how to use the <a href="http://authcode.lucuma.co">AuthCode</a> python library. See the <a href="http://autchode.lucuma.co/examples">rest of examples here</a>.</div>
+  </footer>
+</body>
+</html>

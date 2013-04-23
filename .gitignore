@@ -9,3 +9,5 @@ dist
 .tox
 htmlcov
 __pycache__
+heroku
+_secret.py

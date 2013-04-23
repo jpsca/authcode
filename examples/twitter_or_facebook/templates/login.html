@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block bodyclass %}id="sign-in"{% endblock %}
+
+{% block content %}
+<section class="panel sign-up-panel">
+  <header>
+    <h1>Sign in</h1>
+  </header>
+  <div class="inside-panel">
+    {% for message in get_flashed_messages() %}
+      <p class="alert">{{ message }}</p>
+    {% endfor %}
+
+    <p>Sign in with your Twitter or Facebook account below. We never post without your permission (and this is just a demo after all.)</p>
+    <ul class="sign-up-buttons">
+      <li><a href="{{ url_for('twitter_login') }}" class="btn btn-info btn-large"><i class="icon-twitter"></i>
+        Sign in via Twitter</a></li>
+      <li><a href="{{ url_for('facebook_login') }}" class="btn btn-info btn-large"><i class="icon-facebook"></i>
+        Sign in via Facebook</a></li>
+    </ul>
+</section>
+{% endblock %}

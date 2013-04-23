@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hi, {{ g.user.login }}</h1>
+<p><a class="btn" href="{{ url_for('delete_me', _csrf_token=csrf_token) }}">Delete my account</a></p>
+
+<h3>Twitter</h3>
+<p>
+  {%- if g.user.twitter_id -%}
+  Your Twitter handler is: @{{ g.user.twitter_username }}<br>
+  Your Twitter ID is: {{ g.user.twitter_id }}
+  {%- else -%}
+  <a href="{{ url_for('twitter_login') }}">Add your Twitter account</a>
+  {%- endif -%}
+</p>
+
+<h3>Facebook</h3>
+<p>
+  {%- if g.user.facebook_id -%}
+  Your Facebook ID is: {{ g.user.facebook_id }}
+  {%- else -%}
+  <a href="{{ url_for('facebook_login') }}">Add your Facebook account</a>
+  {%- endif -%}
+</p>
+{% endblock %}
