@@ -19,6 +19,7 @@
   {% if auth.url_reset_password -%}
   <a href="{{ auth.url_reset_password }}" tabindex="4">Forgot your password?</a>
   {%- endif %}
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   <button class="btn" type="submit" tabindex="3">Sign in &raquo;</button>
   </fieldset> 
   </form>

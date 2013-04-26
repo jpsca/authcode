@@ -17,7 +17,7 @@ def sign_in(auth, request, session, *args, **kwargs):
     kwargs['error'] = None
     credentials = auth.wsgi.get_post_data(request) or {}
     
-    if auth.wsgi.is_post(request):
+    if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
         user = auth.authenticate(credentials)
         if user:
             if hasattr(user, 'last_sign_in'):
@@ -31,10 +31,15 @@ def sign_in(auth, request, session, *args, **kwargs):
     
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
+    kwargs['csrf_token'] = auth.get_csrf_token
     return auth.render(auth.template_sign_in, **kwargs)
 
 
 def sign_out(auth, request, *args, **kwargs):
+    # this view is CSRF protected
+    if not auth.csrf_token_is_valid(request):
+        return auth.wsgi.raise_forbidden()
+    
     auth.logout()
     if auth.template_sign_out:
         return auth.render(auth.template_sign_out, **kwargs)
@@ -60,7 +65,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
             return change_password(auth, request, manual=False, **kwargs)
         kwargs['error'] = 'WRONG TOKEN'
     
-    elif auth.wsgi.is_post(request):
+    elif auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
         login = auth.wsgi.get_from_params(request, 'login') or ''
         user = auth.User.by_login(login)
         if not user:
@@ -79,6 +84,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
 
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
+    kwargs['csrf_token'] = auth.get_csrf_token
     return auth.render(auth.template_reset, **kwargs)
 
 
@@ -96,8 +102,7 @@ def change_password(auth, request, manual=True, *args, **kwargs):
     kwargs['error'] = None
     
     if auth.wsgi.is_post(request):
-        csrf_token = auth._get_csrf_token_from_request(request)
-        if not auth.csrf_token_is_valid(csrf_token):
+        if not auth.csrf_token_is_valid(request):
             return auth.wsgi.raise_forbidden()
 
         password = auth.wsgi.get_from_params(request, 'password') or ''

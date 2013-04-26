@@ -20,7 +20,7 @@ DEPRECATED_HASHERS = [
     'django_salted_sha1', 'django_salted_md5', 'django_des_crypt',
     'hex_sha512', 'hex_sha256', 'hex_sha1', 'hex_md5', 'hex_md4']
 
-MIN_SECRET_LENGTH = 20
+MIN_SECRET_LENGTH = 15
 
 
 class Auth(object):
@@ -59,7 +59,7 @@ class Auth(object):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
-            "`secret_key` must be at least %s chars long" % MIN_SECRET_LENGTH
+            "`secret_key` must be at least {0} chars long".format(MIN_SECRET_LENGTH)
         self.pepper = pepper
         self.db = db
         
@@ -145,18 +145,18 @@ class Auth(object):
 
         user = self.User.by_login(login)
         if not user:
-            self.logger.info('User `%s` not found' % (login,))
+            self.logger.info('User `{0}` not found'.format(login))
             return None
 
         valid, new_hash = self.verify_and_update(secret, user.password)
         if not valid:
-            self.logger.info('Invalid password')
+            self.logger.info('Invalid password for user `{0}`'.format(login))
             return None
 
         if self.update_hash and new_hash:
             user._password = new_hash
             self.db.session.commit()
-            self.logger.info('Hash updated for user `%s`' % (login,))
+            self.logger.info('Hash updated for user `{0}`'.format(login))
         return user
 
     def auth_token(self, credentials):
@@ -166,19 +166,20 @@ class Auth(object):
         try:
             timestamp, uid = utils.split_token(str(token))
         except ValueError:
-            self.logger.info('Invalid auth token format')
+            self.logger.warning('Invalid auth token format')
             return None
 
         user = self.User.by_id(uid)
         if not user:
-            self.logger.info('Tampered auth token? UID %s not found' % (uid,))
+            self.logger.warning('Tampered auth token? uid `{0} not found'
+                .format(uid[:20]))
             return None
 
         valid = user.get_token(timestamp) == token
         not_expired = timestamp + self.token_life >= int(time())
         if valid and not_expired:
             return user
-        self.logger.info('Invalid auth token')
+        self.logger.warning('Invalid auth token')
         return None
 
     def get_user(self, session=None):
@@ -193,7 +194,7 @@ class Auth(object):
                 if not user or uhmac != user.get_uhmac():
                     raise ValueError
             except ValueError, e:
-                self.logger.info('Tampered uhmac?')
+                self.logger.warning('Tampered uhmac?')
                 user = None
                 self.logout(session)
         return user
@@ -207,7 +208,7 @@ class Auth(object):
         her password.
 
         """
-        self.logger.debug('User `%s` log in' % (user.login, ))
+        self.logger.info('User `{0}` logged in'.format(user.login))
         if session is None:
             session = self.session
         session[self.session_key] = user.get_uhmac()
@@ -277,29 +278,33 @@ class Auth(object):
 
                 if hasattr(user, 'has_role') and roles:
                     if not user.has_role(*roles):
-                        self.logger.info('User `%s`: has_role fail' %
-                            (user.login, ))
+                        self.logger.info('User `{0}`: has_role fail'
+                            .format(user.login))
                         return self._login_required(request, url_sign_in)
 
                 for test in tests:
                     test_pass = test(*args, **kwargs)
                     if not test_pass:
-                        self.logger.info('User `%s`: test fail' %
-                            (user.login, ))
+                        self.logger.info('User `{0}`: test fail'
+                            .format(user.login))
                         return self._login_required(request, url_sign_in)
 
-                if csrf and (self.wsgi.is_put_or_post(request) or force_csrf):
-                    token = self._get_csrf_token_from_request(request)
-                    if not token or not self.csrf_token_is_valid(token):
-                        self.logger.info('User `%s`: invalid CSFR token' %
-                            (user.login, ))
-                        return self.wsgi.raise_forbidden("CSFR token isn't valid")
+                if (csrf and
+                        (self.wsgi.is_put_or_post(request) or force_csrf) and
+                        not self.csrf_token_is_valid(request)):
+                    self.logger.info('User `{0}`: invalid CSFR token'
+                        .format(user.login))
+                    return self.wsgi.raise_forbidden("CSFR token isn't valid")
 
                 return f(*args, **kwargs)
             return wrapper
         return decorator
 
-    def csrf_token_is_valid(self, token, session=None):
+    def csrf_token_is_valid(self, request, session=None):
+        token = self._get_csrf_token_from_request(request)
+        return token and self._csrf_token_is_valid(token, session)
+
+    def _csrf_token_is_valid(self, token, session=None):
         return self.get_csrf_token(session=session) == token
 
     def _login_required(self, request, url_sign_in):

@@ -34,7 +34,7 @@ def get_uhmac(user, secret):
     # user.id instead of user.login because SQLAlchemy only caches
     # by primary key, so even if you don't cache the user object, a trip to
     # the database is spared.
-    uhmac = '%s$%s' % (user.id, mac)
+    uhmac = '{0}${1}'.format(user.id, mac)
     return uhmac
 
 
@@ -63,7 +63,7 @@ def get_token(user, secret, timestamp=None):
     key = key.encode('utf8', 'ignore')
     mac = hmac.new(key, msg=None, digestmod=hashlib.sha512)
     mac = mac.hexdigest()[:50]
-    token = '%s$%s$%s' % (user.id, to36(timestamp), mac)
+    token = '{0}${1}${2}'.format(user.id, to36(timestamp), mac)
     return token
 
 

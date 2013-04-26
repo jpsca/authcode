@@ -15,7 +15,7 @@ def extend_user_model(auth, UserMixin=None):
 
     class AuthUserMixin(object):
         id = Column(Integer, primary_key=True)
-        login = Column(Unicode(255), nullable=False, unique=True)
+        login = Column(Unicode, nullable=False, unique=True)
         _password = Column(String(255), nullable=True)
         created_at = Column(DateTime, nullable=False,
             default=datetime.utcnow)
@@ -50,7 +50,7 @@ def extend_user_model(auth, UserMixin=None):
             return get_token(self, auth.secret_key, timestamp)
 
         def __repr__(self):
-            return '<User %s>' % (self.login.encode('utf8'),)
+            return '<User {0}>'.format(self.login.encode('utf8'))
 
 
     if UserMixin is not None:
@@ -68,7 +68,7 @@ def extend_role_model(auth, User, RoleMixin=None):
 
     class AuthRoleMixin(object):
         id = Column(Integer, primary_key=True)
-        name = Column(Unicode(255), nullable=False, unique=True)
+        name = Column(Unicode, nullable=False, unique=True)
 
         @classmethod
         def by_name(cls, name):
@@ -92,7 +92,7 @@ def extend_role_model(auth, User, RoleMixin=None):
                 backref=backref('roles', lazy='joined'))
 
         def __repr__(self):
-            return '<Role %s>' % (self.name.encode('utf8'),)
+            return '<Role {0}>'.format(self.name.encode('utf8'))
     
     if RoleMixin is not None:
         class Role(RoleMixin, AuthRoleMixin, db.Model):

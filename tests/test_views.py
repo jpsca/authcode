@@ -45,7 +45,7 @@ def get_flask_app(roles=False, **kwargs):
     return auth, app, user
 
 
-def test_login():
+def test_login_view():
     auth, app, user = get_flask_app()
     client = app.test_client()
 
@@ -53,18 +53,61 @@ def test_login():
     assert 'Sign in' in r.data
 
     r = client.post(auth.url_sign_in)
+    assert 'Wrong' not in r.data
+
+    data = {
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    r = client.post(auth.url_sign_in, data=data)
     assert 'Wrong' in r.data
     assert auth.session_key not in auth.session
 
-    r = client.post(auth.url_sign_in, data=dict(login=user.login, password='foobar'))
+
+def test_login_wrong_credentials():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    data = {
+        'login': 'xxx',
+        'password': 'zzz',
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    r = client.post(auth.url_sign_in, data=data)
+    assert 'Wrong' in r.data
+    assert auth.session_key not in auth.session
+
+
+def test_login_right_credentials():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+
+    data = {
+        'login': user.login,
+        'password': 'foobar',
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    r = client.post(auth.url_sign_in, data=data)
     assert r.status == '303 SEE OTHER'
     assert auth.session_key in auth.session
+
+
+def test_login_redirect_if_already_logged_in():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+    auth.login(user)
 
     auth.session[auth.redirect_key] = 'http://google.com'
     r = client.get(auth.url_sign_in)
     assert r.status == '303 SEE OTHER'
 
-    r = client.get(auth.url_sign_out)
+
+def test_redirect_after_logout():
+    auth, app, user = get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+
+    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
+    r = client.get(url)
     assert r.status == '303 SEE OTHER'
     assert auth.session_key not in auth.session    
 
@@ -96,7 +139,8 @@ def test_reset_password_wrong_account():
     auth.send_email = send_email
     token = user.get_token()
 
-    r = client.post(auth.url_reset_password, data=dict(login=u'nn'))
+    data = dict(login=u'nn', _csrf_token=auth.get_csrf_token())
+    r = client.post(auth.url_reset_password, data=data)
     print r.data
     assert 'We couldn\'t find an account for that username' in r.data
 
@@ -111,7 +155,8 @@ def test_reset_password_email_sent():
 
     auth.send_email = send_email
     token = user.get_token()
-    r = client.post(auth.url_reset_password, data=dict(login=user.login))
+    data = dict(login=user.login, _csrf_token=auth.get_csrf_token())
+    r = client.post(auth.url_reset_password, data=data)
     assert 'Please check your inbox' in r.data
     print log
     assert auth.url_reset_password + token + '/' in log[0]
