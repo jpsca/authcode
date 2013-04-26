@@ -28,8 +28,8 @@ AUTH_SETTINGS = {
     'sign_out_redirect': lambda r: url_for('index'),
     'password_minlen': 5,
     
-    'url_sign_in': lambda r: url_for('login'),
-    'url_sign_out': lambda r: url_for('logout'),
+    'url_sign_in': lambda r: url_for('sign_in'),
+    'url_sign_out': lambda r: url_for('sign_out'),
     'url_reset_password': None,
     'url_change_password': None,
 }

@@ -7,7 +7,7 @@ from flask_oauth import OAuth
 from app import app, db
 import settings
 
-from .models import auth, User
+from .models import auth, User, get_unique_login
 
 
 oauth = OAuth()
@@ -46,7 +46,7 @@ def twitter_login():
 def twitter_authorized(resp):
     if resp is None:
         flash(u'You denied the request to sign in.')
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_in'))
 
     session['twitter_token'] = resp['oauth_token']
 
@@ -62,7 +62,8 @@ def twitter_authorized(resp):
     # user never signed on
     if user is None:
         if g.user is None:
-            user = User(login=resp['screen_name'])
+            login = get_unique_login(resp['screen_name'])
+            user = User(login=login)
             db.add(user)
         else:
             user = g.user
@@ -104,7 +105,7 @@ def facebook_authorized(resp):
             request.args['error_reason'],
             request.args['error_description'])
         )
-        return redirect(url_for('login'))
+        return redirect(url_for('sign_in'))
 
     session['facebook_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
@@ -128,7 +129,8 @@ def facebook_authorized(resp):
     # user never signed on
     if user is None:
         if g.user is None:
-            user = User(login=me.data.get('username', me.data['id']))
+            login = get_unique_login(me.data.get('username'))
+            user = User(login=login)
             db.add(user)
         else:
             user = g.user

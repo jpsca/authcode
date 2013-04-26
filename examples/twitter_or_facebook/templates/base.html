@@ -12,9 +12,9 @@
     <div>
       <a class="logo" href="{{ url_for('index') }}">AuthCode example</a>
       {% if g.user -%}
-      <a class="sign-in" href="{{ url_for('logout') }}">Sign Out</a></li>
+      <a class="sign-in" href="{{ url_for('sign_out', _csrf_token=csrf_token()) }}">Sign Out</a></li>
       {%- else -%}
-      <a class="sign-in" href="{{ url_for('login') }}">Sign In</a></li>
+      <a class="sign-in" href="{{ url_for('sign_in') }}">Sign In</a></li>
       {%- endif %}
     </div>
   </header>

@@ -22,3 +22,14 @@ auth = Auth(settings.SECRET_KEY, db=db, UserMixin=UserMixin, roles=False,
 User = auth.User
 
 setup_for_flask(auth, app, views=False)
+
+
+def get_unique_login(target):
+    num = 1
+    login = target
+    while True:
+        if not db.query(User).filter(User.login==login).count():
+            return login
+        num = num + 1
+        login = '{0}{1}'.format(target, num)
+

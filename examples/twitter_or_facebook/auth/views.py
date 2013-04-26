@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
-from flask import g, render_template, redirect, url_for
+from flask import g, render_template, redirect, url_for, abort
 
 from app import app, db
 
 from .models import auth, User
 
 
+HTTP_FORBIDDEN = 403
+
+
 @app.route('/sign-in/')
-def login():
+def sign_in():
     return render_template('login.html')
 
 
 @app.route('/sign-out/')
-def logout():
+@auth.protected(csrf=True)
+def sign_out():
     auth.logout()
     return redirect(url_for('index'))
 

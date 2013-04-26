@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Hi, {{ g.user.login }}</h1>
-<p><a class="btn" href="{{ url_for('delete_me', _csrf_token=csrf_token) }}">Delete my account</a></p>
+<p><a class="btn" href="{{ url_for('delete_me', _csrf_token=csrf_token()) }}">Delete my account</a></p>
 
 <h3>Twitter</h3>
 <p>
