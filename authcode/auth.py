@@ -230,7 +230,7 @@ class Auth(object):
         return csrf_token
 
     def make_csrf_token(self):
-        return str(uuid4())
+        return str(uuid4()).replace('-', '')
 
     def protected(self, *tests, **options):
         """Factory of decorators for limit the access to views.
