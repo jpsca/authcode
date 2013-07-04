@@ -2,14 +2,13 @@
 import os
 from datetime import datetime
 
-import pytest
 from authcode import utils
 
 
 class User(object):
-        id = 3
-        password = '0123456789abcdefghijklmnopqrstuvwxyz'
-        last_sign_in = datetime(2013, 05, 05)
+    id = 3
+    password = '0123456789abcdefghijklmnopqrstuvwxyz'
+    last_sign_in = datetime(2013, 5, 5)
 
 
 def test_get_uhmac():

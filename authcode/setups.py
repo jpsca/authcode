@@ -2,8 +2,9 @@
 
 
 def eval_url(url):
+    print(url)
     if callable(url):
-        return url()
+        url = url()
     return url
 
 

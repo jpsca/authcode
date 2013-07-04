@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import pytest
+from __future__ import print_function
 import authcode
-from flask import Flask, g, session
+from flask import Flask, g
 from orm import SQLAlchemy
 
 from helpers import *
@@ -10,13 +10,7 @@ from helpers import *
 def get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
-
-    class User(auth.User):
-        pass
-
-    if roles:
-        class Role(auth.Role):
-            pass
+    User = auth.User
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -78,7 +72,7 @@ def test_protected():
 
     client.get('/login')
     resp = client.get('/admin')
-    print resp.data
+    print(resp.data)
     assert resp.status == '200 OK'
 
 
