@@ -46,16 +46,16 @@ class Auth(object):
         'template_change_password': 'auth/change_password.html',
 
         'password_minlen': 5,
-        'token_life': 3 * 60, #minutes
+        'token_life': 3 * 60,  # minutes
         'update_hash': True,
 
         'wsgi': wsgi.werkzeug,
     }
 
-    def __init__(self, secret_key, pepper=u'', hash=None, rounds=None, 
-            db=None, UserMixin=None, RoleMixin=None, roles=False, 
-            logger=None, session=None, request=None,
-            render=None, send_email=None, **kwargs):
+    def __init__(self, secret_key, pepper=u'', hash=None, rounds=None, db=None,
+                 UserMixin=None, RoleMixin=None, roles=False, logger=None,
+                 session=None, request=None, render=None,
+                 send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
@@ -106,7 +106,7 @@ class Auth(object):
         hash = hash.replace('-', '_')
         if hash == 'bcrypt':
             try:
-                utils.test_hasher(ph.bcrypt)    
+                utils.test_hasher(ph.bcrypt)
             except MissingBackendError:
                 return 'pbkdf2_sha512'
         return hash
@@ -324,7 +324,7 @@ class Auth(object):
     def auth_sign_in(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.sign_in(self, request, self.session,
-            *args, **kwargs)
+                             *args, **kwargs)
 
     def auth_sign_out(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]

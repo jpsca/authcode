@@ -53,11 +53,11 @@ The following example using the jQuery library demonstrates this; the call to jQ
 
 In this case, the value of the CSRF token is on a `<meta>` tag on every page.
 
-    <meta name="_csrf_token" content="{{ csrf_token() }}">
+    <meta name="csrf_token" content="{{ csrf_token() }}">
 
 .. code-block:: javascript
 
-    window.CSRFToken = $('meta[name="_csrf_token"]').attr('content');
+    window.CSRFToken = $('meta[name="csrf_token"]').attr('content');
   
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {

@@ -29,7 +29,7 @@ def read_from(filepath):
 def get_version():
     data = read_from(get_path(PACKAGE, '__init__.py'))
     version = re.search(r"__version__\s*=\s*'([^']+)'", data).group(1)
-    return version.encode('utf-8')
+    return version
 
 
 def find_package_data(root, include_files=None):

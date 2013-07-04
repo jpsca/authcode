@@ -32,13 +32,13 @@ def extend_user_model(auth, UserMixin=None):
             self._password = auth.hash_password(secret)
 
         @classmethod
-        def by_id(cls, uid):
-            return db.session.query(cls).get(uid)
-
-        @classmethod
         def by_login(cls, login):
             name = unicode(login).strip()
             return db.session.query(cls).filter(cls.login == login).first()
+
+        @classmethod
+        def by_id(cls, pk):
+            return db.session.query(cls).get(pk)
 
         def has_password(self, secret):
             return auth.password_is_valid(secret, self._password)
@@ -76,6 +76,10 @@ def extend_role_model(auth, User, RoleMixin=None):
             return db.session.query(cls).filter(cls.name == name).first()
 
         @classmethod
+        def by_id(cls, pk):
+            return db.session.query(cls).get(pk)            
+
+        @classmethod
         def get_or_create(cls, name):
             name = unicode(name).strip()
             role = cls.by_name(name)
@@ -87,7 +91,7 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         @declared_attr
         def users(cls):
-            return relationship(User, lazy='dynamic',
+            return relationship(User, lazy='dynamic', order_by='User.login',
                 secondary='users_roles', enable_typechecks=False,
                 backref=backref('roles', lazy='joined'))
 

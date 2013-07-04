@@ -2,7 +2,7 @@
 from datetime import datetime
 
 
-def pop_next_url(auth, session):
+def pop_next_url(auth, request, session):
     next = session.pop(auth.redirect_key, None) or auth.sign_in_redirect or '/'
     if callable(next):
         next = next(request)
@@ -11,7 +11,7 @@ def pop_next_url(auth, session):
 
 def sign_in(auth, request, session, *args, **kwargs):
     if auth.get_user():
-        next = pop_next_url(auth, session)
+        next = pop_next_url(auth, request, session)
         return auth.wsgi.redirect(next)
     
     kwargs['error'] = None
@@ -24,7 +24,7 @@ def sign_in(auth, request, session, *args, **kwargs):
                 user.last_sign_in = datetime.utcnow()
                 auth.db.commit()
             auth.login(user)
-            next = pop_next_url(auth, session)
+            next = pop_next_url(auth, request, session)
             return auth.wsgi.redirect(next)
         
         kwargs['error'] = True

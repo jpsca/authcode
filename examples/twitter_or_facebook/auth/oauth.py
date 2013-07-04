@@ -13,7 +13,8 @@ from .models import auth, User, get_unique_login
 oauth = OAuth()
 
 
-twitter = oauth.remote_app('twitter',
+twitter = oauth.remote_app(
+    'twitter',
     base_url='https://api.twitter.com/1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
@@ -23,7 +24,8 @@ twitter = oauth.remote_app('twitter',
 )
 
 
-facebook = oauth.remote_app('facebook',
+facebook = oauth.remote_app(
+    'facebook',
     base_url='https://graph.facebook.com/',
     request_token_url=None,
     access_token_url='/oauth/access_token',
@@ -94,7 +96,7 @@ def get_twitter_token(token=None):
 def facebook_login():
     next = request.args.get('next') or None
     return facebook.authorize(callback=url_for('facebook_authorized',
-        next=next, _external=True))
+        next=next, _external=True)) 
 
 
 @app.route('/sign-in/facebook/authorized/')

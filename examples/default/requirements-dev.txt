@@ -1,4 +1,5 @@
 git+git://github.com/lucuma/authcode.git
 flask==0.9
-flask-oauth==0.12
 orm==1.0
+mailshake
+solution

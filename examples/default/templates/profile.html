@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hi, {{ g.user.login }}!</h1>
+
+{% if g.user.has_role('user') %}
+<p>Try the dropdown menu of the header</p>
+<p><a class="btn" href="{{ url_for('delete_me', _csrf_token=csrf_token()) }}">Delete my account</a></p>
+{% else%}
+<p>If you create your own user, you could also try the "change password" and "reset password" built-in functionality.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Signing in using default templates</h1>
+
+<p>This is an example on how you use AuthCode whith a standard login/password.<p>
+<p>Register below o just click the <a href="{{ url_for('auth_sign_in') }}">"Sign In"</a> link and use "example" as both the login and password.</p>
+
+<form method="post" action="" novalidate>
+  <fieldset>
+    <label for="reglogin">Username</label>
+    {{ form.login(id="reglogin") }}
+    {% if form.login.error %}<div class="error">{{ form.login.error.msg }}</div>{% endif %}
+  </fieldset>
+  <fieldset>
+    <label for="regemail">Email</label>
+    {{ form.email(id="regemail") }}
+    {% if form.email.error %}<div class="error">{{ form.email.error.msg }}</div>{% endif %}
+  </fieldset>
+  <fieldset>
+    <label for="regpassword">Password</label>
+    {{ form.password(id="regpassword") }}
+    {% if form.password.error %}<div class="error">{{ form.password.error.msg }}</div>{% endif %}
+  </fieldset>
+  <fieldset>
+    <button class="controls" type="submit">Register</button>
+  </fieldset>
+</form>
+{% endblock %}

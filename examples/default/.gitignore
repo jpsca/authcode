@@ -5,10 +5,5 @@ build
 dist
 *.egg*
 
-.coverage
-.tox
-htmlcov
-__pycache__
-heroku
 _secret.py
-.secret
+db.sqlite

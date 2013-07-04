@@ -28,6 +28,6 @@ For the OAuth part I'm using the [flask_oauth](http://pythonhosted.org/Flask-OAu
 4. Run the server with: `python main.py`
 
 --------
-**Note**:  The `Procfile`, `runtime.txt` and `os.getenv(…)` stuff is for deploying on Heroku.
+**Note**:  The `Procfile` and `runtime.txt` is for deploying on Heroku.
 
 

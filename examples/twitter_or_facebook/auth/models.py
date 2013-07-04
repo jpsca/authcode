@@ -32,4 +32,3 @@ def get_unique_login(target):
             return login
         num = num + 1
         login = '{0}{1}'.format(target, num)
-
