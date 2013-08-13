@@ -2,7 +2,6 @@
 
 
 def eval_url(url):
-    print(url)
     if callable(url):
         url = url()
     return url
@@ -18,10 +17,10 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=False):
     if render:
         auth.render = render_template
 
-    @app.before_request
     def set_user():
         g.user = auth.get_user()
 
+    app.before_request_funcs.setdefault(None, []).insert(0, set_user)
     app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
     app.jinja_env.globals['auth'] = auth
 
@@ -50,11 +49,11 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
     if render:
         auth.render = render
 
-    @app.before_request
     def set_auth_info(request, **kwargs):
         auth.session = request.session
         request.user = auth.get_user()
 
+    app.app.before_request_funcs.insert(0, set_auth_info)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
     app.render.env.globals['auth'] = auth
 

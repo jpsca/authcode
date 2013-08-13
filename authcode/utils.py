@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import hashlib
 import hmac
 from time import time
@@ -86,5 +87,5 @@ def default_render(template, **context):
 
 
 def default_send_email(user, subject, msg):
-    print user, subject, msg
+    print(user, subject, msg)
 
