@@ -5,5 +5,5 @@ orm
 werkzeug
 jinja2
 flask
-flask-sqlalchemy
+flask-sqlalchemy==0.16
 webob

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-    # AuthCode
+==========
+AuthCode
+==========
 
-    Awesome authentication code
+Awesome authentication code
 
-    ---------------------------------------
-    © 2013 by [Lúcuma labs] (http://lucumalabs.com).
-    See `AUTHORS.md` for more details.
-    License: [MIT License] (http://www.opensource.org/licenses/mit-license.php).
+---------------------------------------
+`MIT License <http://www.opensource.org/licenses/mit-license.php>`_
+© 2013 by `Lúcuma labs <http://lucumalabs.com>`_
 
 """
 from .auth import Auth
