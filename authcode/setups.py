@@ -53,7 +53,7 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
         auth.session = request.session
         request.user = auth.get_user()
 
-    app.app.before_request_funcs.insert(0, set_auth_info)
+    app.before_request_funcs.insert(0, set_auth_info)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
     app.render.env.globals['auth'] = auth
 
