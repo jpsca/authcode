@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from sqlalchemy import (Table, Column, Integer, Unicode, String, DateTime,
-    ForeignKey)
+    Boolean, ForeignKey)
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref
@@ -22,6 +22,8 @@ def extend_user_model(auth, UserMixin=None):
         modified_at = Column(DateTime, nullable=False,
             default=datetime.utcnow, onupdate=datetime.utcnow)
         last_sign_in = Column(DateTime, nullable=True)
+        deleted = Column(Boolean, nullable=False,
+            default=False)
 
         @hybrid_property
         def password(self):
@@ -77,7 +79,7 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         @classmethod
         def by_id(cls, pk):
-            return db.session.query(cls).get(pk)            
+            return db.session.query(cls).get(pk)
 
         @classmethod
         def get_or_create(cls, name):
@@ -97,14 +99,14 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         def __repr__(self):
             return '<Role {0}>'.format(self.name.encode('utf8'))
-    
+
     if RoleMixin is not None:
         class Role(RoleMixin, AuthRoleMixin, db.Model):
             __tablename__ = 'roles'
     else:
         class Role(AuthRoleMixin, db.Model):
             __tablename__ = 'roles'
-    
+
     Table('users_roles', db.metadata,
         Column('user_id', Integer, ForeignKey(User.id)),
         Column('role_id', Integer, ForeignKey(Role.id))

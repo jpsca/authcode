@@ -1,4 +1,4 @@
-# This file collects all required third-party applications that are needed
+# This file collects all required third-party libraries that are needed
 # to run this project. 
 
 passlib==1.6.1

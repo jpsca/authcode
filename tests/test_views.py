@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import authcode
+from authcode.views import pop_next_url
 from flask import Flask, request
 from orm import SQLAlchemy
 
@@ -11,13 +12,16 @@ from helpers import *
 def test_pop_next_url():
     auth = authcode.Auth(SECRET_KEY)
     session = {auth.redirect_key: '/abc'}
-    assert authcode.views.pop_next_url(auth, request, session) == '/abc'
+    next_url = pop_next_url(auth, request, session)
+    assert next_url == '/abc'
 
     auth.sign_in_redirect = '/test'
-    assert authcode.views.pop_next_url(auth, request, {}) == auth.sign_in_redirect
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == auth.sign_in_redirect
 
     auth.sign_in_redirect = None
-    assert authcode.views.pop_next_url(auth, request, {}) == '/'
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == '/'
 
 
 def get_flask_app(roles=False, **kwargs):

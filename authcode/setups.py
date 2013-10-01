@@ -7,15 +7,17 @@ def eval_url(url):
     return url
 
 
-def setup_for_flask(auth, app, views=True, send_email=None, render=False):
+def setup_for_flask(auth, app, views=True, send_email=None, render=None):
     from flask import g, request, session, render_template
 
     auth.request = request
     auth.session = session
     if send_email:
         auth.send_email = send_email
-    if render:
+    if render == True:
         auth.render = render_template
+    elif render:
+        auth.render = render
 
     def set_user():
         g.user = auth.get_user()

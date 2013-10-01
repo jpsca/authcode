@@ -14,27 +14,20 @@ def read_from(filepath):
         return f.read()
 
 
-def get_version(package):
-    data = read_from(get_path(package, '__init__.py'))
-    version = re.search(r"__version__\s*=\s*u?'([^']+)'", data).group(1)
-    return str(version)
-
-
-def get_description(package):
-    data = read_from(get_path(package, '__init__.py'))
-    desc = re.search('"""(.+)"""', data, re.DOTALL).group(1)
-    return desc.strip()
-
-
 def get_requirements(filename='requirements.txt'):
     data = read_from(get_path(filename))
     lines = map(lambda s: s.strip(), data.splitlines())
     return [l for l in lines if l and not l.startswith('#')]
 
 
+data = read_from(get_path('authcode', '__init__.py')).encode('utf8')
+version = str(re.search(r"__version__\s*=\s*u?'([^']+)'", data).group(1)).strip()
+desc = str(re.search('"""(.+)"""', data, re.DOTALL).group(1)).strip()
+
+
 setup(
     name='AuthCode',
-    version=get_version('authcode'),
+    version=version,
     author='Juan-Pablo Scaletti',
     author_email='juanpablo@lucumalabs.com',
     packages=find_packages(),
@@ -43,7 +36,7 @@ setup(
     url='http://github.com/lucuma/authcode',
     license='MIT license (http://www.opensource.org/licenses/mit-license.php)',
     description='Awesome authentication code',
-    long_description=get_description('authcode'),
+    long_description=desc,
     install_requires=get_requirements(),
     classifiers=[
         'Development Status :: 4 - Beta',

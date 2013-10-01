@@ -8,6 +8,7 @@ Awesome authentication code
 
 ---------------------------------------
 `MIT License <http://www.opensource.org/licenses/mit-license.php>`_
+
 © 2013 by `Lúcuma labs <http://lucumalabs.com>`_
 
 """
