@@ -7,3 +7,4 @@ jinja2
 flask
 flask-sqlalchemy==0.16
 webob
+tox

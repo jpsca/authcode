@@ -53,16 +53,15 @@ class Auth(object):
     }
 
     def __init__(self, secret_key, pepper=u'', hash=None, rounds=None, db=None,
-                 UserMixin=None, RoleMixin=None, roles=False, logger=None,
-                 session=None, request=None, render=None,
-                 send_email=None, **kwargs):
+                 UserMixin=None, RoleMixin=None, roles=False,
+                 session=None, request=None, render=None, send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
             "`secret_key` must be at least {0} chars long".format(MIN_SECRET_LENGTH)
         self.pepper = pepper
         self.db = db
-        
+
         self.session = session or {}
         self.request = request
         self.render = render or utils.default_render
@@ -77,7 +76,6 @@ class Auth(object):
             self.User = extend_user_model(self, UserMixin)
             if roles or RoleMixin:
                 self.Role = extend_role_model(self, self.User, RoleMixin)
-        self.logger = logger or logging.getLogger(__name__)
 
         for key, val in self.defaults.items():
             setattr(self, key, kwargs.get(key, self.defaults[key]))
@@ -123,7 +121,7 @@ class Auth(object):
         secret = self.prepare_password(secret)
         try:
             return self.hasher.verify(secret, hashed)
-        except ValueError, e:
+        except ValueError:
             return False
 
     def verify_and_update(self, secret, hashed):
@@ -138,6 +136,7 @@ class Auth(object):
         return None
 
     def auth_password(self, credentials):
+        logger = logging.getLogger(__name__)
         login = credentials.get('login')
         secret = credentials.get('password')
         if login is None or secret is None:
@@ -145,33 +144,34 @@ class Auth(object):
 
         user = self.User.by_login(login)
         if not user:
-            self.logger.info('User `{0}` not found'.format(login))
+            logger.info('User `{0}` not found'.format(login))
             return None
 
         valid, new_hash = self.verify_and_update(secret, user.password)
         if not valid:
-            self.logger.info('Invalid password for user `{0}`'.format(login))
+            logger.info('Invalid password for user `{0}`'.format(login))
             return None
 
         if self.update_hash and new_hash:
             user._password = new_hash
             self.db.session.commit()
-            self.logger.info('Hash updated for user `{0}`'.format(login))
+            logger.info('Hash updated for user `{0}`'.format(login))
         return user
 
     def auth_token(self, credentials):
+        logger = logging.getLogger(__name__)
         token = credentials.get('token')
         if token is None:
             return None
         try:
             timestamp, uid = utils.split_token(str(token))
         except ValueError:
-            self.logger.warning('Invalid auth token format')
+            logger.warning('Invalid auth token format')
             return None
 
         user = self.User.by_id(uid)
         if not user:
-            self.logger.warning('Tampered auth token? uid `{0} not found'
+            logger.warning('Tampered auth token? uid `{0} not found'
                 .format(uid[:20]))
             return None
 
@@ -179,7 +179,7 @@ class Auth(object):
         not_expired = timestamp + self.token_life >= int(time())
         if valid and not_expired:
             return user
-        self.logger.warning('Invalid auth token')
+        logger.warning('Invalid auth token')
         return None
 
     def get_user(self, session=None):
@@ -193,13 +193,14 @@ class Auth(object):
                 user = self.User.by_id(uid)
                 if not user or uhmac != user.get_uhmac():
                     raise ValueError
-            except ValueError, e:
-                self.logger.warning('Tampered uhmac?')
+            except ValueError:
+                logger = logging.getLogger(__name__)
+                logger.warning('Tampered uhmac?')
                 user = None
                 self.logout(session)
         return user
 
-    def login(self, user, session=None):
+    def login(self, user, remember=True, session=None):
         """Sets the current user UID in the session.
 
         Instead of just storing the user's id, it generates a hash from the
@@ -208,9 +209,11 @@ class Auth(object):
         her password.
 
         """
-        self.logger.info('User `{0}` logged in'.format(user.login))
+        logger = logging.getLogger(__name__)
+        logger.info('User `{0}` logged in'.format(user.login))
         if session is None:
             session = self.session
+        session['permanent'] = remember
         session[self.session_key] = user.get_uhmac()
 
     def logout(self, session=None):
@@ -220,11 +223,12 @@ class Auth(object):
             session.pop(key, None)
 
     def get_csrf_token(self, session=None):
+        logger = logging.getLogger(__name__)
         if session is None:
             session = self.session
         csrf_token = session.get(self.csrf_key)
         if not csrf_token:
-            self.logger.debug('New CSFR token')
+            logger.debug('New CSFR token')
             csrf_token = self.make_csrf_token()
             session[self.csrf_key] = csrf_token
         return csrf_token
@@ -234,7 +238,7 @@ class Auth(object):
 
     def protected(self, *tests, **options):
         """Factory of decorators for limit the access to views.
-        
+
         tests
         :   One or more functions that takes the args and kwargs of the
             function and returns either `True` or `False`.
@@ -245,7 +249,7 @@ class Auth(object):
         url_sign_in
         :   If any required condition fail, redirect to this place.
             Override the default URL. This can also be a callable.
-        
+
         csrf
         :   If `True` (the default), the decorator will check the value
             of the CSFR token for POST or PUT requests, or for all requests if
@@ -268,6 +272,7 @@ class Auth(object):
         def decorator(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
+                logger = logging.getLogger(__name__)
                 request = options.get('request') or self.request or \
                     args and args[0]
                 url_sign_in = self._get_url_sign_in(request, options)
@@ -278,21 +283,21 @@ class Auth(object):
 
                 if hasattr(user, 'has_role') and roles:
                     if not user.has_role(*roles):
-                        self.logger.info('User `{0}`: has_role fail'
+                        logger.info('User `{0}`: has_role fail'
                             .format(user.login))
                         return self._login_required(request, url_sign_in)
 
                 for test in tests:
                     test_pass = test(*args, **kwargs)
                     if not test_pass:
-                        self.logger.info('User `{0}`: test fail'
+                        logger.info('User `{0}`: test fail'
                             .format(user.login))
                         return self._login_required(request, url_sign_in)
 
                 if (csrf and
                         (self.wsgi.is_put_or_post(request) or force_csrf) and
                         not self.csrf_token_is_valid(request)):
-                    self.logger.info('User `{0}`: invalid CSFR token'
+                    logger.info('User `{0}`: invalid CSFR token'
                         .format(user.login))
                     return self.wsgi.raise_forbidden("CSFR token isn't valid")
 

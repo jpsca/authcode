@@ -22,7 +22,8 @@ def sign_in(auth, request, session, *args, **kwargs):
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
             auth.db.commit()
-            auth.login(user)
+            remember = bool(credentials.get('remember', True))
+            auth.login(user, remember=remember)
             next = pop_next_url(auth, request, session)
             return auth.wsgi.redirect(next)
 

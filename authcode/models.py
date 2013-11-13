@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref
 
-from .utils import get_uhmac, get_token, split_uhmac
+from .utils import get_uhmac, get_token
 
 
 def extend_user_model(auth, UserMixin=None):
@@ -22,8 +22,7 @@ def extend_user_model(auth, UserMixin=None):
         modified_at = Column(DateTime, nullable=False,
             default=datetime.utcnow, onupdate=datetime.utcnow)
         last_sign_in = Column(DateTime, nullable=True)
-        deleted = Column(Boolean, nullable=False,
-            default=False)
+        deleted = Column(Boolean, default=False)
 
         @hybrid_property
         def password(self):
