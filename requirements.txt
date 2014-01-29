@@ -1,6 +1,6 @@
 # This file collects all required third-party libraries that are needed
 # to run this project. 
 
-passlib==1.6.1
-sqlalchemy==0.8.2
+passlib>=1.6.1
+sqlalchemy>=0.8.2
 # "orm" or "flask-sqlalchemy"

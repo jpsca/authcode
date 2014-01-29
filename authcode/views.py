@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+import logging
 
 
 def pop_next_url(auth, request, session):
@@ -10,6 +11,8 @@ def pop_next_url(auth, request, session):
 
 
 def sign_in(auth, request, session, *args, **kwargs):
+    logger = logging.getLogger(__name__)
+
     if auth.get_user():
         next = pop_next_url(auth, request, session)
         return auth.wsgi.redirect(next)
@@ -18,7 +21,12 @@ def sign_in(auth, request, session, *args, **kwargs):
     credentials = auth.wsgi.get_post_data(request) or {}
 
     if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
-        user = auth.authenticate(credentials)
+        user = None
+        try:
+            user = auth.authenticate(credentials)
+        except ValueError as e:
+            logger.error(e)
+
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
             auth.db.commit()
