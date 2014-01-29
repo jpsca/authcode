@@ -268,6 +268,7 @@ class Auth(object):
         role = options.get('role')
         if role:
             roles.append(role)
+        roles = [unicode(r) for r in roles]
 
         def decorator(f):
             @wraps(f)
@@ -285,7 +286,7 @@ class Auth(object):
                     if not user.has_role(*roles):
                         logger.info('User `{0}`: has_role fail'
                             .format(user.login))
-                        auth.logout()
+                        self.logout()
                         return self._login_required(request, url_sign_in)
 
                 for test in tests:
@@ -293,7 +294,7 @@ class Auth(object):
                     if not test_pass:
                         logger.info('User `{0}`: test fail'
                             .format(user.login))
-                        auth.logout()
+                        self.logout()
                         return self._login_required(request, url_sign_in)
 
                 if (csrf and
