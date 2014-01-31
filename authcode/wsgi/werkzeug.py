@@ -33,14 +33,14 @@ def redirect(url):
     return redirect(url, code=SEE_OTHER)
 
 
-def raise_forbidden(msg='You are not allowed to access this resource.'):
+def raise_forbidden(msg='You are not allowed to access this.'):
     from werkzeug.exceptions import Forbidden
     raise Forbidden(msg)
 
 
 def get_from_params(request, key):
     return request.values.get(key)
-    
+
 
 def get_from_headers(request, key):
     return request.headers.get(key)

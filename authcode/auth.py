@@ -286,16 +286,17 @@ class Auth(object):
                     if not user.has_role(*roles):
                         logger.info('User `{0}`: has_role fail'
                             .format(user.login))
-                        self.logout()
-                        return self._login_required(request, url_sign_in)
+                        logger.debug('User roles: {0}'.format(
+                            [r.name for r in user.roles]
+                        ))
+                        return self.wsgi.raise_forbidden()
 
                 for test in tests:
                     test_pass = test(*args, **kwargs)
                     if not test_pass:
                         logger.info('User `{0}`: test fail'
                             .format(user.login))
-                        self.logout()
-                        return self._login_required(request, url_sign_in)
+                        return self.wsgi.raise_forbidden()
 
                 if (csrf and
                         (self.wsgi.is_put_or_post(request) or force_csrf) and

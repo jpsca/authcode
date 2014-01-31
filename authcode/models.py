@@ -136,7 +136,7 @@ def extend_user_model_with_role_methods(User, Role):
 
     def _has_role(self, *names):
         """Check if the user has any of these roles (by name)."""
-        roles = [role.name for role in self.roles]
+        roles = [unicode(role.name) for role in self.roles]
         for name in names:
             if unicode(name) in roles:
                 return True
