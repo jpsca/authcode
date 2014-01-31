@@ -118,9 +118,9 @@ def test_protected_role():
     client.get('/login/')
 
     resp = client.get('/admin1/')
-    assert resp.status == '303 SEE OTHER'
+    assert resp.status == '403 FORBIDDEN'
     resp = client.get('/admin2/')
-    assert resp.status == '303 SEE OTHER'
+    assert resp.status == '403 FORBIDDEN'
 
     user.add_role('admin')
     auth.db.commit()
@@ -170,7 +170,7 @@ def test_protected_tests():
 
     resp = client.get('/admin2/')
     assert log == ['test1', 'test2', 'test1', 'fail']
-    assert resp.status == '303 SEE OTHER'
+    assert resp.status == '403 FORBIDDEN'
 
 
 def test_protected_csrf():
