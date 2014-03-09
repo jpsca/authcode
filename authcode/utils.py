@@ -42,11 +42,11 @@ def get_uhmac(user, secret):
 def get_token(user, secret, timestamp=None):
     """Make a timestamped one-time-use token that can be used to
     identifying the user.
-    
+
     By hashing the `last_sign_in` attribute and the password salt, it produce
     a token that will be invalidated as soon as the user log in again or the
     is changed.
-    
+
     A hash of the user ID is used, so the HMAC part of the token is always
     unique for each user.
 

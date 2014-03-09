@@ -158,7 +158,7 @@ class Auth(object):
             logger.info('Hash updated for user `{0}`'.format(login))
         return user
 
-    def auth_token(self, credentials):
+    def auth_token(self, credentials, token_life=None):
         logger = logging.getLogger(__name__)
         token = credentials.get('token')
         if token is None:
@@ -169,6 +169,7 @@ class Auth(object):
             logger.warning('Invalid auth token format')
             return None
 
+        token_life = token_life or self.token_life
         user = self.User.by_id(uid)
         if not user:
             logger.warning('Tampered auth token? uid `{0} not found'
@@ -176,7 +177,7 @@ class Auth(object):
             return None
 
         valid = user.get_token(timestamp) == token
-        not_expired = timestamp + self.token_life >= int(time())
+        not_expired = timestamp + token_life >= int(time())
         if valid and not_expired:
             return user
         logger.warning('Invalid auth token')

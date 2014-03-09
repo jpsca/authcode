@@ -27,10 +27,13 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
     app.jinja_env.globals['auth'] = auth
 
     if views:
-        url_sign_in = eval_url(auth.url_sign_in)
-        app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
-        url_sign_out = eval_url(auth.url_sign_out)
-        app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
+        if auth.url_sign_in:
+            url_sign_in = eval_url(auth.url_sign_in)
+            app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
+
+        if auth.url_sign_out:
+            url_sign_out = eval_url(auth.url_sign_out)
+            app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
 
         if auth.url_change_password:
             url_change_password = eval_url(auth.url_change_password)
@@ -60,10 +63,13 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
     app.render.env.globals['auth'] = auth
 
     if views:
-        url_sign_in = eval_url(auth.url_sign_in)
-        app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
-        url_sign_out = eval_url(auth.url_sign_out)
-        app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
+        if auth.url_sign_in:
+            url_sign_in = eval_url(auth.url_sign_in)
+            app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
+
+        if auth.url_sign_out:
+            url_sign_out = eval_url(auth.url_sign_out)
+            app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
 
         if auth.url_change_password:
             url_change_password = eval_url(auth.url_change_password)
