@@ -27,20 +27,20 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
     app.jinja_env.globals['auth'] = auth
 
     if views:
-        if auth.url_sign_in:
+        if 'sign_in' in auth.views:
             url_sign_in = eval_url(auth.url_sign_in)
             app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
 
-        if auth.url_sign_out:
+        if 'sign_out' in auth.views:
             url_sign_out = eval_url(auth.url_sign_out)
             app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
 
-        if auth.url_change_password:
+        if 'change_password' in auth.views:
             url_change_password = eval_url(auth.url_change_password)
             app.route(url_change_password,
                       methods=['GET', 'POST'])(auth.auth_change_password)
 
-        if auth.url_reset_password:
+        if 'reset_password' in auth.views:
             url_reset_password = eval_url(auth.url_reset_password)
             app.route(url_reset_password,
                       methods=['GET', 'POST'])(auth.auth_reset_password)
@@ -63,20 +63,20 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
     app.render.env.globals['auth'] = auth
 
     if views:
-        if auth.url_sign_in:
+        if 'sign_in' in auth.views:
             url_sign_in = eval_url(auth.url_sign_in)
             app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
 
-        if auth.url_sign_out:
+        if 'sign_out' in auth.views:
             url_sign_out = eval_url(auth.url_sign_out)
             app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
 
-        if auth.url_change_password:
+        if 'change_password' in auth.views:
             url_change_password = eval_url(auth.url_change_password)
             app.route(url_change_password,
                       methods=['GET', 'POST'])(auth.auth_change_password)
 
-        if auth.url_reset_password:
+        if 'reset_password' in auth.views:
             url_reset_password = eval_url(auth.url_reset_password)
             app.route(url_reset_password,
                       methods=['GET', 'POST'])(auth.auth_reset_password)

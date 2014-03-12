@@ -39,6 +39,8 @@ class Auth(object):
         'url_reset_password': '/reset-password/',
         'url_change_password': '/change-password/',
 
+        'views': 'sign_in sign_out reset_password change_password'.split(' '),
+
         'template_sign_in': 'auth/sign_in.html',
         'template_sign_out': None,
         'template_reset': 'auth/reset_password.html',
