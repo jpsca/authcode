@@ -41,11 +41,11 @@ class Auth(object):
 
         'views': 'sign_in sign_out reset_password change_password'.split(' '),
 
-        'template_sign_in': 'auth/sign_in.html',
+        'template_sign_in': 'auth/sign-in.html',
         'template_sign_out': None,
-        'template_reset': 'auth/reset_password.html',
-        'template_reset_email': 'auth/reset_password_email.html',
-        'template_change_password': 'auth/change_password.html',
+        'template_reset': 'auth/reset-password.html',
+        'template_reset_email': 'auth/reset-password_email.html',
+        'template_change_password': 'auth/change-password.html',
 
         'password_minlen': 5,
         'token_life': 3 * 60,  # minutes
