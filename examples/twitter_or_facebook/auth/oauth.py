@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from datetime import datetime
 
 from flask import g, flash, request, redirect, url_for, session
@@ -54,9 +54,9 @@ def twitter_authorized(resp):
 
     # >>> resp
     # {
-    #     "oauth_token_secret": "...", 
-    #     "oauth_token": "...", 
-    #     "user_id": "11640332", 
+    #     "oauth_token_secret": "...",
+    #     "oauth_token": "...",
+    #     "user_id": "11640332",
     #     "screen_name": "jpscaletti"
     # }
 
@@ -96,7 +96,7 @@ def get_twitter_token(token=None):
 def facebook_login():
     next = request.args.get('next') or None
     return facebook.authorize(callback=url_for('facebook_authorized',
-        next=next, _external=True)) 
+        next=next, _external=True))
 
 
 @app.route('/sign-in/facebook/authorized/')
@@ -114,17 +114,17 @@ def facebook_authorized(resp):
 
     # >>> me.data
     # {
-    #     "username": "jpscaletti", 
-    #     "id": "581604320", 
+    #     "username": "jpscaletti",
+    #     "id": "581604320",
     #     "email": "juanpablo@lucumalabs.com"
-    #     "locale": "en_US", 
-    #     "timezone": -5, 
-    #     "first_name": "Juan-Pablo", 
-    #     "last_name": "Scaletti", 
-    #     "name": "Juan-Pablo Scaletti", 
-    #     "gender": "male", 
-    #     "link": "http://www.facebook.com/jpscaletti", 
-    #     "updated_time": "2013-04-15T06:33:55+0000", 
+    #     "locale": "en_US",
+    #     "timezone": -5,
+    #     "first_name": "Juan-Pablo",
+    #     "last_name": "Scaletti",
+    #     "name": "Juan-Pablo Scaletti",
+    #     "gender": "male",
+    #     "link": "http://www.facebook.com/jpscaletti",
+    #     "updated_time": "2013-04-15T06:33:55+0000",
     # }
 
     user = db.query(User).filter_by(facebook_id=me.data['id']).first()
@@ -145,7 +145,7 @@ def facebook_authorized(resp):
     user.facebook_token = resp['access_token']
     # don't forget to commit **before** doing ``auth.login(user)`
     db.commit()
-    
+
     if g.user is None:
         auth.login(user)
     next = request.args.get('next') or url_for('profile')

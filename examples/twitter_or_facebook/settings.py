@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 import os
 from flask import url_for
 
@@ -25,7 +25,7 @@ AUTH_SETTINGS = {
     'sign_in_redirect': lambda r: url_for('profile'),
     'sign_out_redirect': lambda r: url_for('index'),
     'password_minlen': 5,
-    
+
     'url_sign_in': lambda r: url_for('sign_in'),
 }
 

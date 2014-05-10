@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from __future__ import absolute_import
 
 
@@ -34,7 +34,7 @@ def raise_forbidden(msg='You are not allowed to access this resource.'):
 
 def get_from_params(request, key):
     return request.params.get(key)
-    
+
 
 def get_from_headers(request, key):
     return request.headers.get(key)

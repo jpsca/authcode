@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from flask import url_for
 from authcode import Auth, setup_for_flask
 

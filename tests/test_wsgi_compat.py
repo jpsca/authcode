@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 import pytest
 
 
@@ -10,15 +10,15 @@ def test_webob():
     data = {'foo': 'some text'}
     headers = {'foo': 'bar'}
     req = Request.blank(path, headers=headers, POST=data)
-    
+
     assert w.get_site_name(req) == 'localhost'
     assert w.get_full_path(req) == path
     assert w.make_full_url(req, '/hey/') == 'http://localhost/hey/'
     assert w.is_post(req)
-    
+
     with pytest.raises(Exception):
         w.redirect('http://google.com')
-    
+
     with pytest.raises(Exception):
         w.raise_forbidden('hello')
 
@@ -37,17 +37,17 @@ def test_webob():
 #     path = '/hello?world=1'
 #     data = {'foo': 'some text'}
 #     headers = {'foo': 'bar'}
-    
+
 #     req = ???
-    
+
 #     assert w.get_site_name(req) == 'localhost'
 #     assert w.get_full_path(req) == path
 #     assert w.make_full_url(req, '/hey/') == 'http://localhost/hey/'
 #     assert w.is_post(req)
-    
+
 #     with pytest.raises(Exception):
 #         w.redirect('http://google.com')
-    
+
 #     with pytest.raises(Exception):
 #         w.raise_forbidden('hello')
 
@@ -77,7 +77,7 @@ def test_werkzeug():
     assert w.get_full_path(req) == path
     assert w.make_full_url(req, '/hey/') == 'http://localhost/hey/'
     assert w.is_post(req)
-    
+
     r = w.redirect('http://google.com')
     assert 'http://google.com' in r.data
     assert r.status.upper() == '303 SEE OTHER'

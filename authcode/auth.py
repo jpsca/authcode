@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 import logging
 from time import time
 from uuid import uuid4

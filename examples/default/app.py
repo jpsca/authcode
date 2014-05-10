@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from flask import Flask
 from mailshake import ToConsoleMailer, SMTPMailer
 from orm import SQLAlchemy
@@ -6,7 +6,7 @@ from orm import SQLAlchemy
 import settings
 
 
-app = Flask(__name__) 
+app = Flask(__name__)
 app.config.from_object(settings)
 
 db = SQLAlchemy(settings.SQLALCHEMY_URI, app)

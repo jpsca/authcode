@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 import pytest
 import authcode
 from orm import SQLAlchemy
@@ -25,7 +25,7 @@ def test_user_db():
     user = User(login=u'meh', password='foobar')
     db.add(user)
     db.flush()
-    
+
     assert user.login == u'meh'
     assert hasattr(user, 'password')
     assert hasattr(user, 'created_at')
@@ -55,7 +55,7 @@ def test_extended_user_db():
     user = User(login=u'meh', password='foobar', email=u'text@example.com')
     db.add(user)
     db.flush()
-    
+
     assert User.__tablename__ == 'users'
     assert user.login == u'meh'
     assert user.email == u'text@example.com'
@@ -99,7 +99,7 @@ def test_flask_sqlalchemy():
     user = User(u'meh', u'text@example.com')
     db.session.add(user)
     db.session.commit()
-    
+
     assert user.login == u'meh'
     assert user.email == u'text@example.com'
     assert hasattr(user, 'password')
@@ -177,7 +177,7 @@ def test_legacy_reader():
     auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
     hashed1 = hex_sha1.encrypt(p)
     hashed2 = django_salted_sha1.encrypt(p)
-    
+
     assert auth.password_is_valid(p, hashed1)
     assert auth.password_is_valid(p, hashed2)
 
@@ -224,7 +224,7 @@ def test_monkeypatching_authentication():
         if secret == 'foobar':
             return True, auth.hash_password(secret)
         return auth._verify_and_update(secret, hashed)
-    
+
     auth._verify_and_update = auth.verify_and_update
     auth.verify_and_update = verify_and_update
     assert auth.authenticate(dict(login=u'meh', password='foobar'))
@@ -243,7 +243,7 @@ def test_update_on_authenticate():
     user._password = hex_sha1.encrypt(credentials['password'])
     db.add(user)
     db.commit()
-    
+
     assert not user.password.startswith('$pbkdf2-sha512$')
     auth_user = auth.authenticate(credentials)
     assert auth_user.password.startswith('$pbkdf2-sha512$')
@@ -263,7 +263,7 @@ def test_disable_update_on_authenticate():
     user._password = hashed
     db.add(user)
     db.commit()
-    
+
     auth_user = auth.authenticate(credentials)
     assert auth_user.password == hashed
 
@@ -279,7 +279,7 @@ def test_get_token():
     user = User(login=u'meh', password='foobar')
     db.add(user)
     db.commit()
-    
+
     token1 = user.get_token()
     sleep(1)
     token2 = user.get_token()
@@ -410,7 +410,7 @@ def test_user_role_model():
     db.commit()
     assert not user.has_role('admin')
 
-    user.remove_role('admin')    
+    user.remove_role('admin')
     db.commit()
 
     with pytest.raises(ValueError):

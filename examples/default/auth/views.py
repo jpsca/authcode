@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding=utf-8
 from flask import g, redirect, url_for, request
 
 from app import app, db
