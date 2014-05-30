@@ -1,5 +1,5 @@
 # coding=utf-8
-from .utils import cached_property
+from .utils import LazyUser
 
 
 def eval_url(url):
@@ -21,7 +21,9 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
         auth.render = render
 
     def set_user():
-        g.user = cached_property(auth.get_user)
+        # By doing this, `g` now has a `user` attribute that it'll be
+        # replaced by the real user object the first time is used.
+        LazyUser(auth, g)
 
     app.before_request_funcs.setdefault(None, []).insert(0, set_user)
     app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
@@ -57,7 +59,10 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):
 
     def set_auth_info(request, **kwargs):
         auth.session = request.session
-        request.user = cached_property(auth.get_user)
+
+        # By doing this, `request` now has a `user` attribute that it'll be
+        # replaced by the real user object the first time is used.
+        LazyUser(auth, request)
 
     app.before_request_funcs.insert(0, set_auth_info)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token

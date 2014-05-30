@@ -44,7 +44,7 @@ class Auth(object):
         'template_sign_in': 'auth/sign-in.html',
         'template_sign_out': None,
         'template_reset': 'auth/reset-password.html',
-        'template_reset_email': 'auth/reset-password_email.html',
+        'template_reset_email': 'auth/reset-password-email.html',
         'template_change_password': 'auth/change-password.html',
 
         'password_minlen': 5,

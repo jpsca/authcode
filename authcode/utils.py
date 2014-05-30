@@ -1,5 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
+
 import hashlib
 import hmac
 from time import time
@@ -90,45 +91,119 @@ def default_send_email(user, subject, msg):
     print(user, subject, msg)
 
 
-_missing = object()
-
-
-class cached_property(object):
-    """A decorator that converts a function into a lazy property.  The
-    function wrapped is called the first time to retrieve the result
-    and then that calculated result is used the next time you access
-    the value::
-
-        class Foo(object):
-
-            @cached_property
-            def foo(self):
-                # calculate something important here
-                return 42
-
-    The class has to have a `__dict__` in order for this property to
-    work.
+class LazyUser(object):
+    """Acts as a proxy for the current user.  Forwards all operations to
+    the proxied user.  The only operations not supported for forwarding
+    are right handed operands and any kind of assignment.
     """
+    __slots__ = ('__auth', '__storage', '__dict__')
 
-    # implementation detail: this property is implemented as non-data
-    # descriptor.  non-data descriptors are only invoked if there is
-    # no entry with the same name in the instance's __dict__.
-    # this allows us to completely get rid of the access function call
-    # overhead.  If one choses to invoke __get__ by hand the property
-    # will still work as expected because the lookup logic is replicated
-    # in __get__ for manual invocation.
+    def __init__(self, auth, storage):
+        object.__setattr__(self, '_LazyUser__auth', auth)
+        object.__setattr__(self, '_LazyUser__storage', storage)
+        setattr(storage, 'user', self)
 
-    def __init__(self, func, name=None, doc=None):
-        self.__name__ = name or func.__name__
-        self.__module__ = func.__module__
-        self.__doc__ = doc or func.__doc__
-        self.func = func
+    def _get_user(self):
+        """Return the current object.  This is useful if you want the real
+        object behind the proxy at a time for performance reasons or because
+        you want to pass the object into a different context.
+        """
+        storage = object.__getattribute__(self, '_LazyUser__storage')
+        user = getattr(self.__auth, 'get_user')()
+        setattr(storage, 'user', user)
+        return user
 
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return self
-        value = obj.__dict__.get(self.__name__, _missing)
-        if value is _missing:
-            value = self.func(obj)
-            obj.__dict__[self.__name__] = value
-        return value
+    @property
+    def __dict__(self):
+        try:
+            return self._get_user().__dict__
+        except RuntimeError:
+            raise AttributeError('__dict__')
+
+    def __repr__(self):
+        try:
+            obj = self._get_user()
+        except RuntimeError:
+            return '<%s unbound>' % self.__class__.__name__
+        return repr(obj)
+
+    def __nonzero__(self):
+        try:
+            return bool(self._get_user())
+        except RuntimeError:
+            return False
+
+    def __unicode__(self):
+        try:
+            return unicode(self._get_user())
+        except RuntimeError:
+            return repr(self)
+
+    def __dir__(self):
+        try:
+            return dir(self._get_user())
+        except RuntimeError:
+            return []
+
+    def __getattr__(self, name):
+        if name == '__members__':
+            return dir(self._get_user())
+        return getattr(self._get_user(), name)
+
+    def __setitem__(self, key, value):
+        self._get_user()[key] = value
+
+    def __delitem__(self, key):
+        del self._get_user()[key]
+
+    def __setslice__(self, i, j, seq):
+        self._get_user()[i:j] = seq
+
+    def __delslice__(self, i, j):
+        del self._get_user()[i:j]
+
+    __setattr__ = lambda x, n, v: setattr(x._get_user(), n, v)
+    __delattr__ = lambda x, n: delattr(x._get_user(), n)
+    __str__ = lambda x: str(x._get_user())
+    __lt__ = lambda x, o: x._get_user() < o
+    __le__ = lambda x, o: x._get_user() <= o
+    __eq__ = lambda x, o: x._get_user() == o
+    __ne__ = lambda x, o: x._get_user() != o
+    __gt__ = lambda x, o: x._get_user() > o
+    __ge__ = lambda x, o: x._get_user() >= o
+    __cmp__ = lambda x, o: cmp(x._get_user(), o)
+    __hash__ = lambda x: hash(x._get_user())
+    __call__ = lambda x, *a, **kw: x._get_user()(*a, **kw)
+    __len__ = lambda x: len(x._get_user())
+    __getitem__ = lambda x, i: x._get_user()[i]
+    __iter__ = lambda x: iter(x._get_user())
+    __contains__ = lambda x, i: i in x._get_user()
+    __getslice__ = lambda x, i, j: x._get_user()[i:j]
+    __add__ = lambda x, o: x._get_user() + o
+    __sub__ = lambda x, o: x._get_user() - o
+    __mul__ = lambda x, o: x._get_user() * o
+    __floordiv__ = lambda x, o: x._get_user() // o
+    __mod__ = lambda x, o: x._get_user() % o
+    __divmod__ = lambda x, o: x._get_user().__divmod__(o)
+    __pow__ = lambda x, o: x._get_user() ** o
+    __lshift__ = lambda x, o: x._get_user() << o
+    __rshift__ = lambda x, o: x._get_user() >> o
+    __and__ = lambda x, o: x._get_user() & o
+    __xor__ = lambda x, o: x._get_user() ^ o
+    __or__ = lambda x, o: x._get_user() | o
+    __div__ = lambda x, o: x._get_user().__div__(o)
+    __truediv__ = lambda x, o: x._get_user().__truediv__(o)
+    __neg__ = lambda x: -(x._get_user())
+    __pos__ = lambda x: +(x._get_user())
+    __abs__ = lambda x: abs(x._get_user())
+    __invert__ = lambda x: ~(x._get_user())
+    __complex__ = lambda x: complex(x._get_user())
+    __int__ = lambda x: int(x._get_user())
+    __long__ = lambda x: long(x._get_user())
+    __float__ = lambda x: float(x._get_user())
+    __oct__ = lambda x: oct(x._get_user())
+    __hex__ = lambda x: hex(x._get_user())
+    __index__ = lambda x: x._get_user().__index__()
+    __coerce__ = lambda x, o: x.__coerce__(x, o)
+    __enter__ = lambda x: x.__enter__()
+    __exit__ = lambda x, *a, **kw: x.__exit__(*a, **kw)

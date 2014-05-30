@@ -43,7 +43,8 @@ def test_setup_for_flask():
     @app.route('/get/')
     def get_user():
         if g.user:
-            return g.user.login
+            login = g.user.login
+            return login
         return ''
 
     resp = client.get('/get/')
@@ -219,5 +220,3 @@ def test_protected_csrf():
 
     resp = client.post('/update/', headers={'X-CSRFToken': token})
     assert resp.status == '200 OK'
-
-
