@@ -12,3 +12,4 @@ __pycache__
 heroku
 _secret.py
 .secret
+docs/_theme_*/*
