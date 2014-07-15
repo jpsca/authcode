@@ -2,6 +2,8 @@
 from datetime import datetime
 import logging
 
+from ._compat import to_unicode
+
 
 def pop_next_url(auth, request, session):
     next = session.pop(auth.redirect_key, None) or auth.sign_in_redirect or '/'
@@ -97,7 +99,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
 
 
 def _email_token(auth, user, data):
-    msg = unicode(auth.render(auth.template_reset_email, **data))
+    msg = to_unicode(auth.render(auth.template_reset_email, **data))
     auth.send_email(user, 'Reset your password', msg)
 
 

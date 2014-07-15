@@ -1,4 +1,6 @@
 # coding=utf-8
+from __future__ import print_function
+
 import logging
 from time import time
 from uuid import uuid4
@@ -9,7 +11,8 @@ from passlib.context import CryptContext
 from passlib.exc import MissingBackendError
 
 from . import utils, views, wsgi
-from .exceptions import *
+from ._compat import to_unicode
+from .exceptions import WrongHashAlgorithm
 from .models import extend_user_model, extend_role_model
 
 
@@ -112,7 +115,7 @@ class Auth(object):
         return hash
 
     def prepare_password(self, secret):
-        return self.pepper + unicode(secret)
+        return self.pepper + to_unicode(secret)
 
     def hash_password(self, secret):
         secret = self.prepare_password(secret)
@@ -146,18 +149,18 @@ class Auth(object):
 
         user = self.User.by_login(login)
         if not user:
-            logger.info('User `{0}` not found'.format(login))
+            logger.info(u'User `{0}` not found'.format(login))
             return None
 
         valid, new_hash = self.verify_and_update(secret, user.password)
         if not valid:
-            logger.info('Invalid password for user `{0}`'.format(login))
+            logger.info(u'Invalid password for user `{0}`'.format(login))
             return None
 
         if self.update_hash and new_hash:
             user._password = new_hash
             self.db.session.commit()
-            logger.info('Hash updated for user `{0}`'.format(login))
+            logger.info(u'Hash updated for user `{0}`'.format(login))
         return user
 
     def auth_token(self, credentials, token_life=None):
@@ -168,13 +171,13 @@ class Auth(object):
         try:
             timestamp, uid = utils.split_token(str(token))
         except ValueError:
-            logger.warning('Invalid auth token format')
+            logger.warning(u'Invalid auth token format')
             return None
 
         token_life = token_life or self.token_life
         user = self.User.by_id(uid)
         if not user:
-            logger.warning('Tampered auth token? uid `{0} not found'
+            logger.warning(u'Tampered auth token? uid `{0} not found'
                 .format(uid[:20]))
             return None
 
@@ -182,7 +185,7 @@ class Auth(object):
         not_expired = timestamp + token_life >= int(time())
         if valid and not_expired:
             return user
-        logger.warning('Invalid auth token')
+        logger.warning(u'Invalid auth token')
         return None
 
     def get_user(self, session=None):
@@ -198,7 +201,7 @@ class Auth(object):
                     raise ValueError
             except ValueError:
                 logger = logging.getLogger(__name__)
-                logger.warning('Tampered uhmac?')
+                logger.warning(u'Tampered uhmac?')
                 user = None
                 self.logout(session)
         return user
@@ -213,7 +216,7 @@ class Auth(object):
 
         """
         logger = logging.getLogger(__name__)
-        logger.info('User `{0}` logged in'.format(user.login))
+        logger.info(u'User `{0}` logged in'.format(user.login))
         if session is None:
             session = self.session
         session['permanent'] = remember
@@ -222,8 +225,7 @@ class Auth(object):
     def logout(self, session=None):
         if session is None:
             session = self.session
-        for key in session.keys():
-            session.pop(key, None)
+        session.clear()
 
     def get_csrf_token(self, session=None):
         logger = logging.getLogger(__name__)
@@ -231,7 +233,7 @@ class Auth(object):
             session = self.session
         csrf_token = session.get(self.csrf_key)
         if not csrf_token:
-            logger.debug('New CSFR token')
+            logger.debug(u'New CSFR token')
             csrf_token = self.make_csrf_token()
             session[self.csrf_key] = csrf_token
         return csrf_token
@@ -271,7 +273,7 @@ class Auth(object):
         role = options.get('role')
         if role:
             roles.append(role)
-        roles = [unicode(r) for r in roles]
+        roles = [to_unicode(r) for r in roles]
 
         def decorator(f):
             @wraps(f)
@@ -287,9 +289,9 @@ class Auth(object):
 
                 if hasattr(user, 'has_role') and roles:
                     if not user.has_role(*roles):
-                        logger.info('User `{0}`: has_role fail'
+                        logger.info(u'User `{0}`: has_role fail'
                             .format(user.login))
-                        logger.debug('User roles: {0}'.format(
+                        logger.debug(u'User roles: {0}'.format(
                             [r.name for r in user.roles]
                         ))
                         return self.wsgi.raise_forbidden()
@@ -297,14 +299,14 @@ class Auth(object):
                 for test in tests:
                     test_pass = test(*args, **kwargs)
                     if not test_pass:
-                        logger.info('User `{0}`: test fail'
+                        logger.info(u'User `{0}`: test fail'
                             .format(user.login))
                         return self.wsgi.raise_forbidden()
 
                 if (csrf and
                         (self.wsgi.is_put_or_post(request) or force_csrf) and
                         not self.csrf_token_is_valid(request)):
-                    logger.info('User `{0}`: invalid CSFR token'
+                    logger.info(u'User `{0}`: invalid CSFR token'
                         .format(user.login))
                     return self.wsgi.raise_forbidden("CSFR token isn't valid")
 
@@ -317,7 +319,10 @@ class Auth(object):
         return token and self._csrf_token_is_valid(token, session)
 
     def _csrf_token_is_valid(self, token, session=None):
-        return self.get_csrf_token(session=session) == token
+        new_token = self.get_csrf_token(session=session)
+        print(token, type(token))
+        print(new_token, type(new_token))
+        return new_token == token
 
     def _login_required(self, request, url_sign_in):
         self.session[self.redirect_key] = self.wsgi.get_full_path(request)
@@ -330,8 +335,9 @@ class Auth(object):
         return url_sign_in or '/'
 
     def _get_csrf_token_from_request(self, request):
-        return self.wsgi.get_from_params(request, self.csrf_key) or \
+        token = self.wsgi.get_from_params(request, self.csrf_key) or \
             self.wsgi.get_from_headers(request, self.csrf_header)
+        return token
 
     def auth_sign_in(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]

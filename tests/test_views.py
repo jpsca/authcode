@@ -1,12 +1,14 @@
 # coding=utf-8
 from __future__ import print_function
+import os
 
 import authcode
+from authcode._compat import to_unicode
 from authcode.views import pop_next_url
 from flask import Flask, request
-from orm import SQLAlchemy
+from sqlalchemy_wrapper import SQLAlchemy
 
-from helpers import *
+from helpers import SECRET_KEY
 
 
 def test_pop_next_url():
@@ -48,16 +50,16 @@ def test_login_view():
     client = app.test_client()
 
     r = client.get(auth.url_sign_in)
-    assert 'Sign in' in r.data
+    assert u'Sign in' in to_unicode(r.data)
 
     r = client.post(auth.url_sign_in)
-    assert 'Wrong' not in r.data
+    assert u'<!-- ERROR -->' not in to_unicode(r.data)
 
     data = {
         '_csrf_token': auth.get_csrf_token(),
     }
     r = client.post(auth.url_sign_in, data=data)
-    assert 'Wrong' in r.data
+    assert u'<!-- ERROR -->' in to_unicode(r.data)
     assert auth.session_key not in auth.session
 
 
@@ -71,7 +73,7 @@ def test_login_wrong_credentials():
         '_csrf_token': auth.get_csrf_token(),
     }
     r = client.post(auth.url_sign_in, data=data)
-    assert 'Wrong' in r.data
+    assert u'<!-- ERROR -->' in to_unicode(r.data)
     assert auth.session_key not in auth.session
 
 
@@ -122,8 +124,9 @@ def test_reset_password():
     user.get_token()
 
     r = client.get(auth.url_reset_password)
-    print(r.data)
-    assert 'Reset password' in r.data
+    data = to_unicode(r.data)
+    print(data)
+    assert u'Reset password' in data
 
 
 def test_reset_password_wrong_account():
@@ -139,8 +142,9 @@ def test_reset_password_wrong_account():
 
     data = dict(login=u'nn', _csrf_token=auth.get_csrf_token())
     r = client.post(auth.url_reset_password, data=data)
-    print(r.data)
-    assert 'We couldn\'t find an account for that username' in r.data
+    data = to_unicode(r.data)
+    print(data)
+    assert u'<!-- ERROR NOT FOUND -->' in data
 
 
 def test_reset_password_email_sent():
@@ -155,7 +159,8 @@ def test_reset_password_email_sent():
     token = user.get_token()
     data = dict(login=user.login, _csrf_token=auth.get_csrf_token())
     r = client.post(auth.url_reset_password, data=data)
-    assert 'Please check your inbox' in r.data
+    data = to_unicode(r.data)
+    assert u'<!-- EMAIL SENT -->' in data
     print(log)
     assert auth.url_reset_password + token + '/' in log[0]
 
@@ -171,8 +176,9 @@ def test_reset_password_wrong_token():
     auth.send_email = send_email
     user.get_token()
     r = client.get(auth.url_reset_password + 'xxx/')
-    print(r.data)
-    assert 'Something is wrong' in r.data
+    data = to_unicode(r.data)
+    print(data)
+    assert u'<!-- ERROR WRONG TOKEN -->' in data
 
 
 def test_reset_password_good_token():
@@ -186,9 +192,10 @@ def test_reset_password_good_token():
     auth.send_email = send_email
     token = user.get_token()
     r = client.get(auth.url_reset_password + token + '/')
+    data = to_unicode(r.data)
     assert auth.session_key in auth.session
-    assert 'Change password' in r.data
-    assert 'current password' not in r.data
+    assert u'Change password' in data
+    assert u'current password' not in data
 
     r = client.get(auth.url_reset_password)
     assert r.status == '303 SEE OTHER'
@@ -205,24 +212,30 @@ def test_change_password():
     csrf_token = auth.get_csrf_token()
 
     r = client.get(auth.url_change_password)
-    assert 'Change password' in r.data
-    assert 'current password' in r.data
+    data = to_unicode(r.data)
+    assert u'Change password' in data
+    assert u'current password' in data
 
     r = client.post(auth.url_change_password, data=dict(
         np1='lalala', np2='lalala', _csrf_token=csrf_token))
-    assert 'Wrong current password' in r.data
+    data = to_unicode(r.data)
+    assert u'<!-- ERROR FAIL -->' in data
 
     r = client.post(auth.url_change_password, data=dict(
         password='lalala', np1='lalala', np2='lalala', _csrf_token=csrf_token))
-    assert 'Wrong current password' in r.data
+    data = to_unicode(r.data)
+    assert u'<!-- ERROR FAIL -->' in data
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='a', np2='a', _csrf_token=csrf_token))
-    assert 'too short' in r.data
+    data = to_unicode(r.data)
+    assert u'<!-- ERROR TOO SHORT -->' in data
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalalala', np2='a', _csrf_token=csrf_token))
-    assert 'doesn\'t match' in r.data
+    data = to_unicode(r.data)
+    print(data)
+    assert u'<!-- ERROR MISMATCH -->' in data
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalala', np2='lalala'))
@@ -230,6 +243,6 @@ def test_change_password():
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalala', np2='lalala', _csrf_token=csrf_token))
-    assert 'Password updated' in r.data
+    data = to_unicode(r.data)
+    assert u'<!-- PASSWORD UPDATED -->' in data
     assert user.has_password('lalala')
-

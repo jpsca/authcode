@@ -4,4 +4,3 @@ import os
 
 
 SECRET_KEY = md5(os.urandom(32)).hexdigest()
-

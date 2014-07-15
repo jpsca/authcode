@@ -1,10 +1,10 @@
 pytest
 passlib
 sqlalchemy
-orm
-werkzeug
+sqlalchemy_wrapper
 jinja2
 flask
-flask-sqlalchemy==0.16
+werkzeug
+https://github.com/mitsuhiko/flask-sqlalchemy/archive/master.zip
 webob
 tox

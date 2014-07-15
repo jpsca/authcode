@@ -15,13 +15,14 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
     auth.session = session
     if send_email:
         auth.send_email = send_email
+
     if render == True:
         auth.render = render_template
     elif render:
         auth.render = render
 
     def set_user():
-        # By doing this, `g` now has a `user` attribute that it'll be
+        # By doing this, `g` now has a `user` attribute that it is
         # replaced by the real user object the first time is used.
         LazyUser(auth, g)
 
@@ -54,6 +55,7 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
 def setup_for_shake(auth, app, views=True, send_email=None, render=None):
     if send_email:
         auth.send_email = send_email
+
     if render:
         auth.render = render
 

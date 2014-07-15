@@ -27,13 +27,13 @@ lint:
 	flake8 authcode tests
 
 test:
-	py.test tests/
+	py.test -x tests/
 
 test-all:
 	tox
 
 coverage:
-	py.test --cov-config .coveragerc --cov-report html --cov authcode tests/ 
+	py.test --cov-config .coveragerc --cov-report html --cov authcode tests/
 	open htmlcov/index.html
 
 publish: clean

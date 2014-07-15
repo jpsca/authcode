@@ -2,12 +2,13 @@
 from datetime import datetime
 
 from sqlalchemy import (Table, Column, Integer, Unicode, String, DateTime,
-    Boolean, ForeignKey)
+                        Boolean, ForeignKey)
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, backref
 
 from .utils import get_uhmac, get_token
+from ._compat import to_unicode, to_native
 
 
 def extend_user_model(auth, UserMixin=None):
@@ -34,7 +35,7 @@ def extend_user_model(auth, UserMixin=None):
 
         @classmethod
         def by_login(cls, login):
-            name = unicode(login).strip()
+            name = to_unicode(login).strip()
             return db.session.query(cls).filter(cls.login == login).first()
 
         @classmethod
@@ -51,12 +52,13 @@ def extend_user_model(auth, UserMixin=None):
             return get_token(self, auth.secret_key, timestamp)
 
         def __repr__(self):
-            return '<User {0}>'.format(self.login.encode('utf8'))
+            repr = '<User {0}>'.format(self.login)
+            return to_native(repr)
 
 
     if UserMixin is not None:
         class User(UserMixin, AuthUserMixin, db.Model):
-            __tablename__ = 'users'
+            __tablename__ = getattr(UserMixin, '__tablename__', 'users')
     else:
         class User(AuthUserMixin, db.Model):
             __tablename__ = 'users'
@@ -73,7 +75,7 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         @classmethod
         def by_name(cls, name):
-            name = unicode(name).strip()
+            name = to_unicode(name).strip()
             return db.session.query(cls).filter(cls.name == name).first()
 
         @classmethod
@@ -82,7 +84,7 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         @classmethod
         def get_or_create(cls, name):
-            name = unicode(name).strip()
+            name = to_unicode(name).strip()
             role = cls.by_name(name)
             if role:
                 return role
@@ -97,7 +99,8 @@ def extend_role_model(auth, User, RoleMixin=None):
                 backref=backref('roles', lazy='joined'))
 
         def __repr__(self):
-            return '<Role {0}>'.format(self.name.encode('utf8'))
+            repr = '<Role {0}>'.format(self.name)
+            return to_native(repr)
 
     if RoleMixin is not None:
         class Role(RoleMixin, AuthRoleMixin, db.Model):
@@ -136,9 +139,9 @@ def extend_user_model_with_role_methods(User, Role):
 
     def _has_role(self, *names):
         """Check if the user has any of these roles (by name)."""
-        roles = [unicode(role.name) for role in self.roles]
+        roles = [to_unicode(role.name) for role in self.roles]
         for name in names:
-            if unicode(name) in roles:
+            if to_unicode(name) in roles:
                 return True
         return False
 

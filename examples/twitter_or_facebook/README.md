@@ -1,7 +1,7 @@
 
 # Signing in using Twitter or Facebook
 
-This is an example on how you use AuthCode when the signing in is made via OAuth instead of the standard login/password views.
+This is an example on how you use Authcode when the signing in is made via OAuth instead of the standard login/password views.
 
 For the OAuth part I'm using the [flask_oauth](http://pythonhosted.org/Flask-OAuth/) library, but the principles are the same for any other OAuth library you might use.
 
@@ -12,7 +12,7 @@ For the OAuth part I'm using the [flask_oauth](http://pythonhosted.org/Flask-OAu
    and activate it (eg: `source env/bin/activate`).
 
 2. Install the required python libraries by doing
-    
+
     `pip install -r requirements-dev.txt`
 
 3. Open the `settings.py` file.

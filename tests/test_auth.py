@@ -1,11 +1,14 @@
 # coding=utf-8
+from __future__ import print_function
+
 import pytest
 import authcode
-from orm import SQLAlchemy
+from authcode._compat import to_unicode
+from sqlalchemy_wrapper import SQLAlchemy
 from passlib import hash as ph
 from passlib.exc import MissingBackendError
 
-from helpers import *
+from helpers import SECRET_KEY
 
 
 try:
@@ -72,7 +75,7 @@ def test_flask_sqlalchemy():
     from flask import Flask
     from flask.ext.sqlalchemy import SQLAlchemy
 
-    app = Flask('test_flask_sqlalchemy')
+    app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
     db = SQLAlchemy(app)
 
@@ -355,7 +358,7 @@ def test_login_logout():
 
     session = {}
     auth.login(user, session=session)
-    print session
+    print(session)
     assert session[auth.session_key] == user.get_uhmac()
     auth.logout(session=session)
     assert auth.session_key not in session

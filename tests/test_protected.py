@@ -1,10 +1,13 @@
 # coding=utf-8
 from __future__ import print_function
-import authcode
-from flask import Flask, g
-from orm import SQLAlchemy
+import os
 
-from helpers import *
+import authcode
+from authcode._compat import to_unicode, to_native
+from flask import Flask, g
+from sqlalchemy_wrapper import SQLAlchemy
+
+from helpers import SECRET_KEY
 
 
 def get_flask_app(roles=False, **kwargs):
@@ -48,15 +51,15 @@ def test_setup_for_flask():
         return ''
 
     resp = client.get('/get/')
-    assert resp.data == ''
+    assert resp.data == b''
 
     client.get('/login/')
     resp = client.get('/get/')
-    assert resp.data == u'meh'
+    assert resp.data == b'meh'
 
     client.get('/logout/')
     resp = client.get('/get/')
-    assert resp.data == ''
+    assert resp.data == b''
 
 
 def test_protected():
@@ -129,11 +132,11 @@ def test_protected_role():
 
     resp = client.get('/admin1/?r=123/')
     assert resp.status == '200 OK'
-    assert resp.data == 'admin1'
+    assert resp.data == b'admin1'
 
     resp = client.get('/admin2/?r=456/')
     assert resp.status == '200 OK'
-    assert resp.data == 'admin2'
+    assert resp.data == b'admin2'
 
 
 def test_protected_tests():
@@ -210,9 +213,9 @@ def test_protected_csrf():
     assert resp.status == '200 OK'
 
     resp = client.get('/gettoken/')
-    token = resp.data
+    token = to_native(resp.data)
 
-    resp = client.get('/delete/?' + auth.csrf_key + '=' + token)
+    resp = client.get('/delete/?{0}={1}'.format(auth.csrf_key, token))
     assert resp.status == '200 OK'
 
     resp = client.post('/update/', data={auth.csrf_key: token})

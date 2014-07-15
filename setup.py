@@ -21,12 +21,12 @@ def get_requirements(filename='requirements.txt'):
 
 
 data = read_from(get_path('authcode', '__init__.py')).encode('utf8')
-version = str(re.search(r"__version__\s*=\s*u?'([^']+)'", data).group(1)).strip()
-desc = str(re.search('"""(.+)"""', data, re.DOTALL).group(1)).strip()
+version = str(re.search(b"__version__\s*=\s*u?'([^']+)'", data).group(1)).strip()
+desc = str(re.search(b'"""(.+)"""', data, re.DOTALL).group(1)).strip()
 
 
 setup(
-    name='AuthCode',
+    name='Authcode',
     version=version,
     author='Juan-Pablo Scaletti',
     author_email='juanpablo@lucumalabs.com',
@@ -39,14 +39,16 @@ setup(
     long_description=desc,
     install_requires=get_requirements(),
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Topic :: Software Development :: Libraries :: Python Modules'
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: Implementation :: PyPy',
     ]
 )

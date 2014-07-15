@@ -1,5 +1,7 @@
 # coding=utf-8
-from __future__ import absolute_import
+from __future__ import print_function, absolute_import
+
+from .._compat import to_unicode, to_native
 
 
 SEE_OTHER = 303
@@ -12,7 +14,7 @@ def get_site_name(request):
 def get_full_path(request):
     path = request.path
     if request.query_string:
-        path += '?' + request.query_string
+        path += '?' + to_native(request.query_string)
     return path
 
 
@@ -39,11 +41,13 @@ def raise_forbidden(msg='You are not allowed to access this.'):
 
 
 def get_from_params(request, key):
-    return request.values.get(key)
+    value = request.values.get(key)
+    return to_native(value)
 
 
 def get_from_headers(request, key):
-    return request.headers.get(key)
+    value = request.headers.get(key)
+    return to_native(value)
 
 
 def get_post_data(request):

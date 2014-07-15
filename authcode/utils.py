@@ -5,6 +5,8 @@ import hashlib
 import hmac
 from time import time
 
+from ._compat import to_bytes, implements_to_string, implements_bool
+
 
 def test_hasher(hasher):
     hasher.encrypt('test', rounds=hasher.min_rounds)
@@ -25,6 +27,7 @@ def from36(number):
 
 
 def get_uhmac(user, secret):
+    secret = to_bytes(secret)
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
         str(user.id),
@@ -55,6 +58,7 @@ def get_token(user, secret, timestamp=None):
     fake tokens cannot be generated even if the database is compromised.
     """
     timestamp = int(timestamp or time())
+    secret = to_bytes(secret)
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
         str(user.id),
@@ -91,6 +95,8 @@ def default_send_email(user, subject, msg):
     print(user, subject, msg)
 
 
+@implements_to_string
+@implements_bool
 class LazyUser(object):
     """Acts as a proxy for the current user.  Forwards all operations to
     the proxied user.  The only operations not supported for forwarding
@@ -162,9 +168,11 @@ class LazyUser(object):
     def __delslice__(self, i, j):
         del self._get_user()[i:j]
 
+    __str__ = lambda x: str(x._get_user())
+    __bool__ = lambda x: x._get_user() is not None
+
     __setattr__ = lambda x, n, v: setattr(x._get_user(), n, v)
     __delattr__ = lambda x, n: delattr(x._get_user(), n)
-    __str__ = lambda x: str(x._get_user())
     __lt__ = lambda x, o: x._get_user() < o
     __le__ = lambda x, o: x._get_user() <= o
     __eq__ = lambda x, o: x._get_user() == o
@@ -174,7 +182,6 @@ class LazyUser(object):
     __cmp__ = lambda x, o: cmp(x._get_user(), o)
     __hash__ = lambda x: hash(x._get_user())
     __call__ = lambda x, *a, **kw: x._get_user()(*a, **kw)
-    __len__ = lambda x: len(x._get_user())
     __getitem__ = lambda x, i: x._get_user()[i]
     __iter__ = lambda x: iter(x._get_user())
     __contains__ = lambda x, i: i in x._get_user()
@@ -196,6 +203,7 @@ class LazyUser(object):
     __neg__ = lambda x: -(x._get_user())
     __pos__ = lambda x: +(x._get_user())
     __abs__ = lambda x: abs(x._get_user())
+    __len__ = lambda x: len(x._get_user())
     __invert__ = lambda x: ~(x._get_user())
     __complex__ = lambda x: complex(x._get_user())
     __int__ = lambda x: int(x._get_user())
