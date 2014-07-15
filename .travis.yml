@@ -5,5 +5,4 @@ python:
   - "pypy"
   - "2.6"
 install: python setup.py install && pip install -r requirements_tests.txt
-# command to run tests, e.g. python setup.py test
 script: py.test tests
