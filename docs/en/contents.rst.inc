@@ -11,6 +11,7 @@ instructions for using the library.
    foreword
    installation
    quickstart
+   csrf
 
 
 Additional Notes

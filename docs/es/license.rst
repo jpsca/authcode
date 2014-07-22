@@ -1,5 +1,8 @@
+.. _license:
+
+============================
 Licencia
-==========
+============================
 
 Authcode está licenciada bajo una licencia MIT. Básicamente significa: haz lo que quieras con ella siempre y cuando el copyright de Authcode se mantenga, las condiciones no se modifiquen y el texto de la licencia siga presente.
 

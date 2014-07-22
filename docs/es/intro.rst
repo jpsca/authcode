@@ -13,7 +13,7 @@ Funciona de esta forma: Authcode define una estructura mínima para la tabla de 
 
 El detalle de las columnas mínimas que necesita Authcode que tenga la tabla de usuarios para funcionar puedes verlo en la sección `Detalles de los modelos por defecto`.
 
-.. code:: python
+.. code-block:: python
 
     auth = Auth(config.SECRET_KEY, db=db, UserMixin=UserMixin,
                 **config.AUTH_SETTINGS)
@@ -30,7 +30,7 @@ Si se crea una tabla de roles, las instancias de usuario ganan automáticamente 
 
 Puedes aumentar la tabla de roles de la misma forma que la tabla de usuarios: utilizando un mixin.
 
-.. code:: python
+.. code-block:: python
 
     auth = Auth(config.SECRET_KEY, db=db, UserMixin=UserMixin,
                 RoleMixin=RoleMixin, roles=True,

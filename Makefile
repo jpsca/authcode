@@ -42,3 +42,6 @@ publish: clean
 sdist: clean
 	python setup.py sdist
 	ls -l dist
+
+wheel: clean
+	pip wheel --wheel-dir=wheel .

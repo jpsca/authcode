@@ -244,31 +244,32 @@ class Auth(object):
     def protected(self, *tests, **options):
         """Factory of decorators for limit the access to views.
 
-        tests
-        :   One or more functions that takes the args and kwargs of the
-            function and returns either `True` or `False`.
-            All test must return True to show the view.
+        :Parameters:
+            tests : *function, optional
+                One or more functions that takes the args and kwargs of the
+                function and returns either `True` or `False`.
+                All test must return True to show the view.
 
-        Options:
+        :Options:
+            url_sign_in : str, function, optional
+                If any required condition fail, redirect to this place.
+                Override the default URL. This can also be a callable.
 
-        url_sign_in
-        :   If any required condition fail, redirect to this place.
-            Override the default URL. This can also be a callable.
+            csrf : bool, None, optional
+                If ``None`` (the default), the decorator will check the value
+                of the CSFR token for POST, PUT or DELETE requests.
+                If ``True`` it will do the same also for all requests.
+                If ``False``, the value of the CSFR token will not be checked.
 
-        csrf
-        :   If `True` (the default), the decorator will check the value
-            of the CSFR token for POST or PUT requests, or for all requests if
-            `force_csrf` is also True.
-            If `False`, the value of the CSFR token will not be checked.
+            role : str, optional
+                Test for the user having a role with this name.
 
-        role
-        :   Test for the user having a role with this name.
-        roles
-        :   Test for the user having **any** role in this list of names.
+            roles : list, optional
+                Test for the user having **any** role in this list of names.
 
         """
         csrf = bool(options.get('csrf', True))
-        force_csrf = bool(options.get('force_csrf', False))
+        csrf = bool(options.get('force_csrf', False))
         roles = options.get('roles') or []
         role = options.get('role')
         if role:
@@ -297,14 +298,14 @@ class Auth(object):
                         return self.wsgi.raise_forbidden()
 
                 for test in tests:
-                    test_pass = test(*args, **kwargs)
+                    test_pass = test(user, *args, **kwargs)
                     if not test_pass:
                         logger.info(u'User `{0}`: test fail'
                             .format(user.login))
                         return self.wsgi.raise_forbidden()
 
                 if (csrf and
-                        (self.wsgi.is_put_or_post(request) or force_csrf) and
+                        (self.wsgi.not_safe_method(request) or force_csrf) and
                         not self.csrf_token_is_valid(request)):
                     logger.info(u'User `{0}`: invalid CSFR token'
                         .format(user.login))
@@ -320,8 +321,6 @@ class Auth(object):
 
     def _csrf_token_is_valid(self, token, session=None):
         new_token = self.get_csrf_token(session=session)
-        print(token, type(token))
-        print(new_token, type(new_token))
         return new_token == token
 
     def _login_required(self, request, url_sign_in):

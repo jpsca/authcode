@@ -1,3 +1,3 @@
-include *.py *.txt *.rst Makefile AUTHORS LICENSE
+include *.py *.txt *.rst AUTHORS LICENSE
 recursive-include authcode *
 recursive-include tests *

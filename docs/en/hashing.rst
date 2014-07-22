@@ -14,7 +14,7 @@ or
 
 Example:
 
-.. code:: python
+.. code-block:: python
 
     >>> auth = Auth(secret, hash='bcrypt', ...)
     >>> auth.hash_password('Awesome')
@@ -73,7 +73,7 @@ an unsupported format. For that, you overwrite the
 Don't forget to call the original method if the hash is already in the
 new format.
 
-.. code:: python
+.. code-block:: python
 
     def verify_and_update(secret, hashed):
         if is_old_format(hashed):

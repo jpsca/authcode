@@ -124,6 +124,7 @@ def extend_user_model_with_role_methods(User, Role):
         role = Role.get_or_create(name)
         if role not in self.roles:
             self.roles.append(role)
+        return self
 
     User.add_role = _add_role
 
@@ -131,9 +132,10 @@ def extend_user_model_with_role_methods(User, Role):
         """Remove a role (by name) from the user."""
         role = Role.by_name(name)
         if not role:
-            raise ValueError('Role "%s" does not exists' % (name,))
+            return self
         if role in self.roles:
             self.roles.remove(role)
+        return self
 
     User.remove_role = _remove_role
 

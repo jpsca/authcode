@@ -18,8 +18,8 @@ def is_post(request):
     return request.method.upper() == 'POST'
 
 
-def is_put_or_post(request):
-    return request.method.upper() in ('POST', 'PUT')
+def not_safe_method(request):
+    return request.method.upper() not in ('GET', 'HEAD')
 
 
 def redirect(url):

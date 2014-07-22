@@ -2,7 +2,11 @@
 TO DO
 ===========
 
-* More documentation
+* Better documentation
+
+* Code:
+    - CherryPy setup and tests
+    - Pyramid setup and tests
 
 * Examples:
     - Nicer templates/CSS
@@ -11,8 +15,4 @@ TO DO
     - Twitter + login/password example
     - Mozilla Persona example
     - Login/Password + Mozilla Persona example
-
-* Code:
-    - CherryPy setup and tests
-    - Pyramid setup and tests
 
