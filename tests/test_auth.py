@@ -61,8 +61,6 @@ def test_extended_user_db():
     assert user.login == u'meh'
     assert user.email == u'text@example.com'
     assert hasattr(user, 'password')
-    assert hasattr(user, 'created_at')
-    assert hasattr(user, 'modified_at')
     assert hasattr(user, 'last_sign_in')
     assert repr(user) == 'overwrited'
 
@@ -104,8 +102,6 @@ def test_flask_sqlalchemy():
     assert user.login == u'meh'
     assert user.email == u'text@example.com'
     assert hasattr(user, 'password')
-    assert hasattr(user, 'created_at')
-    assert hasattr(user, 'modified_at')
     assert hasattr(user, 'last_sign_in')
     assert repr(user) == '<User meh>'
 
@@ -121,7 +117,6 @@ def test_automatic_password_hashing():
     db.add(user)
     db.commit()
 
-    assert user.modified_at
     assert user.password
     assert user.password != 'foobar'
     assert user.has_password('foobar')

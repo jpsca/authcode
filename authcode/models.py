@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-from datetime import datetime
 
 from sqlalchemy import (Table, Column, Integer, Unicode, String, DateTime,
                         Boolean, ForeignKey)
@@ -19,15 +18,6 @@ def extend_user_model(auth, UserMixin=None):
         id = Column(Integer, primary_key=True)
         login = Column(Unicode, nullable=False, unique=True)
         password = Column(String(255), nullable=True)
-        created_at = Column(
-            DateTime, nullable=False,
-            default=datetime.utcnow
-        )
-        modified_at = Column(
-            DateTime, nullable=False,
-            default=datetime.utcnow,
-            onupdate=datetime.utcnow
-        )
         last_sign_in = Column(DateTime, nullable=True)
         deleted = Column(Boolean, default=False)
 
