@@ -1,11 +1,12 @@
 # coding=utf-8
+import logging
 from datetime import datetime
 
 from sqlalchemy import (Table, Column, Integer, Unicode, String, DateTime,
                         Boolean, ForeignKey)
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import validates, relationship, backref
 
 from .utils import get_uhmac, get_token
 from ._compat import to_unicode, to_native
@@ -17,21 +18,24 @@ def extend_user_model(auth, UserMixin=None):
     class AuthUserMixin(object):
         id = Column(Integer, primary_key=True)
         login = Column(Unicode, nullable=False, unique=True)
-        _password = Column(String(255), nullable=True)
-        created_at = Column(DateTime, nullable=False,
-            default=datetime.utcnow)
-        modified_at = Column(DateTime, nullable=False,
-            default=datetime.utcnow, onupdate=datetime.utcnow)
+        password = Column(String(255), nullable=True)
+        created_at = Column(
+            DateTime, nullable=False,
+            default=datetime.utcnow
+        )
+        modified_at = Column(
+            DateTime, nullable=False,
+            default=datetime.utcnow,
+            onupdate=datetime.utcnow
+        )
         last_sign_in = Column(DateTime, nullable=True)
         deleted = Column(Boolean, default=False)
 
-        @hybrid_property
-        def password(self):
-            return self._password
-
-        @password.setter
-        def password(self, secret):
-            self._password = auth.hash_password(secret)
+        @validates('password')
+        def _hash_password(self, key, secret):
+            logger = logging.getLogger(__name__)
+            logger.debug(u'Hash updated for user `{0}`'.format(self.login))
+            return auth.hash_password(secret)
 
         @classmethod
         def by_login(cls, login):
@@ -43,7 +47,7 @@ def extend_user_model(auth, UserMixin=None):
             return db.session.query(cls).get(pk)
 
         def has_password(self, secret):
-            return auth.password_is_valid(secret, self._password)
+            return auth.password_is_valid(secret, self.password)
 
         def get_uhmac(self):
             return get_uhmac(self, auth.secret_key)

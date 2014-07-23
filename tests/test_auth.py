@@ -131,7 +131,8 @@ def test_automatic_password_hashing():
 
 def test_select_hashing_alg():
     auth = authcode.Auth(SECRET_KEY, rounds=0)
-    assert auth.rounds == 1
+    hasher = getattr(ph, auth.hash)
+    assert auth.rounds == hasher.default_rounds
 
     auth = authcode.Auth(SECRET_KEY)
     if bcrypt_available:
@@ -175,11 +176,10 @@ def test_use_pepper():
 
 
 def test_legacy_reader():
-    from passlib.hash import hex_sha1, django_salted_sha1
     p = 'password'
     auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
-    hashed1 = hex_sha1.encrypt(p)
-    hashed2 = django_salted_sha1.encrypt(p)
+    hashed1 = ph.hex_sha1.encrypt(p)
+    hashed2 = ph.django_salted_sha1.encrypt(p)
 
     assert auth.password_is_valid(p, hashed1)
     assert auth.password_is_valid(p, hashed2)
@@ -233,42 +233,83 @@ def test_monkeypatching_authentication():
     assert auth.authenticate(dict(login=u'meh', password='foobar'))
 
 
-def test_update_on_authenticate():
-    from passlib.hash import hex_sha1
+def test_auto_update_on_authenticate():
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
-
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
+                         update_hash='auto')
     User = auth.User
-
     db.create_all()
+
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    user._password = hex_sha1.encrypt(credentials['password'])
     db.add(user)
     db.commit()
 
-    assert not user.password.startswith('$pbkdf2-sha512$')
+    assert user.password.startswith('$pbkdf2-sha512$')
+
+    deprecated_hash = ph.hex_sha1.encrypt(credentials['password'])
+    sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
+    db.session.execute(sql.format(deprecated_hash, user.id))
+    db.commit()
+    assert user.password == deprecated_hash
+
     auth_user = auth.authenticate(credentials)
-    assert auth_user.password.startswith('$pbkdf2-sha512$')
+    new_hash = auth_user.password
+    assert new_hash != deprecated_hash
+    assert new_hash.startswith('$pbkdf2-sha512$')
+
+    auth._set_hasher('sha512_crypt')
+    auth_user = auth.authenticate(credentials)
+    assert auth_user.password == new_hash
+
+
+def test_manual_update_on_authenticate():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
+                         update_hash='manual')
+    User = auth.User
+    db.create_all()
+
+    credentials = {'login':u'meh', 'password':'foobar'}
+    user = User(**credentials)
+    db.add(user)
+    db.commit()
+
+    hash1 = user.password
+    assert hash1.startswith('$pbkdf2-sha512$')
+
+    auth._set_hasher('pbkdf2_sha512', rounds=auth.rounds + 1)
+    auth_user = auth.authenticate(credentials)
+    hash2 = auth_user.password
+    assert hash2 != hash1
+
+    auth._set_hasher('sha512_crypt')
+    auth_user = auth.authenticate(credentials)
+    assert auth_user.password != hash2
 
 
 def test_disable_update_on_authenticate():
-    from passlib.hash import hex_sha1
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10, update_hash=False)
-
+    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
+                         update_hash=False)
     User = auth.User
-
     db.create_all()
+
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    hashed = hex_sha1.encrypt(credentials['password'])
-    user._password = hashed
     db.add(user)
     db.commit()
 
+    deprecated_hash = ph.hex_sha1.encrypt(credentials['password'])
+    assert user.password != deprecated_hash
+
+    sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
+    db.session.execute(sql.format(deprecated_hash, user.id))
+    db.commit()
+    assert user.password == deprecated_hash
+
     auth_user = auth.authenticate(credentials)
-    assert auth_user.password == hashed
+    assert auth_user.password == deprecated_hash
 
 
 def test_get_token():

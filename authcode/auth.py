@@ -76,7 +76,7 @@ class Auth(object):
             self.auth_password,
             self.auth_token,
         ]
-        self._set_hasher(hash, rounds)
+        self.set_hasher(hash, rounds)
         if db:
             self.User = extend_user_model(self, UserMixin)
             if roles or RoleMixin:
@@ -85,14 +85,27 @@ class Auth(object):
         for key, val in self.defaults.items():
             setattr(self, key, kwargs.get(key, self.defaults[key]))
 
-    def _set_hasher(self, hash, rounds):
+    def set_hasher(self, hash, rounds=None):
+        """Updates the has algorithm and, optionally, the number of rounds
+        to use.
+        :raises: `~WrongHashAlgorithm` if new algorithm isn't one of the three
+            recomended options.
+        """
         hash = self._get_best_hash(hash)
         if hash not in VALID_HASHERS:
             raise WrongHashAlgorithm
+        self._set_hasher(hash, rounds)
 
+    def _set_hasher(self, hash, rounds=None):
+        """Updates the has algorithm and, optionally, the number of rounds
+        to use, not checking if the chosen algorithm it's totally inadequate
+        for password hashing or even if passlib it's going to accept it.
+        """
         hasher = getattr(ph, hash)
-        rounds = min(max(rounds or hasher.min_rounds, hasher.min_rounds),
-            hasher.max_rounds)
+        default_rounds = getattr(hasher, 'default_rounds', 1)
+        min_rounds = getattr(hasher, 'min_rounds', 1)
+        max_rounds = getattr(hasher, 'max_rounds', float("inf"))
+        rounds = min(max(rounds or default_rounds, min_rounds), max_rounds)
         op = {
             'schemes': VALID_HASHERS + DEPRECATED_HASHERS,
             'deprecated': DEPRECATED_HASHERS,
@@ -157,11 +170,19 @@ class Auth(object):
             logger.debug(u'Invalid password for user `{0}`'.format(login))
             return None
 
-        if self.update_hash and new_hash:
-            user._password = new_hash
-            self.db.session.commit()
-            logger.debug(u'Hash updated for user `{0}`'.format(login))
+        self._update_password_hash(user, secret, new_hash)
         return user
+
+    def _update_password_hash(self, user, secret, new_hash):
+        if self.update_hash == 'auto':
+            if not new_hash:
+                return
+            sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
+            self.db.session.execute(sql.format(new_hash, user.id))
+            self.db.session.commit()
+        elif self.update_hash == 'manual':
+            user.password = secret
+            self.db.session.commit()
 
     def auth_token(self, credentials, token_life=None):
         logger = logging.getLogger(__name__)

@@ -6,62 +6,10 @@ Autorización
 
 .. container:: lead
 
-    Si fueras a crear un sistema para tu blog, tendrías páginas públicas pero no quisieras que cualquiera pudiera editar o borrar posts en él.
+    Si fueras a crear un sistema para tu blog, tendrías páginas públicas pero no quisieras que cualquiera pudiera editar o borrar posts en él. Necesitas un mecanismo para que a ciertas páginas solo tengan acceso usuarios autenticados, quizas que también cumplan con algunas condiciones. De eso se trata esta guía.
 
 
-Roles
-=============================================
-
-Authcode no maneja directamente “permisos”, lo que tiene en cambio (si lo activas en las opciones) son “roles”, es decir grupos a los que uno o más usuarios pueden pertenecer. Puedes activar o desactivar funcionalidades en tu sitio deacuerdo a que roles el usuario autenticado tiene.
-
-Hay dos formas de activar los roles: una es inicializando Authcode con el argumento ``roles=True``:
-
-.. code-block:: python
-
-    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, roles=True,
-                **AUTH_SETTINGS)
-
-    user = auth.User
-    Role = auth.Role
-
-la otra es pasarle un *mixin* para la tabla de roles:
-
-.. code-block:: python
-
-    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, RoleMixin=RoleMixin,
-                **AUTH_SETTINGS)
-
-    user = auth.User
-    Role = auth.Role
-
-Este mixin es muy similar al de la tabla de usuarios. Por defecto un rol tiene solo un campo —su nombre; Utilizando este mixin puedes agregarle los campos extra que quieras (como una descripción, por ejemplo).
-
-La relación entre usuarios y roles es de muchos a muchos. Puedes encontrar el modelo final de roles en ``auth.Role``.
-
-Cuando los roles están activados, las instancias de usuarios tienen estos tres nuevos métodos:
-
-* ``user.add_role(name)``:
-    Le agrega el rol con nombre ``name`` a este usuario.
-    Si el rol no existe previamente, se crea automáticamente.
-    Devuelve la misma instancia de usuario
-
-* ``user.remove_role(name)``:
-    Le quita el rol con nombre ``name`` a este usuario.
-    Funciona sin problemas aunque el usuario no tenga ese rol o el que rol no exista.
-
-* ``user.has_role(*names)``:
-    Evalua si el usuario tiene al menos uno de los roles listados.
-    Ejemplo:
-
-    .. code-block:: python
-
-        user.add_role('foo')
-        assert user.has_role('bar', 'foo', 'admin')  # True
-        assert user.has_role('foo')  # True
-        assert user.has_role('bar', 'admin')  # False
-
-
-Autorización para las vistas
+Protegiendo tus vistas
 =============================================
 
 Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios autenticados. Authcode te hace fácil lograrlo por medio del decorador ``@auth.protected()``. Ejemplo:
@@ -115,7 +63,7 @@ Ejemplo:
 Pruebas
 ---------------------------------------------
 
-El decorador también puede tomar como argumento una o más funciones para “probar” al usuario. Las pruebas toman como argumentos al usuario autenticado y cualquier otro argumento que la vista haya recibido. Solo si todas devuelven `True` se da acceso a la vista al usuario. Pueden ser útiles an algunos casos.
+El decorador también puede tomar como argumento una o más funciones para “probar” al usuario. Las pruebas toman como argumentos al usuario autenticado y cualquier otro argumento que la vista haya recibido. Solo si todas devuelven `True` se da acceso a la vista al usuario.
 
 .. code-block:: python
 
@@ -128,7 +76,7 @@ El decorador también puede tomar como argumento una o más funciones para “pr
         ...
 
 
-Finalmente, un último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, pero es lo veremos en la siguiente sección.
+Finalmente, el último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, pero es lo puedes ver en la siguiente sección.
 
 
 Protección CSRF
@@ -138,7 +86,7 @@ Esta biblioteca incluye un mecanismo para protegerte de ataques **CSRF** (*Cross
 
 Funciona por que es el navegador del usuario quien hace la solicitud y, aunque esta se origina en un sitio diferente al atacado, todas las solicitudes a él incluyen la *cookie* que identifica al usuario.
 
-Un ataque relacionado, llamado *login CSRF*, en que el sitio atacante engaña al navegador del usuario para que se autentique con las credenciales de alguien más, también esta cubierto.
+Un ataque relacionado, llamado *login CSRF* —en que el sitio atacante engaña al navegador del usuario para que se autentique con las credenciales de alguien más— también esta cubierto.
 
 La primera linea de defensa es asegurarte que ninguno de los ``GET`` en tus sitios tengan efectos secundarios. Las solicitudes por métodos ``POST``, ``PUT``, ``DELETE``, etc. puedes entonces protegerlas siguiendo los pasos de abajo.
 

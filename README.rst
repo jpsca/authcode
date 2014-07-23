@@ -16,5 +16,5 @@ Issue tracker: <https://github.com/lucuma/authcode/issues>
 
 ______
 
-:copyright: © 2012 by `Juan Pablo Scaletti <http://jpscaletti.com>`_.
+:copyright: © 2012-2014 by `Juan-Pablo Scaletti <http://jpscaletti.com>`_.
 :license: MIT, see LICENSE for more details.
