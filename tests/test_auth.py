@@ -415,9 +415,8 @@ def test_user_role_model():
 
     user.remove_role('admin')
     db.commit()
-
-    with pytest.raises(ValueError):
-        user.remove_role('foobar')
+    user.remove_role('foobar')
+    db.commit()
 
 
 def test_get_csrf_token():

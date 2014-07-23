@@ -187,7 +187,7 @@ def test_protected_csrf():
         return auth.get_csrf_token()
 
     @app.route('/delete/', methods=['GET', 'POST'])
-    @auth.protected(force_csrf=True)
+    @auth.protected(csrf=True)
     def delete():
         return ''
 

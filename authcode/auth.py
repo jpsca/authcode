@@ -149,18 +149,18 @@ class Auth(object):
 
         user = self.User.by_login(login)
         if not user:
-            logger.info(u'User `{0}` not found'.format(login))
+            logger.debug(u'User `{0}` not found'.format(login))
             return None
 
         valid, new_hash = self.verify_and_update(secret, user.password)
         if not valid:
-            logger.info(u'Invalid password for user `{0}`'.format(login))
+            logger.debug(u'Invalid password for user `{0}`'.format(login))
             return None
 
         if self.update_hash and new_hash:
             user._password = new_hash
             self.db.session.commit()
-            logger.info(u'Hash updated for user `{0}`'.format(login))
+            logger.debug(u'Hash updated for user `{0}`'.format(login))
         return user
 
     def auth_token(self, credentials, token_life=None):
@@ -171,13 +171,13 @@ class Auth(object):
         try:
             timestamp, uid = utils.split_token(str(token))
         except ValueError:
-            logger.warning(u'Invalid auth token format')
+            logger.info(u'Invalid auth token format')
             return None
 
         token_life = token_life or self.token_life
         user = self.User.by_id(uid)
         if not user:
-            logger.warning(u'Tampered auth token? uid `{0} not found'
+            logger.info(u'Tampered auth token? uid `{0} not found'
                 .format(uid[:20]))
             return None
 
@@ -185,7 +185,7 @@ class Auth(object):
         not_expired = timestamp + token_life >= int(time())
         if valid and not_expired:
             return user
-        logger.warning(u'Invalid auth token')
+        logger.info(u'Invalid auth token')
         return None
 
     def get_user(self, session=None):
@@ -201,7 +201,7 @@ class Auth(object):
                     raise ValueError
             except ValueError:
                 logger = logging.getLogger(__name__)
-                logger.warning(u'Tampered uhmac?')
+                logger.info(u'Tampered uhmac?')
                 user = None
                 self.logout(session)
         return user
@@ -216,7 +216,7 @@ class Auth(object):
 
         """
         logger = logging.getLogger(__name__)
-        logger.info(u'User `{0}` logged in'.format(user.login))
+        logger.debug(u'User `{0}` logged in'.format(user.login))
         if session is None:
             session = self.session
         session['permanent'] = remember
@@ -268,8 +268,9 @@ class Auth(object):
                 Test for the user having **any** role in this list of names.
 
         """
-        csrf = bool(options.get('csrf', True))
-        csrf = bool(options.get('force_csrf', False))
+        csrf = options.get('csrf')
+        if csrf not in (True, False, None):
+            csrf = None
         roles = options.get('roles') or []
         role = options.get('role')
         if role:
@@ -290,7 +291,7 @@ class Auth(object):
 
                 if hasattr(user, 'has_role') and roles:
                     if not user.has_role(*roles):
-                        logger.info(u'User `{0}`: has_role fail'
+                        logger.debug(u'User `{0}`: has_role fail'
                             .format(user.login))
                         logger.debug(u'User roles: {0}'.format(
                             [r.name for r in user.roles]
@@ -300,16 +301,14 @@ class Auth(object):
                 for test in tests:
                     test_pass = test(user, *args, **kwargs)
                     if not test_pass:
-                        logger.info(u'User `{0}`: test fail'
+                        logger.debug(u'User `{0}`: test fail'
                             .format(user.login))
                         return self.wsgi.raise_forbidden()
 
-                if (csrf and
-                        (self.wsgi.not_safe_method(request) or force_csrf) and
-                        not self.csrf_token_is_valid(request)):
-                    logger.info(u'User `{0}`: invalid CSFR token'
-                        .format(user.login))
-                    return self.wsgi.raise_forbidden("CSFR token isn't valid")
+                if (self.wsgi.not_safe_method(request) and csrf != False) or csrf:
+                    if not self.csrf_token_is_valid(request):
+                        logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
+                        return self.wsgi.raise_forbidden("CSFR token isn't valid")
 
                 return f(*args, **kwargs)
             return wrapper
