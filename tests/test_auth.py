@@ -31,8 +31,6 @@ def test_user_db():
 
     assert user.login == u'meh'
     assert hasattr(user, 'password')
-    assert hasattr(user, 'created_at')
-    assert hasattr(user, 'modified_at')
     assert hasattr(user, 'last_sign_in')
     assert repr(user) == '<User meh>'
 

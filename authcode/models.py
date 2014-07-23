@@ -31,6 +31,16 @@ def extend_user_model(auth, UserMixin=None):
         last_sign_in = Column(DateTime, nullable=True)
         deleted = Column(Boolean, default=False)
 
+        @hybrid_property
+        def _password(self):
+            """Backwards compatibility fix."""
+            return self.password
+
+        @_password.setter
+        def _password(self, value):
+            """Backwards compatibility fix."""
+            self.password = value
+
         @validates('password')
         def _hash_password(self, key, secret):
             logger = logging.getLogger(__name__)
