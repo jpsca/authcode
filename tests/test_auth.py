@@ -26,7 +26,7 @@ def test_user_db():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
+    db.session.add(user)
     db.flush()
 
     assert user.login == u'meh'
@@ -54,7 +54,7 @@ def test_extended_user_db():
 
     db.create_all()
     user = User(login=u'meh', password='foobar', email=u'text@example.com')
-    db.add(user)
+    db.session.add(user)
     db.flush()
 
     assert User.__tablename__ == 'users'
@@ -114,8 +114,8 @@ def test_automatic_password_hashing():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     assert user.password
     assert user.password != 'foobar'
@@ -178,6 +178,40 @@ def test_legacy_reader():
     assert auth.password_is_valid(p, hashed2)
 
 
+def test_set_raw_password():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    user.set_raw_password('meh')
+    db.session.commit()
+    assert user.password == 'meh'
+
+
+def test_sql_injection():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    tests = [
+        "1'; DELETE FROM users",
+        '1"; DELETE FROM users',
+        "1' --",
+    ]
+    for passw in tests:
+        user.set_raw_password(passw)
+        db.session.commit()
+        assert user.password == passw
+
+
 def test_authenticate_with_password():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
@@ -187,8 +221,8 @@ def test_authenticate_with_password():
     db.create_all()
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
     auth_user = auth.authenticate(credentials)
     assert user.login == auth_user.login
 
@@ -213,8 +247,8 @@ def test_monkeypatching_authentication():
 
     db.create_all()
     user = User(login=u'meh')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     def verify_and_update(secret, hashed):
         if secret == 'foobar':
@@ -235,15 +269,14 @@ def test_auto_update_on_authenticate():
 
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     assert user.password.startswith('$pbkdf2-sha512$')
 
     deprecated_hash = ph.hex_sha1.encrypt(credentials['password'])
-    sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
-    db.session.execute(sql.format(deprecated_hash, user.id))
-    db.commit()
+    user.set_raw_password(deprecated_hash)
+    db.session.commit()
     assert user.password == deprecated_hash
 
     auth_user = auth.authenticate(credentials)
@@ -265,8 +298,8 @@ def test_manual_update_on_authenticate():
 
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     hash1 = user.password
     assert hash1.startswith('$pbkdf2-sha512$')
@@ -290,15 +323,13 @@ def test_disable_update_on_authenticate():
 
     credentials = {'login':u'meh', 'password':'foobar'}
     user = User(**credentials)
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     deprecated_hash = ph.hex_sha1.encrypt(credentials['password'])
     assert user.password != deprecated_hash
-
-    sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
-    db.session.execute(sql.format(deprecated_hash, user.id))
-    db.commit()
+    user.set_raw_password(deprecated_hash)
+    db.session.commit()
     assert user.password == deprecated_hash
 
     auth_user = auth.authenticate(credentials)
@@ -314,8 +345,8 @@ def test_get_token():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     token1 = user.get_token()
     sleep(1)
@@ -337,8 +368,8 @@ def test_authenticate_with_token():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     token = user.get_token()
     auth_user = auth.authenticate({'token':token})
@@ -370,8 +401,8 @@ def test_get_uhmac():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     assert user.get_uhmac()
     assert user.get_uhmac() == user.get_uhmac()
@@ -385,8 +416,8 @@ def test_login_logout():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     log = []
 
@@ -406,8 +437,8 @@ def test_get_user():
 
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     session = {}
     assert auth.get_user(session=session) is None
@@ -427,30 +458,28 @@ def test_get_user():
 def test_user_role_model():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
-
     User = auth.User
-
     db.create_all()
     user = User(login=u'meh', password='foobar')
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
 
     assert hasattr(auth, 'Role')
     assert hasattr(User, 'roles')
 
     user.add_role('admin')
-    db.commit()
+    db.session.commit()
     assert user.has_role('admin')
     assert repr(user.roles[0]) == '<Role admin>'
 
     user.remove_role('admin')
-    db.commit()
+    db.session.commit()
     assert not user.has_role('admin')
 
     user.remove_role('admin')
-    db.commit()
+    db.session.commit()
     user.remove_role('foobar')
-    db.commit()
+    db.session.commit()
 
 
 def test_get_csrf_token():
@@ -460,4 +489,3 @@ def test_get_csrf_token():
     assert token == auth.get_csrf_token(session=session)
     session = {}
     assert token != auth.get_csrf_token(session=session)
-

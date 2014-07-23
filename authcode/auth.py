@@ -177,8 +177,7 @@ class Auth(object):
         if self.update_hash == 'auto':
             if not new_hash:
                 return
-            sql = "UPDATE users SET password = '{0}' WHERE id = {1}"
-            self.db.session.execute(sql.format(new_hash, user.id))
+            user.set_raw_password(new_hash)
             self.db.session.commit()
         elif self.update_hash == 'manual':
             user.password = secret

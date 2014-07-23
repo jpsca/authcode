@@ -29,7 +29,7 @@ def extend_user_model(auth, UserMixin=None):
         @_password.setter
         def _password(self, value):
             """Backwards compatibility fix."""
-            self.password = value
+            self.set_raw_password(value)
 
         @validates('password')
         def _hash_password(self, key, secret):
@@ -45,6 +45,15 @@ def extend_user_model(auth, UserMixin=None):
         @classmethod
         def by_id(cls, pk):
             return db.session.query(cls).get(pk)
+
+        def set_raw_password(self, secret):
+            """Sets the password withoyt hashing.
+            Do not use it unless yu have a good reason to do so.
+            """
+            table = self.__table__
+            upd = (table.update().where(table.c.id==self.id)
+                   .values(password=secret))
+            db.session.execute(upd)
 
         def has_password(self, secret):
             return auth.password_is_valid(secret, self.password)
