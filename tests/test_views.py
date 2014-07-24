@@ -162,7 +162,7 @@ def test_reset_password_email_sent():
     data = to_unicode(r.data)
     assert u'<!-- EMAIL SENT -->' in data
     print(log)
-    assert u'{0}/{1}'.format(auth.url_reset_password, token[:5]) in log[0]
+    assert u'{0}{1}'.format(auth.url_reset_password, token[:5]) in log[0]
 
 
 def test_reset_password_wrong_token():
