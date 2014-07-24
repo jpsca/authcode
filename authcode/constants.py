@@ -1,7 +1,7 @@
 # coding=utf-8
 
 
-DEFAULT_HASHER = 'sha512_crypt'
+DEFAULT_HASHER = 'pbkdf2_sha512'
 
 VALID_HASHERS = [
     'sha512_crypt', 'pbkdf2_sha512', 'bcrypt',

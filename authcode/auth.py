@@ -136,10 +136,6 @@ class Auth(object):
         except ValueError:
             return False
 
-    def verify_and_update(self, secret, hashed):
-        secret = self.prepare_password(secret)
-        return self.hasher.verify_and_update(secret, hashed)
-
     def authenticate(self, credentials):
         for backend in self.backends:
             user = backend(credentials)

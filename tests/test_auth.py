@@ -412,3 +412,39 @@ def test_get_csrf_token():
     assert token == auth.get_csrf_token(session=session)
     session = {}
     assert token != auth.get_csrf_token(session=session)
+
+
+def test_replace_hash_password_method():
+    """Can the library work the same with custom ``has_password`` and
+    ``password_is_valid`` methods?
+    """
+
+    class CustomAuth(authcode.Auth):
+        def hash_password(self, secret):
+            secret = self.prepare_password(secret)
+            return secret[::-1]
+
+        def password_is_valid(self, secret, hashed):
+            secret = self.prepare_password(secret)
+            if secret is None or hashed is None:
+                return False
+            return self.hash_password(secret) == hashed
+
+    db = SQLAlchemy()
+    auth = CustomAuth(SECRET_KEY, db=db)
+    User = auth.User
+    db.create_all()
+
+    credentials = {'login':u'meh', 'password':'foobar'}
+    user = User(**credentials)
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.password == 'foobar'[::-1]
+    assert user.has_password('foobar')
+
+    auth_user = auth.authenticate(credentials)
+    assert user.login == auth_user.login
+
+    auth_user = auth.authenticate({})
+    assert not auth_user
