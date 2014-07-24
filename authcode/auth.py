@@ -12,18 +12,17 @@ from passlib.exc import MissingBackendError
 
 from . import utils, views, wsgi
 from ._compat import to_unicode
-from .exceptions import WrongHashAlgorithm
+from .constants import (
+    DEFAULT_HASHER, VALID_HASHERS, DEPRECATED_HASHERS, MIN_SECRET_LENGTH,
+    WRONG_HASH_MESSAGE
+)
 from .models import extend_user_model, extend_role_model
 
 
-VALID_HASHERS = ['bcrypt', 'pbkdf2_sha512', 'sha512_crypt']
+class WrongHashAlgorithm(Exception):
 
-DEPRECATED_HASHERS = [
-    'django_pbkdf2_sha256', 'django_pbkdf2_sha1', 'django_bcrypt',
-    'django_salted_sha1', 'django_salted_md5', 'django_des_crypt',
-    'hex_sha512', 'hex_sha256', 'hex_sha1', 'hex_md5', 'hex_md4']
-
-MIN_SECRET_LENGTH = 15
+    def __str__(self):
+        return WRONG_HASH_MESSAGE
 
 
 class Auth(object):
@@ -57,9 +56,11 @@ class Auth(object):
         'wsgi': wsgi.werkzeug,
     }
 
-    def __init__(self, secret_key, pepper=u'', hash=None, rounds=None, db=None,
-                 UserMixin=None, RoleMixin=None, roles=False,
-                 session=None, request=None, render=None, send_email=None, **kwargs):
+    def __init__(
+            self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
+            db=None, UserMixin=None, RoleMixin=None, roles=False,
+            session=None, request=None, render=None, send_email=None, **kwargs
+            ):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
@@ -91,17 +92,18 @@ class Auth(object):
         :raises: `~WrongHashAlgorithm` if new algorithm isn't one of the three
             recomended options.
         """
-        hash = self._get_best_hash(hash)
+        hash = hash.replace('-', '_')
         if hash not in VALID_HASHERS:
             raise WrongHashAlgorithm
-        self._set_hasher(hash, rounds)
+        hasher = getattr(ph, hash)
+        utils.test_hasher(hasher)
+        self._set_hasher(hasher, hash, rounds)
 
-    def _set_hasher(self, hash, rounds=None):
+    def _set_hasher(self, hasher, hash, rounds=None):
         """Updates the has algorithm and, optionally, the number of rounds
         to use, not checking if the chosen algorithm it's totally inadequate
         for password hashing or even if passlib it's going to accept it.
         """
-        hasher = getattr(ph, hash)
         default_rounds = getattr(hasher, 'default_rounds', 1)
         min_rounds = getattr(hasher, 'min_rounds', 1)
         max_rounds = getattr(hasher, 'max_rounds', float("inf"))
@@ -117,16 +119,6 @@ class Auth(object):
         self.hash = hash.replace('_', '-')
         self.rounds = rounds
 
-    def _get_best_hash(self, hash):
-        hash = hash or 'bcrypt'
-        hash = hash.replace('-', '_')
-        if hash == 'bcrypt':
-            try:
-                utils.test_hasher(ph.bcrypt)
-            except MissingBackendError:
-                return 'pbkdf2_sha512'
-        return hash
-
     def prepare_password(self, secret):
         return self.pepper + to_unicode(secret)
 
@@ -137,6 +129,8 @@ class Auth(object):
 
     def password_is_valid(self, secret, hashed):
         secret = self.prepare_password(secret)
+        if secret is None or hashed is None:
+            return False
         try:
             return self.hasher.verify(secret, hashed)
         except ValueError:
@@ -165,23 +159,21 @@ class Auth(object):
             logger.debug(u'User `{0}` not found'.format(login))
             return None
 
-        valid, new_hash = self.verify_and_update(secret, user.password)
-        if not valid:
+        if not self.password_is_valid(secret, user.password):
             logger.debug(u'Invalid password for user `{0}`'.format(login))
             return None
 
-        self._update_password_hash(user, secret, new_hash)
+        self._update_password_hash(secret, user)
         return user
 
-    def _update_password_hash(self, user, secret, new_hash):
-        if self.update_hash == 'auto':
-            if not new_hash:
-                return
-            user.set_raw_password(new_hash)
-            self.db.session.commit()
-        elif self.update_hash == 'manual':
-            user.password = secret
-            self.db.session.commit()
+    def _update_password_hash(self, secret, user):
+        if not self.update_hash:
+            return
+        new_hash = self.hash_password(secret)
+        if new_hash.split('$')[:3] == user.password.split('$')[:3]:
+            return
+        user.set_raw_password(new_hash)
+        self.db.session.commit()
 
     def auth_token(self, credentials, token_life=None):
         logger = logging.getLogger(__name__)

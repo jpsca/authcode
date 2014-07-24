@@ -4,6 +4,7 @@ from __future__ import print_function
 import pytest
 import authcode
 from authcode._compat import to_unicode
+from authcode.constants import DEFAULT_HASHER
 from sqlalchemy_wrapper import SQLAlchemy
 from passlib import hash as ph
 from passlib.exc import MissingBackendError
@@ -122,34 +123,6 @@ def test_automatic_password_hashing():
     assert user.has_password('foobar')
 
 
-def test_select_hashing_alg():
-    auth = authcode.Auth(SECRET_KEY, rounds=0)
-    hasher = getattr(ph, auth.hash)
-    assert auth.rounds == hasher.default_rounds
-
-    auth = authcode.Auth(SECRET_KEY)
-    if bcrypt_available:
-        assert auth.hash == 'bcrypt'
-    else:
-        assert auth.hash == 'pbkdf2-sha512'
-        auth = authcode.Auth(SECRET_KEY, hash='bcrypt')
-        assert auth.hash == 'pbkdf2-sha512'
-    assert auth.rounds
-
-    auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=1500)
-    assert auth.hash == 'sha512-crypt'
-    assert auth.rounds == 1500
-
-    with pytest.raises(authcode.exceptions.WrongHashAlgorithm):
-        auth = authcode.Auth(SECRET_KEY, hash='lalala')
-
-
-def test_exceptions():
-    assert '`bcrypt`' in str(authcode.exceptions.WrongHashAlgorithm())
-    assert '`pbkdf2_sha512`' in str(authcode.exceptions.WrongHashAlgorithm())
-    assert '`sha512_crypt`' in str(authcode.exceptions.WrongHashAlgorithm())
-
-
 def test_hash_password():
     p = 'password'
     auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
@@ -239,31 +212,10 @@ def test_authenticate_with_password():
     assert not auth_user
 
 
-def test_monkeypatching_authentication():
-    db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db)
-
-    User = auth.User
-
-    db.create_all()
-    user = User(login=u'meh')
-    db.session.add(user)
-    db.session.commit()
-
-    def verify_and_update(secret, hashed):
-        if secret == 'foobar':
-            return True, auth.hash_password(secret)
-        return auth._verify_and_update(secret, hashed)
-
-    auth._verify_and_update = auth.verify_and_update
-    auth.verify_and_update = verify_and_update
-    assert auth.authenticate(dict(login=u'meh', password='foobar'))
-
-
-def test_auto_update_on_authenticate():
+def test_update_on_authenticate():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
-                         update_hash='auto')
+                         update_hash=True)
     User = auth.User
     db.create_all()
 
@@ -283,35 +235,6 @@ def test_auto_update_on_authenticate():
     new_hash = auth_user.password
     assert new_hash != deprecated_hash
     assert new_hash.startswith('$pbkdf2-sha512$')
-
-    auth._set_hasher('sha512_crypt')
-    auth_user = auth.authenticate(credentials)
-    assert auth_user.password == new_hash
-
-
-def test_manual_update_on_authenticate():
-    db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
-                         update_hash='manual')
-    User = auth.User
-    db.create_all()
-
-    credentials = {'login':u'meh', 'password':'foobar'}
-    user = User(**credentials)
-    db.session.add(user)
-    db.session.commit()
-
-    hash1 = user.password
-    assert hash1.startswith('$pbkdf2-sha512$')
-
-    auth._set_hasher('pbkdf2_sha512', rounds=auth.rounds + 1)
-    auth_user = auth.authenticate(credentials)
-    hash2 = auth_user.password
-    assert hash2 != hash1
-
-    auth._set_hasher('sha512_crypt')
-    auth_user = auth.authenticate(credentials)
-    assert auth_user.password != hash2
 
 
 def test_disable_update_on_authenticate():
