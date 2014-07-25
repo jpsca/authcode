@@ -26,19 +26,28 @@ def from36(number):
     return int(number, 36)
 
 
+def get_hash_extract(hash):
+    half = hash.rsplit('$', 1)[0]
+    return half[-10:]
+
+
 def get_uhmac(user, secret):
+    """Make an unique identifier for the user (stored in the session),
+    so it can stay logged between requests.
+
+    By hashing a snippet of the current password hash salt, it makes possible
+    to automatically logout from all other devices just by changing
+    (or refreshing) the password.
+    """
     secret = to_bytes(secret)
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
         str(user.id),
-        (getattr(user, 'password', '') or '')[10:20],
+        get_hash_extract(user.password),
     ])
     key = key.encode('utf8', 'ignore')
     mac = hmac.new(key, msg=None, digestmod=hashlib.sha512)
     mac = mac.hexdigest()[:50]
-    # user.id instead of user.login because SQLAlchemy only caches
-    # by primary key, so even if you don't cache the user object, a trip to
-    # the database is spared.
     uhmac = '{0}${1}'.format(user.id, mac)
     return uhmac
 
@@ -47,9 +56,9 @@ def get_token(user, secret, timestamp=None):
     """Make a timestamped one-time-use token that can be used to
     identifying the user.
 
-    By hashing the `last_sign_in` attribute and the password salt, it produce
-    a token that will be invalidated as soon as the user log in again or the
-    is changed.
+    By hashing the `last_sign_in` attribute and a snippet of the current
+    password hash salt, it produces a token that will be invalidated as soon
+    as the user log in again or the is changed.
 
     A hash of the user ID is used, so the HMAC part of the token is always
     unique for each user.
@@ -62,7 +71,7 @@ def get_token(user, secret, timestamp=None):
     key = '|'.join([
         hashlib.sha1(secret).hexdigest(),
         str(user.id),
-        (getattr(user, 'password', '') or '')[10:20],
+        get_hash_extract(user.password),
         str(getattr(user, 'last_sign_in', 0)),
         str(timestamp),
     ])
