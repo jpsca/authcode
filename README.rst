@@ -1,6 +1,6 @@
 
 ===========================
-Authcode |travis||coverall|
+Authcode |travis| |coverall|
 ===========================
 
 .. |travis| image:: https://travis-ci.org/lucuma/authcode.png

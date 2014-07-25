@@ -1,4 +1,6 @@
 pytest
+pytest-cov
+tox
 passlib
 sqlalchemy
 sqlalchemy_wrapper
@@ -7,4 +9,3 @@ flask
 werkzeug
 https://github.com/mitsuhiko/flask-sqlalchemy/archive/master.zip
 webob
-tox
