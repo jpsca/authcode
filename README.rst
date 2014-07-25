@@ -9,7 +9,8 @@ Awesome authentication code.
    :alt: Build Status
    :target: https://travis-ci.org/lucuma/authcode
 
-.. image:: https://coveralls.io/repos/lucuma/authcode/badge.png :target: https://coveralls.io/r/lucuma/authcode
+.. image:: https://coveralls.io/repos/lucuma/authcode/badge.png
+   :target: https://coveralls.io/r/lucuma/authcode
    :alt: Tests coverage status
 
 
