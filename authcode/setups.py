@@ -66,7 +66,7 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):  # pra
     elif render:
         auth.render = render
 
-    def set_user(request, **kwargs):
+    def set_user(request, **kwargs):  # pragma: no cover
         auth.session = request.session
         # By doing this, `request` now has a `user` attribute that it'll be
         # replaced by the real user object the first time is used.

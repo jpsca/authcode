@@ -162,134 +162,134 @@ class LazyUser(object):
     def __delattr__(self, name):
         delattr(self.__get_user(), name)
 
-    def __setitem__(self, key, value):  # pragma: no cover
-        self.__get_user()[key] = value
+    def __setitem__(self, key, value):
+        self.__get_user()[key] = value  # pragma: no cover
 
-    def __delitem__(self, key):  # pragma: no cover
-        del self.__get_user()[key]
+    def __delitem__(self, key):
+        del self.__get_user()[key]  # pragma: no cover
 
-    def __setslice__(self, i, j, seq):  # pragma: no cover
-        self.__get_user()[i:j] = seq
+    def __setslice__(self, i, j, seq):
+        self.__get_user()[i:j] = seq  # pragma: no cover
 
-    def __delslice__(self, i, j):  # pragma: no cover
-        del self.__get_user()[i:j]
+    def __delslice__(self, i, j):
+        del self.__get_user()[i:j]  # pragma: no cover
 
-    def __lt__(self, other):  # pragma: no cover
-        return self.__get_user() < other
+    def __lt__(self, other):
+        return self.__get_user() < other  # pragma: no cover
 
-    def __le__(self, other):  # pragma: no cover
-        return self.__get_user() <= other
+    def __le__(self, other):
+        return self.__get_user() <= other  # pragma: no cover
 
-    def __eq__(self, other):  # pragma: no cover
-        return self.__get_user() == other
+    def __eq__(self, other):
+        return self.__get_user() == other  # pragma: no cover
 
-    def __ne__(self, other):  # pragma: no cover
-        return self.__get_user() != other
+    def __ne__(self, other):
+        return self.__get_user() != other  # pragma: no cover
 
-    def __gt__(self, other):  # pragma: no cover
-        return self.__get_user() > other
+    def __gt__(self, other):
+        return self.__get_user() > other  # pragma: no cover
 
-    def __ge__(self, other):  # pragma: no cover
-        return self.__get_user() >= other
+    def __ge__(self, other):
+        return self.__get_user() >= other  # pragma: no cover
 
-    def __hash__(self):  # pragma: no cover
-        return hash(self.__get_user())
+    def __hash__(self):
+        return hash(self.__get_user())  # pragma: no cover
 
-    def __call__(self, *args, **kwargs):  # pragma: no cover
-        return self.__get_user()(*args, **kwargs)
+    def __call__(self, *args, **kwargs):
+        return self.__get_user()(*args, **kwargs)  # pragma: no cover
 
-    def __getitem__(self, i):  # pragma: no cover
-        return self.__get_user()[i]
+    def __getitem__(self, i):
+        return self.__get_user()[i]  # pragma: no cover
 
-    def __iter__(self):  # pragma: no cover
-        return iter(self.__get_user())
+    def __iter__(self):
+        return iter(self.__get_user())  # pragma: no cover
 
-    def __contains__(self, i):  # pragma: no cover
-        return i in self.__get_user()
+    def __contains__(self, i):
+        return i in self.__get_user()  # pragma: no cover
 
-    def __getslice__(self, i, j):  # pragma: no cover
-        return self.__get_user()[i:j]
+    def __getslice__(self, i, j):
+        return self.__get_user()[i:j]  # pragma: no cover
 
-    def __add__(self, other):  # pragma: no cover
-        return self.__get_user() + other
+    def __add__(self, other):
+        return self.__get_user() + other  # pragma: no cover
 
-    def __sub__(self, other):  # pragma: no cover
-        return self.__get_user() - other
+    def __sub__(self, other):
+        return self.__get_user() - other  # pragma: no cover
 
-    def __mul__(self, other):  # pragma: no cover
-        return self.__get_user() * other
+    def __mul__(self, other):
+        return self.__get_user() * other  # pragma: no cover
 
-    def __floordiv__(self, other):  # pragma: no cover
-        return self.__get_user() // other
+    def __floordiv__(self, other):
+        return self.__get_user() // other  # pragma: no cover
 
-    def __mod__(self, other):  # pragma: no cover
-        return self.__get_user() % other
+    def __mod__(self, other):
+        return self.__get_user() % other  # pragma: no cover
 
-    def __divmod__(self, other):  # pragma: no cover
-        return self.__get_user().__divmod__(other)
+    def __divmod__(self, other):
+        return self.__get_user().__divmod__(other)  # pragma: no cover
 
-    def __pow__(self, other):  # pragma: no cover
-        return self.__get_user() ** other
+    def __pow__(self, other):
+        return self.__get_user() ** other  # pragma: no cover
 
-    def __lshift__(self, other):  # pragma: no cover
-        return self.__get_user() << other
+    def __lshift__(self, other):
+        return self.__get_user() << other  # pragma: no cover
 
-    def __rshift__(self, other):  # pragma: no cover
-        return self.__get_user() >> other
+    def __rshift__(self, other):
+        return self.__get_user() >> other  # pragma: no cover
 
-    def __and__(self, other):  # pragma: no cover
-        return self.__get_user() & other
+    def __and__(self, other):
+        return self.__get_user() & other  # pragma: no cover
 
-    def __xor__(self, other):  # pragma: no cover
-        return self.__get_user() ^ other
+    def __xor__(self, other):
+        return self.__get_user() ^ other  # pragma: no cover
 
-    def __or__(self, other):  # pragma: no cover
-        return self.__get_user() | other
+    def __or__(self, other):
+        return self.__get_user() | other  # pragma: no cover
 
-    def __div__(self, other):  # pragma: no cover
-        return self.__get_user().__div__(other)
+    def __div__(self, other):
+        return self.__get_user().__div__(other)  # pragma: no cover
 
-    def __truediv__(self, other):  # pragma: no cover
-        return self.__get_user().__truediv__(other)
+    def __truediv__(self, other):
+        return self.__get_user().__truediv__(other)  # pragma: no cover
 
-    def __neg__(self):  # pragma: no cover
-        return -(self.__get_user())
+    def __neg__(self):
+        return -(self.__get_user())  # pragma: no cover
 
-    def __pos__(self):  # pragma: no cover
-        return +(self.__get_user())
+    def __pos__(self):
+        return +(self.__get_user())  # pragma: no cover
 
-    def __abs__(self):  # pragma: no cover
-        return abs(self.__get_user())
+    def __abs__(self):
+        return abs(self.__get_user())  # pragma: no cover
 
-    def __len__(self):  # pragma: no cover
-        return len(self.__get_user())
+    def __len__(self):
+        return len(self.__get_user())  # pragma: no cover
 
-    def __invert__(self):  # pragma: no cover
-        return ~(self.__get_user())
+    def __invert__(self):
+        return ~(self.__get_user())  # pragma: no cover
 
-    def __complex__(self):  # pragma: no cover
-        return complex(self.__get_user())
+    def __complex__(self):
+        return complex(self.__get_user())  # pragma: no cover
 
-    def __int__(self):  # pragma: no cover
-        return int(self.__get_user())
+    def __int__(self):
+        return int(self.__get_user())  # pragma: no cover
 
-    def __float__(self):  # pragma: no cover
-        return float(self.__get_user())
+    def __float__(self):
+        return float(self.__get_user())  # pragma: no cover
 
-    def __oct__(self):  # pragma: no cover
-        return oct(self.__get_user())
+    def __oct__(self):
+        return oct(self.__get_user())  # pragma: no cover
 
-    def __hex__(self):  # pragma: no cover
-        return hex(self.__get_user())
+    def __hex__(self):
+        return hex(self.__get_user())  # pragma: no cover
 
-    def __index__(self):  # pragma: no cover
-        return self.__get_user().__index__()
+    def __index__(self):
+        return self.__get_user().__index__()  # pragma: no cover
 
-    def __coerce__(self, other):  # pragma: no cover
-        return self.__get_user().__coerce__(self, other)
+    def __coerce__(self, other):
+        return self.__get_user().__coerce__(self, other)  # pragma: no cover
 
-    def __enter__(self):  # pragma: no cover
-        return self.__get_user().__enter__()
+    def __enter__(self):
+        return self.__get_user().__enter__()  # pragma: no cover
 
-    def __exit__(self, *args, **kwargs):  # pragma: no cover
-        return self.__get_user().__exit__(*args, **kwargs)
+    def __exit__(self, *args, **kwargs):
+        return self.__get_user().__exit__(*args, **kwargs)  # pragma: no cover
