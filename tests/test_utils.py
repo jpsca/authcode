@@ -4,10 +4,11 @@ from __future__ import print_function
 import os
 from datetime import datetime
 
-import authcode
 from authcode import utils
 from authcode._compat import text_type
 from sqlalchemy_wrapper import SQLAlchemy
+import authcode
+import pytest
 
 from helpers import SECRET_KEY
 
@@ -92,9 +93,42 @@ def test_lazy_user():
     assert storage.user == user
 
     storage.user = None
+    assert lazy.__doc__ == user.__doc__
+    assert storage.user == user
+
+    storage.user = None
     assert user.__dict__ == lazy.__dict__
     assert storage.user == user
 
     storage.user = None
     assert dir(lazy) == dir(user)
     assert storage.user == user
+
+    storage.user = None
+    delattr(lazy, 'last_sign_in')
+    assert storage.user == user
+    assert getattr(user, 'last_sign_in', None) is None
+
+
+def test_to36():
+    assert utils.to36(0) == '0'
+    assert utils.to36(10) == 'A'
+    assert utils.to36(125) == '3H'
+    assert utils.to36(143) == '3Z'
+    assert utils.to36(144) == '40'
+    assert len(utils.to36(pow(3, 1979))) == 607
+    with pytest.raises(AssertionError):
+        utils.to36(-1)
+    with pytest.raises(ValueError):
+        utils.to36('a')
+
+
+def test_from36():
+    assert utils.from36('0') == 0
+    assert utils.from36('A') == 10
+    assert utils.from36('a') == 10
+    assert utils.from36('3H') == 125
+    assert utils.from36('3Z') == 143
+    assert utils.from36('40') == 144
+    with pytest.raises(ValueError):
+        utils.from36('!')

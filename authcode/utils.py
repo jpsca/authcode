@@ -5,7 +5,7 @@ import hashlib
 import hmac
 from time import time
 
-from ._compat import to_bytes
+from ._compat import to_bytes, to_unicode
 
 
 def test_hasher(hasher):
@@ -13,6 +13,7 @@ def test_hasher(hasher):
 
 
 def to36(number):
+    assert int(number) >= 0, 'Must be a positive integer'
     alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     base36 = ''
     while number:
@@ -22,8 +23,9 @@ def to36(number):
     return base36 or alphabet[0]
 
 
-def from36(number):
-    return int(number, 36)
+def from36(snumber):
+    snumber = snumber.upper()
+    return int(snumber, 36)
 
 
 def get_hash_extract(hash):
@@ -130,6 +132,7 @@ class LazyUser(object):
     def __dict__(self):
         return self.__get_user().__dict__
 
+    @property
     def __doc__(self):
         return self.__get_user().__doc__
 
@@ -145,7 +148,7 @@ class LazyUser(object):
         return str(self.__get_user())
 
     def __unicode__(self):
-        return unicode(self.__get_user())
+        return to_unicode(self.__get_user())
 
     def __dir__(self):
         return dir(self.__get_user())
@@ -156,7 +159,7 @@ class LazyUser(object):
     def __setattr__(self, name, value):
         setattr(self.__get_user(), name, value)
 
-    def __delattr__(self, name, value):  # pragma: no cover
+    def __delattr__(self, name):
         delattr(self.__get_user(), name)
 
     def __setitem__(self, key, value):  # pragma: no cover
@@ -188,9 +191,6 @@ class LazyUser(object):
 
     def __ge__(self, other):  # pragma: no cover
         return self.__get_user() >= other
-
-    def __cmp__(self, other):  # pragma: no cover
-        return cmp(self.__get_user(), other)
 
     def __hash__(self):  # pragma: no cover
         return hash(self.__get_user())
@@ -272,9 +272,6 @@ class LazyUser(object):
 
     def __int__(self):  # pragma: no cover
         return int(self.__get_user())
-
-    def __long__(self):  # pragma: no cover
-        return long(self.__get_user())
 
     def __float__(self):  # pragma: no cover
         return float(self.__get_user())

@@ -113,7 +113,13 @@ def test_setup_flask_default_views():
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     authcode.setup_for_flask(auth, app)
-    assert len(app.url_map._rules) == 6
+    rules = app.url_map._rules
+    endpoints = dict([(ru.endpoint, ru.rule) for ru in rules])
+
+    assert 'auth_sign_in' in endpoints
+    assert 'auth_sign_out' in endpoints
+    assert 'auth_reset_password' in endpoints
+    assert 'auth_change_password' in endpoints
 
 
 def test_setup_flask_views_urls():
@@ -152,6 +158,70 @@ def test_setup_flask_views_callable_urls():
 
     assert endpoints['auth_sign_in'] == '/my-login'
     assert endpoints['auth_reset_password'] == '/reset-secret/<token>/'
+
+
+def test_setup_flask_disable_sign_in_view():
+    app = Flask(__name__)
+    db = SQLAlchemy('sqlite:///', app)
+    views = ['sign_out', 'reset_password', 'change_password', ]
+    auth = authcode.Auth(SECRET_KEY, db=db, views=views)
+
+    authcode.setup_for_flask(auth, app)
+    rules = app.url_map._rules
+    endpoints = dict([(ru.endpoint, ru.rule) for ru in rules])
+
+    assert 'auth_sign_in' not in endpoints
+    assert 'auth_sign_out' in endpoints
+    assert 'auth_reset_password' in endpoints
+    assert 'auth_change_password' in endpoints
+
+
+def test_setup_flask_disable_sign_out_view():
+    app = Flask(__name__)
+    db = SQLAlchemy('sqlite:///', app)
+    views = ['sign_in', 'reset_password', 'change_password', ]
+    auth = authcode.Auth(SECRET_KEY, db=db, views=views)
+
+    authcode.setup_for_flask(auth, app)
+    rules = app.url_map._rules
+    endpoints = dict([(ru.endpoint, ru.rule) for ru in rules])
+
+    assert 'auth_sign_in' in endpoints
+    assert 'auth_sign_out' not in endpoints
+    assert 'auth_reset_password' in endpoints
+    assert 'auth_change_password' in endpoints
+
+
+def test_setup_flask_disable_reset_password_view():
+    app = Flask(__name__)
+    db = SQLAlchemy('sqlite:///', app)
+    views = ['sign_in', 'sign_out', 'change_password', ]
+    auth = authcode.Auth(SECRET_KEY, db=db, views=views)
+
+    authcode.setup_for_flask(auth, app)
+    rules = app.url_map._rules
+    endpoints = dict([(ru.endpoint, ru.rule) for ru in rules])
+
+    assert 'auth_sign_in' in endpoints
+    assert 'auth_sign_out' in endpoints
+    assert 'auth_reset_password' not in endpoints
+    assert 'auth_change_password' in endpoints
+
+
+def test_setup_flask_disable_change_password_view():
+    app = Flask(__name__)
+    db = SQLAlchemy('sqlite:///', app)
+    views = ['sign_in', 'sign_out', 'reset_password', ]
+    auth = authcode.Auth(SECRET_KEY, db=db, views=views)
+
+    authcode.setup_for_flask(auth, app)
+    rules = app.url_map._rules
+    endpoints = dict([(ru.endpoint, ru.rule) for ru in rules])
+
+    assert 'auth_sign_in' in endpoints
+    assert 'auth_sign_out' in endpoints
+    assert 'auth_reset_password' in endpoints
+    assert 'auth_change_password' not in endpoints
 
 
 # -----------------------------------------------------------------------------
