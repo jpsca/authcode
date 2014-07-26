@@ -8,8 +8,5 @@ python:
 install:
     - python setup.py install
     - pip install -r requirements_tests.txt
-    - pip install coveralls
 script:
-    py.test --cov-config .coveragerc --cov authcode tests/
-after_success:
-    coveralls
+    py.test -x tests/
