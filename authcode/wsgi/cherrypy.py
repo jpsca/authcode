@@ -6,7 +6,7 @@ SEE_OTHER = 303
 
 
 def get_site_name(request):
-    return request.base.replace(scheme + '://', '')
+    return request.base.replace(request.scheme + '://', '')
 
 
 def get_full_path(request):
@@ -49,4 +49,3 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return getattr(request, 'body_params', request.body.params)
-

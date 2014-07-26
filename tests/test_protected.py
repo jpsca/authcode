@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 
 import authcode
-from authcode._compat import to_unicode, to_native
+from authcode._compat import to_native
 from flask import Flask, g
 from sqlalchemy_wrapper import SQLAlchemy
 

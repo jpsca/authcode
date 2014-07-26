@@ -10,7 +10,7 @@
     :license: MIT, see LICENSE for more details.
 
 """
-from .auth import Auth, WrongHashAlgorithm
-from .setups import setup_for_flask, setup_for_shake
+from .auth import Auth, WrongHashAlgorithm  # noqa
+from .setups import setup_for_flask, setup_for_shake  # noqa
 
 __version__ = '1.1.0'

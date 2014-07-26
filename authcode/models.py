@@ -13,6 +13,20 @@ from ._compat import to_unicode, to_native
 
 def extend_user_model(auth, UserMixin=None):
     db = auth.db
+    AuthUserMixin = get_auth_user_mixin(auth)
+
+    if UserMixin is not None:
+        class User(UserMixin, AuthUserMixin, db.Model):
+            __tablename__ = getattr(UserMixin, '__tablename__', 'users')
+    else:
+        class User(AuthUserMixin, db.Model):
+            __tablename__ = 'users'
+
+    return User
+
+
+def get_auth_user_mixin(auth):
+    db = auth.db
 
     class AuthUserMixin(object):
         id = Column(Integer, primary_key=True)
@@ -38,22 +52,23 @@ def extend_user_model(auth, UserMixin=None):
             return auth.hash_password(secret)
 
         @classmethod
-        def by_login(cls, login):
-            name = to_unicode(login).strip()
-            return db.session.query(cls).filter(cls.login == login).first()
-
-        @classmethod
         def by_id(cls, pk):
             return db.session.query(cls).get(pk)
+
+        @classmethod
+        def by_login(cls, login):
+            login = to_unicode(login).strip()
+            return db.session.query(cls).filter(cls.login == login).first()
 
         def set_raw_password(self, secret):
             """Sets the password without hashing.
             Don't use it unless you have a good reason to do so.
             """
             table = self.__table__
-            upd = (table.update().where(table.c.id==self.id)
+            upd = (table.update().where(table.c.id == self.id)
                    .values(password=secret))
             db.session.execute(upd)
+            db.session.commit()
 
         def has_password(self, secret):
             return auth.password_is_valid(secret, self.password)
@@ -68,18 +83,31 @@ def extend_user_model(auth, UserMixin=None):
             repr = '<User {0}>'.format(self.login)
             return to_native(repr)
 
-
-    if UserMixin is not None:
-        class User(UserMixin, AuthUserMixin, db.Model):
-            __tablename__ = getattr(UserMixin, '__tablename__', 'users')
-    else:
-        class User(AuthUserMixin, db.Model):
-            __tablename__ = 'users'
-
-    return User
+    return AuthUserMixin
 
 
 def extend_role_model(auth, User, RoleMixin=None):
+    db = auth.db
+    AuthRoleMixin = get_auth_role_mixin(auth, User)
+
+    if RoleMixin is not None:
+        class Role(RoleMixin, AuthRoleMixin, db.Model):
+            __tablename__ = 'roles'
+    else:
+        class Role(AuthRoleMixin, db.Model):
+            __tablename__ = 'roles'
+
+    Table(
+        'users_roles', db.metadata,
+        Column('user_id', Integer, ForeignKey(User.id)),
+        Column('role_id', Integer, ForeignKey(Role.id))
+    )
+
+    extend_user_model_with_role_methods(User, Role)
+    return Role
+
+
+def get_auth_role_mixin(auth, User):
     db = auth.db
 
     class AuthRoleMixin(object):
@@ -87,13 +115,13 @@ def extend_role_model(auth, User, RoleMixin=None):
         name = Column(Unicode, nullable=False, unique=True)
 
         @classmethod
+        def by_id(cls, pk):
+            return db.session.query(cls).get(pk)
+
+        @classmethod
         def by_name(cls, name):
             name = to_unicode(name).strip()
             return db.session.query(cls).filter(cls.name == name).first()
-
-        @classmethod
-        def by_id(cls, pk):
-            return db.session.query(cls).get(pk)
 
         @classmethod
         def get_or_create(cls, name):
@@ -107,28 +135,17 @@ def extend_role_model(auth, User, RoleMixin=None):
 
         @declared_attr
         def users(cls):
-            return relationship(User, lazy='dynamic', order_by='User.login',
+            return relationship(
+                User, lazy='dynamic', order_by='User.login',
                 secondary='users_roles', enable_typechecks=False,
-                backref=backref('roles', lazy='joined'))
+                backref=backref('roles', lazy='joined')
+            )
 
         def __repr__(self):
             repr = '<Role {0}>'.format(self.name)
             return to_native(repr)
 
-    if RoleMixin is not None:
-        class Role(RoleMixin, AuthRoleMixin, db.Model):
-            __tablename__ = 'roles'
-    else:
-        class Role(AuthRoleMixin, db.Model):
-            __tablename__ = 'roles'
-
-    Table('users_roles', db.metadata,
-        Column('user_id', Integer, ForeignKey(User.id)),
-        Column('role_id', Integer, ForeignKey(Role.id))
-    )
-
-    extend_user_model_with_role_methods(User, Role)
-    return Role
+    return AuthRoleMixin
 
 
 def extend_user_model_with_role_methods(User, Role):
@@ -161,4 +178,3 @@ def extend_user_model_with_role_methods(User, Role):
         return False
 
     User.has_role = _has_role
-

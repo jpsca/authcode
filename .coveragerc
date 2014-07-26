@@ -1,6 +1,6 @@
 [run]
 branch = True
-omit = tests/*, setup.py
+omit = tests/*, setup.py, authcode/_compat.py, authcode/wsgi/cherrypy.py
 
 [report]
 # Regexes for lines to exclude from consideration

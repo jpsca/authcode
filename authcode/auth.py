@@ -8,7 +8,6 @@ from functools import wraps
 
 from passlib import hash as ph
 from passlib.context import CryptContext
-from passlib.exc import MissingBackendError
 
 from . import utils, views, wsgi
 from ._compat import to_unicode
@@ -20,9 +19,7 @@ from .models import extend_user_model, extend_role_model
 
 
 class WrongHashAlgorithm(Exception):
-
-    def __str__(self):
-        return WRONG_HASH_MESSAGE
+    pass
 
 
 class Auth(object):
@@ -56,11 +53,10 @@ class Auth(object):
         'wsgi': wsgi.werkzeug,
     }
 
-    def __init__(
-            self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
-            db=None, UserMixin=None, RoleMixin=None, roles=False,
-            session=None, request=None, render=None, send_email=None, **kwargs
-            ):
+    def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
+                 db=None, UserMixin=None, RoleMixin=None, roles=False,
+                 session=None, request=None,
+                 render=None, send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
@@ -94,7 +90,7 @@ class Auth(object):
         """
         hash = hash.replace('-', '_')
         if hash not in VALID_HASHERS:
-            raise WrongHashAlgorithm
+            raise WrongHashAlgorithm(WRONG_HASH_MESSAGE)
         hasher = getattr(ph, hash)
         utils.test_hasher(hasher)
         self._set_hasher(hasher, hash, rounds)
@@ -128,9 +124,9 @@ class Auth(object):
         return hashed
 
     def password_is_valid(self, secret, hashed):
-        secret = self.prepare_password(secret)
         if secret is None or hashed is None:
             return False
+        secret = self.prepare_password(secret)
         try:
             return self.hasher.verify(secret, hashed)
         except ValueError:
@@ -169,7 +165,6 @@ class Auth(object):
         if new_hash.split('$')[:3] == user.password.split('$')[:3]:
             return
         user.set_raw_password(new_hash)
-        self.db.session.commit()
 
     def auth_token(self, credentials, token_life=None):
         logger = logging.getLogger(__name__)
@@ -185,8 +180,7 @@ class Auth(object):
         token_life = token_life or self.token_life
         user = self.User.by_id(uid)
         if not user:
-            logger.info(u'Tampered auth token? uid `{0} not found'
-                .format(uid[:20]))
+            logger.info(u'Tampered auth token? uid `{0} not found'.format(uid[:20]))
             return None
 
         valid = user.get_token(timestamp) == token
@@ -277,8 +271,6 @@ class Auth(object):
 
         """
         csrf = options.get('csrf')
-        if csrf not in (True, False, None):
-            csrf = None
         roles = options.get('roles') or []
         role = options.get('role')
         if role:
@@ -299,21 +291,18 @@ class Auth(object):
 
                 if hasattr(user, 'has_role') and roles:
                     if not user.has_role(*roles):
-                        logger.debug(u'User `{0}`: has_role fail'
-                            .format(user.login))
-                        logger.debug(u'User roles: {0}'.format(
-                            [r.name for r in user.roles]
-                        ))
+                        logger.debug(u'User `{0}`: has_role fail'.format(user.login))
+                        logger.debug(u'User roles: {0}'.format([r.name for r in user.roles]))
                         return self.wsgi.raise_forbidden()
 
                 for test in tests:
                     test_pass = test(user, *args, **kwargs)
                     if not test_pass:
-                        logger.debug(u'User `{0}`: test fail'
-                            .format(user.login))
+                        logger.debug(u'User `{0}`: test fail'.format(user.login))
                         return self.wsgi.raise_forbidden()
 
-                if (self.wsgi.not_safe_method(request) and csrf != False) or csrf:
+                disable_csrf = csrf == False  # noqa
+                if (self.wsgi.not_safe_method(request) and not disable_csrf) or csrf:
                     if not self.csrf_token_is_valid(request):
                         logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
                         return self.wsgi.raise_forbidden("CSFR token isn't valid")
@@ -361,4 +350,3 @@ class Auth(object):
     def auth_change_password(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.change_password(self, request, **kwargs)
-

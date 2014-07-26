@@ -17,6 +17,7 @@ def test_webob():
     assert w.get_full_path(req) == path
     assert w.make_full_url(req, u'/hey/') == 'http://localhost/hey/'
     assert w.is_post(req)
+    assert w.not_safe_method(req)
 
     with pytest.raises(Exception):
         w.redirect('http://google.com')
@@ -30,6 +31,7 @@ def test_webob():
 
     req = Request.blank(path)
     assert not w.is_post(req)
+    assert not w.not_safe_method(req)
 
 
 # def test_cherrypy():
@@ -70,8 +72,7 @@ def test_werkzeug():
     data = {'foo': 'some text'}
     headers = {'foo': 'bar'}
 
-    builder = EnvironBuilder(path=path, method='POST',
-        data=data, headers=headers)
+    builder = EnvironBuilder(path=path, method='POST', data=data, headers=headers)
     env = builder.get_environ()
     req = Request(env)
 
@@ -95,4 +96,3 @@ def test_werkzeug():
     env = builder.get_environ()
     req = Request(env)
     assert not w.is_post(req)
-

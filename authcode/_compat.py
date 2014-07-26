@@ -22,15 +22,6 @@ if PY2:
             return x.encode(charset, errors)
         raise TypeError('Expected bytes')
 
-    def implements_to_string(cls):
-        cls.__unicode__ = cls.__str__
-        cls.__str__ = lambda x: x.__unicode__().encode('utf-8')
-        return cls
-
-    def implements_bool(cls):
-        cls.__nonzero__ = cls.__bool__
-        del cls.__bool__
-        return cls
 else:
     text_type = str
 
@@ -42,9 +33,6 @@ else:
         if isinstance(x, str):
             return x.encode(charset, errors)
         raise TypeError('Expected bytes')
-
-    implements_to_string = _identity
-    implements_bool = _identity
 
 
 def to_unicode(x, charset=sys.getdefaultencoding(), errors='strict',

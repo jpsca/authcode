@@ -1,10 +1,8 @@
 # coding=utf-8
 from __future__ import print_function
 
-import pytest
 import authcode
-from authcode._compat import to_unicode
-from authcode.constants import DEFAULT_HASHER
+import pytest
 from sqlalchemy_wrapper import SQLAlchemy
 from passlib import hash as ph
 from passlib.exc import MissingBackendError
@@ -17,94 +15,6 @@ try:
     bcrypt_available = True
 except MissingBackendError:
     bcrypt_available = False
-
-
-def test_user_db():
-    db = SQLAlchemy()
-
-    auth = authcode.Auth(SECRET_KEY, db=db)
-    User = auth.User
-
-    db.create_all()
-    user = User(login=u'meh', password='foobar')
-    db.session.add(user)
-    db.flush()
-
-    assert user.login == u'meh'
-    assert hasattr(user, 'password')
-    assert hasattr(user, 'last_sign_in')
-    assert repr(user) == '<User meh>'
-
-
-def test_extended_user_db():
-    db = SQLAlchemy()
-
-    class UserMixin(object):
-        email = db.Column(db.Unicode(300))
-
-        def __repr__(self):
-            return 'overwrited'
-
-    class RoleMixin(object):
-        description = db.Column(db.UnicodeText)
-
-    auth = authcode.Auth(SECRET_KEY, db=db,
-        UserMixin=UserMixin, RoleMixin=RoleMixin)
-    User = auth.User
-    Role = auth.Role
-
-    db.create_all()
-    user = User(login=u'meh', password='foobar', email=u'text@example.com')
-    db.session.add(user)
-    db.flush()
-
-    assert User.__tablename__ == 'users'
-    assert user.login == u'meh'
-    assert user.email == u'text@example.com'
-    assert hasattr(user, 'password')
-    assert hasattr(user, 'last_sign_in')
-    assert repr(user) == 'overwrited'
-
-    assert hasattr(Role, 'description')
-
-
-def test_flask_sqlalchemy():
-    from flask import Flask
-    from flask.ext.sqlalchemy import SQLAlchemy
-
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
-    db = SQLAlchemy(app)
-
-
-    class UserMixin(object):
-        email = db.Column(db.Unicode(300))
-
-        def __init__(self, login, email):
-            self.login = login
-            self.email = email
-            self.password = 'foobar'
-
-
-    class RoleMixin(object):
-        description = db.Column(db.UnicodeText)
-
-
-    auth = authcode.Auth(SECRET_KEY, db=db,
-        UserMixin=UserMixin, RoleMixin=RoleMixin)
-    authcode.setup_for_flask(auth, app)
-    User = auth.User
-
-    db.create_all()
-    user = User(u'meh', u'text@example.com')
-    db.session.add(user)
-    db.session.commit()
-
-    assert user.login == u'meh'
-    assert user.email == u'text@example.com'
-    assert hasattr(user, 'password')
-    assert hasattr(user, 'last_sign_in')
-    assert repr(user) == '<User meh>'
 
 
 def test_automatic_password_hashing():
@@ -130,6 +40,9 @@ def test_hash_password():
     assert hashed.startswith('$pbkdf2-sha512$345$')
     assert auth.password_is_valid(p, hashed)
     assert not auth.password_is_valid(p, 'lalala')
+    assert not auth.password_is_valid(p, None)
+    assert not auth.password_is_valid(None, 'lalala')
+    assert not auth.password_is_valid(None, None)
 
 
 def test_use_pepper():
@@ -141,6 +54,11 @@ def test_use_pepper():
     assert not auth.password_is_valid(p, hashed)
 
 
+def test_unsupported_hash():
+    with pytest.raises(authcode.WrongHashAlgorithm):
+        authcode.Auth(SECRET_KEY, hash='foobar')
+
+
 def test_legacy_reader():
     p = 'password'
     auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512', rounds=345)
@@ -149,20 +67,6 @@ def test_legacy_reader():
 
     assert auth.password_is_valid(p, hashed1)
     assert auth.password_is_valid(p, hashed2)
-
-
-def test_set_raw_password():
-    db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
-    User = auth.User
-    db.create_all()
-    user = User(login=u'meh', password='foobar')
-    db.session.add(user)
-    db.session.commit()
-
-    user.set_raw_password('meh')
-    db.session.commit()
-    assert user.password == 'meh'
 
 
 def test_sql_injection():
@@ -192,7 +96,7 @@ def test_authenticate_with_password():
     User = auth.User
 
     db.create_all()
-    credentials = {'login':u'meh', 'password':'foobar'}
+    credentials = {'login': u'meh', 'password': 'foobar'}
     user = User(**credentials)
     db.session.add(user)
     db.session.commit()
@@ -202,13 +106,13 @@ def test_authenticate_with_password():
     auth_user = auth.authenticate({})
     assert not auth_user
 
-    auth_user = auth.authenticate({'login':u'meh'})
+    auth_user = auth.authenticate({'login': u'meh'})
     assert not auth_user
 
-    auth_user = auth.authenticate({'login':u'wtf', 'password':'foobar'})
+    auth_user = auth.authenticate({'login': u'wtf', 'password': 'foobar'})
     assert not auth_user
 
-    auth_user = auth.authenticate({'login':u'meh', 'password':'lalala'})
+    auth_user = auth.authenticate({'login': u'meh', 'password': 'lalala'})
     assert not auth_user
 
 
@@ -219,7 +123,7 @@ def test_update_on_authenticate():
     User = auth.User
     db.create_all()
 
-    credentials = {'login':u'meh', 'password':'foobar'}
+    credentials = {'login': u'meh', 'password': 'foobar'}
     user = User(**credentials)
     db.session.add(user)
     db.session.commit()
@@ -244,7 +148,7 @@ def test_disable_update_on_authenticate():
     User = auth.User
     db.create_all()
 
-    credentials = {'login':u'meh', 'password':'foobar'}
+    credentials = {'login': u'meh', 'password': 'foobar'}
     user = User(**credentials)
     db.session.add(user)
     db.session.commit()
@@ -285,7 +189,7 @@ def test_get_token():
 def test_authenticate_with_token():
     from time import time
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, token_life=3*60)
+    auth = authcode.Auth(SECRET_KEY, db=db, token_life=3 * 60)
 
     User = auth.User
 
@@ -295,11 +199,11 @@ def test_authenticate_with_token():
     db.session.commit()
 
     token = user.get_token()
-    auth_user = auth.authenticate({'token':token})
+    auth_user = auth.authenticate({'token': token})
     assert auth_user
 
     token = '555' + user.get_token()
-    auth_user = auth.authenticate({'token':token})
+    auth_user = auth.authenticate({'token': token})
     assert not auth_user
 
     auth_user = auth.authenticate({'token': ''})
@@ -307,12 +211,12 @@ def test_authenticate_with_token():
 
     timestamp = int(time()) - auth.token_life + 1
     token = user.get_token(timestamp)
-    auth_user = auth.authenticate({'token':token})
+    auth_user = auth.authenticate({'token': token})
     assert auth_user
 
     timestamp = int(time()) - auth.token_life - 1
     token = user.get_token(timestamp)
-    auth_user = auth.authenticate({'token':token})
+    auth_user = auth.authenticate({'token': token})
     assert not auth_user
 
 
@@ -341,8 +245,6 @@ def test_login_logout():
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
     db.session.commit()
-
-    log = []
 
     session = {}
     auth.login(user, session=session)
@@ -378,33 +280,6 @@ def test_get_user():
     assert session.get(auth.session_key) is None
 
 
-def test_user_role_model():
-    db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
-    User = auth.User
-    db.create_all()
-    user = User(login=u'meh', password='foobar')
-    db.session.add(user)
-    db.session.commit()
-
-    assert hasattr(auth, 'Role')
-    assert hasattr(User, 'roles')
-
-    user.add_role('admin')
-    db.session.commit()
-    assert user.has_role('admin')
-    assert repr(user.roles[0]) == '<Role admin>'
-
-    user.remove_role('admin')
-    db.session.commit()
-    assert not user.has_role('admin')
-
-    user.remove_role('admin')
-    db.session.commit()
-    user.remove_role('foobar')
-    db.session.commit()
-
-
 def test_get_csrf_token():
     auth = authcode.Auth(SECRET_KEY)
     session = {}
@@ -435,7 +310,7 @@ def test_replace_hash_password_method():
     User = auth.User
     db.create_all()
 
-    credentials = {'login':u'meh', 'password':'foobar'}
+    credentials = {'login': u'meh', 'password': 'foobar'}
     user = User(**credentials)
     db.session.add(user)
     db.session.commit()

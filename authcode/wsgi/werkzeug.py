@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import print_function, absolute_import
 
-from .._compat import to_unicode, to_native
+from .._compat import to_native
 
 
 SEE_OTHER = 303
@@ -52,4 +52,3 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return request.form
-

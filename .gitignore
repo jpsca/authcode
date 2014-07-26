@@ -8,9 +8,10 @@ dist
 .coverage
 .tox
 htmlcov
+wheel
 __pycache__
 heroku
 _secret.py
 .secret
+.coveralls.yml
 docs/_theme_*/*
-wheel

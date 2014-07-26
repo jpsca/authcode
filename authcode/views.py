@@ -81,8 +81,10 @@ def reset_password(auth, request, token=None, *args, **kwargs):
         if not user:
             kwargs['error'] = 'NOT FOUND'
         else:
-            reset_url = auth.wsgi.make_full_url(request,
-                auth.url_reset_password + user.get_token() + '/')
+            reset_url = auth.wsgi.make_full_url(
+                request,
+                auth.url_reset_password + user.get_token() + '/'
+            )
             data = {
                 'login': user.login,
                 'reset_url': reset_url,
@@ -139,4 +141,3 @@ def change_password(auth, request, manual=True, *args, **kwargs):
     kwargs['manual'] = manual
     kwargs['csrf_token'] = auth.get_csrf_token
     return auth.render(auth.template_change_password, **kwargs)
-

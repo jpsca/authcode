@@ -42,4 +42,3 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return request.POST
-

@@ -5,7 +5,7 @@ import hashlib
 import hmac
 from time import time
 
-from ._compat import to_bytes, implements_to_string, implements_bool
+from ._compat import to_bytes
 
 
 def test_hasher(hasher):
@@ -100,12 +100,10 @@ def default_render(template, **context):
     return tmpl.render(context)
 
 
-def default_send_email(user, subject, msg):
+def default_send_email(user, subject, msg):  # pragma: no cover
     print(user, subject, msg)
 
 
-@implements_to_string
-@implements_bool
 class LazyUser(object):
     """Acts as a proxy for the current user.  Forwards all operations to
     the proxied user.  The only operations not supported for forwarding
@@ -118,7 +116,7 @@ class LazyUser(object):
         object.__setattr__(self, '_LazyUser__storage', storage)
         setattr(storage, 'user', self)
 
-    def _get_user(self):
+    def __get_user(self):
         """Return the current object.  This is useful if you want the real
         object behind the proxy at a time for performance reasons or because
         you want to pass the object into a different context.
@@ -130,97 +128,171 @@ class LazyUser(object):
 
     @property
     def __dict__(self):
-        try:
-            return self._get_user().__dict__
-        except RuntimeError:
-            raise AttributeError('__dict__')
+        return self.__get_user().__dict__
+
+    def __doc__(self):
+        return self.__get_user().__doc__
 
     def __repr__(self):
-        try:
-            obj = self._get_user()
-        except RuntimeError:
-            return '<%s unbound>' % self.__class__.__name__
-        return repr(obj)
+        return repr(self.__get_user())
 
-    def __nonzero__(self):
-        try:
-            return bool(self._get_user())
-        except RuntimeError:
-            return False
+    def __bool__(self):
+        return bool(self.__get_user())
+
+    __nonzero__ = __bool__
+
+    def __str__(self):
+        return str(self.__get_user())
 
     def __unicode__(self):
-        try:
-            return unicode(self._get_user())
-        except RuntimeError:
-            return repr(self)
+        return unicode(self.__get_user())
 
     def __dir__(self):
-        try:
-            return dir(self._get_user())
-        except RuntimeError:
-            return []
+        return dir(self.__get_user())
 
     def __getattr__(self, name):
-        if name == '__members__':
-            return dir(self._get_user())
-        return getattr(self._get_user(), name)
+        return getattr(self.__get_user(), name)
 
-    def __setitem__(self, key, value):
-        self._get_user()[key] = value
+    def __setattr__(self, name, value):
+        setattr(self.__get_user(), name, value)
 
-    def __delitem__(self, key):
-        del self._get_user()[key]
+    def __delattr__(self, name, value):  # pragma: no cover
+        delattr(self.__get_user(), name)
 
-    def __setslice__(self, i, j, seq):
-        self._get_user()[i:j] = seq
+    def __setitem__(self, key, value):  # pragma: no cover
+        self.__get_user()[key] = value
 
-    def __delslice__(self, i, j):
-        del self._get_user()[i:j]
+    def __delitem__(self, key):  # pragma: no cover
+        del self.__get_user()[key]
 
-    __str__ = lambda x: str(x._get_user())
-    __bool__ = lambda x: x._get_user() is not None
+    def __setslice__(self, i, j, seq):  # pragma: no cover
+        self.__get_user()[i:j] = seq
 
-    __setattr__ = lambda x, n, v: setattr(x._get_user(), n, v)
-    __delattr__ = lambda x, n: delattr(x._get_user(), n)
-    __lt__ = lambda x, o: x._get_user() < o
-    __le__ = lambda x, o: x._get_user() <= o
-    __eq__ = lambda x, o: x._get_user() == o
-    __ne__ = lambda x, o: x._get_user() != o
-    __gt__ = lambda x, o: x._get_user() > o
-    __ge__ = lambda x, o: x._get_user() >= o
-    __cmp__ = lambda x, o: cmp(x._get_user(), o)
-    __hash__ = lambda x: hash(x._get_user())
-    __call__ = lambda x, *a, **kw: x._get_user()(*a, **kw)
-    __getitem__ = lambda x, i: x._get_user()[i]
-    __iter__ = lambda x: iter(x._get_user())
-    __contains__ = lambda x, i: i in x._get_user()
-    __getslice__ = lambda x, i, j: x._get_user()[i:j]
-    __add__ = lambda x, o: x._get_user() + o
-    __sub__ = lambda x, o: x._get_user() - o
-    __mul__ = lambda x, o: x._get_user() * o
-    __floordiv__ = lambda x, o: x._get_user() // o
-    __mod__ = lambda x, o: x._get_user() % o
-    __divmod__ = lambda x, o: x._get_user().__divmod__(o)
-    __pow__ = lambda x, o: x._get_user() ** o
-    __lshift__ = lambda x, o: x._get_user() << o
-    __rshift__ = lambda x, o: x._get_user() >> o
-    __and__ = lambda x, o: x._get_user() & o
-    __xor__ = lambda x, o: x._get_user() ^ o
-    __or__ = lambda x, o: x._get_user() | o
-    __div__ = lambda x, o: x._get_user().__div__(o)
-    __truediv__ = lambda x, o: x._get_user().__truediv__(o)
-    __neg__ = lambda x: -(x._get_user())
-    __pos__ = lambda x: +(x._get_user())
-    __abs__ = lambda x: abs(x._get_user())
-    __len__ = lambda x: len(x._get_user())
-    __invert__ = lambda x: ~(x._get_user())
-    __complex__ = lambda x: complex(x._get_user())
-    __int__ = lambda x: int(x._get_user())
-    __long__ = lambda x: long(x._get_user())
-    __float__ = lambda x: float(x._get_user())
-    __oct__ = lambda x: oct(x._get_user())
-    __hex__ = lambda x: hex(x._get_user())
-    __index__ = lambda x: x._get_user().__index__()
-    __coerce__ = lambda x, o: x.__coerce__(x, o)
-    __enter__ = lambda x: x.__enter__()
-    __exit__ = lambda x, *a, **kw: x.__exit__(*a, **kw)
+    def __delslice__(self, i, j):  # pragma: no cover
+        del self.__get_user()[i:j]
+
+    def __lt__(self, other):  # pragma: no cover
+        return self.__get_user() < other
+
+    def __le__(self, other):  # pragma: no cover
+        return self.__get_user() <= other
+
+    def __eq__(self, other):  # pragma: no cover
+        return self.__get_user() == other
+
+    def __ne__(self, other):  # pragma: no cover
+        return self.__get_user() != other
+
+    def __gt__(self, other):  # pragma: no cover
+        return self.__get_user() > other
+
+    def __ge__(self, other):  # pragma: no cover
+        return self.__get_user() >= other
+
+    def __cmp__(self, other):  # pragma: no cover
+        return cmp(self.__get_user(), other)
+
+    def __hash__(self):  # pragma: no cover
+        return hash(self.__get_user())
+
+    def __call__(self, *args, **kwargs):  # pragma: no cover
+        return self.__get_user()(*args, **kwargs)
+
+    def __getitem__(self, i):  # pragma: no cover
+        return self.__get_user()[i]
+
+    def __iter__(self):  # pragma: no cover
+        return iter(self.__get_user())
+
+    def __contains__(self, i):  # pragma: no cover
+        return i in self.__get_user()
+
+    def __getslice__(self, i, j):  # pragma: no cover
+        return self.__get_user()[i:j]
+
+    def __add__(self, other):  # pragma: no cover
+        return self.__get_user() + other
+
+    def __sub__(self, other):  # pragma: no cover
+        return self.__get_user() - other
+
+    def __mul__(self, other):  # pragma: no cover
+        return self.__get_user() * other
+
+    def __floordiv__(self, other):  # pragma: no cover
+        return self.__get_user() // other
+
+    def __mod__(self, other):  # pragma: no cover
+        return self.__get_user() % other
+
+    def __divmod__(self, other):  # pragma: no cover
+        return self.__get_user().__divmod__(other)
+
+    def __pow__(self, other):  # pragma: no cover
+        return self.__get_user() ** other
+
+    def __lshift__(self, other):  # pragma: no cover
+        return self.__get_user() << other
+
+    def __rshift__(self, other):  # pragma: no cover
+        return self.__get_user() >> other
+
+    def __and__(self, other):  # pragma: no cover
+        return self.__get_user() & other
+
+    def __xor__(self, other):  # pragma: no cover
+        return self.__get_user() ^ other
+
+    def __or__(self, other):  # pragma: no cover
+        return self.__get_user() | other
+
+    def __div__(self, other):  # pragma: no cover
+        return self.__get_user().__div__(other)
+
+    def __truediv__(self, other):  # pragma: no cover
+        return self.__get_user().__truediv__(other)
+
+    def __neg__(self):  # pragma: no cover
+        return -(self.__get_user())
+
+    def __pos__(self):  # pragma: no cover
+        return +(self.__get_user())
+
+    def __abs__(self):  # pragma: no cover
+        return abs(self.__get_user())
+
+    def __len__(self):  # pragma: no cover
+        return len(self.__get_user())
+
+    def __invert__(self):  # pragma: no cover
+        return ~(self.__get_user())
+
+    def __complex__(self):  # pragma: no cover
+        return complex(self.__get_user())
+
+    def __int__(self):  # pragma: no cover
+        return int(self.__get_user())
+
+    def __long__(self):  # pragma: no cover
+        return long(self.__get_user())
+
+    def __float__(self):  # pragma: no cover
+        return float(self.__get_user())
+
+    def __oct__(self):  # pragma: no cover
+        return oct(self.__get_user())
+
+    def __hex__(self):  # pragma: no cover
+        return hex(self.__get_user())
+
+    def __index__(self):  # pragma: no cover
+        return self.__get_user().__index__()
+
+    def __coerce__(self, other):  # pragma: no cover
+        return self.__get_user().__coerce__(self, other)
+
+    def __enter__(self):  # pragma: no cover
+        return self.__get_user().__enter__()
+
+    def __exit__(self, *args, **kwargs):  # pragma: no cover
+        return self.__get_user().__exit__(*args, **kwargs)

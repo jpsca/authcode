@@ -24,7 +24,7 @@ clean-pyc:
 	find . -name '__pycache__' -exec rm -rf {} +
 
 lint:
-	flake8 authcode tests
+	flake8 authcode tests --ignore=E501
 
 test:
 	py.test -x tests/
@@ -33,7 +33,7 @@ test-all:
 	tox
 
 coverage:
-	py.test --cov-config .coveragerc --cov-report html --cov authcode tests/
+	py.test --cov-config .coveragerc --cov authcode --cov-report html tests/
 	open htmlcov/index.html
 
 publish: clean

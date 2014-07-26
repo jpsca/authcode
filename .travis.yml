@@ -5,5 +5,9 @@ python:
   - "pypy"
   - "3.3"
   - "2.6"
-install: python setup.py install && pip install -r requirements_tests.txt
-script: py.test tests
+install:
+    - python setup.py install
+    - pip install -r requirements_tests.txt
+    - pip install coveralls
+script:
+    py.test --cov-config .coveragerc --cov authcode tests/
