@@ -57,7 +57,8 @@ def setup_for_flask_views(auth, app):
                   methods=['GET', 'POST'])(auth.auth_reset_password)
 
 
-def setup_for_shake(auth, app, views=True, send_email=None, render=None):  # pragma: no cover
+def setup_for_shake(auth, app, views=True, send_email=None,
+                    render=None):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
 
@@ -66,13 +67,11 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):  # pra
     elif render:
         auth.render = render
 
-    def set_user(request, **kwargs):  # pragma: no cover
+    def set_user_shake(request, **kwargs):
         auth.session = request.session
-        # By doing this, `request` now has a `user` attribute that it'll be
-        # replaced by the real user object the first time is used.
         LazyUser(auth, request)
 
-    app.before_request_funcs.insert(0, set_user)
+    app.before_request_funcs.insert(0, set_user_shake)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
     app.render.env.globals['auth'] = auth
 
@@ -81,7 +80,7 @@ def setup_for_shake(auth, app, views=True, send_email=None, render=None):  # pra
         setup_for_shake_views(auth, app)
 
 
-def setup_for_shake_views(auth, app):  # pragma: no cover
+def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)

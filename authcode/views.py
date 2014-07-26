@@ -1,6 +1,5 @@
 # coding=utf-8
 from datetime import datetime
-import logging
 
 from ._compat import to_unicode
 
@@ -13,8 +12,6 @@ def pop_next_url(auth, request, session):
 
 
 def sign_in(auth, request, session, *args, **kwargs):
-    logger = logging.getLogger(__name__)
-
     if auth.get_user():
         next = pop_next_url(auth, request, session)
         return auth.wsgi.redirect(next)
@@ -23,12 +20,7 @@ def sign_in(auth, request, session, *args, **kwargs):
     credentials = auth.wsgi.get_post_data(request) or {}
 
     if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
-        user = None
-        try:
-            user = auth.authenticate(credentials)
-        except ValueError as e:
-            logger.error(e)
-
+        user = auth.authenticate(credentials)
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
             auth.db.commit()
@@ -48,10 +40,11 @@ def sign_in(auth, request, session, *args, **kwargs):
 def sign_out(auth, request, *args, **kwargs):
     # this view is CSRF protected
     if not auth.csrf_token_is_valid(request):
-        return auth.wsgi.raise_forbidden()
+        auth.wsgi.raise_forbidden()
 
     auth.logout()
     if auth.template_sign_out:
+        kwargs['auth'] = auth
         return auth.render(auth.template_sign_out, **kwargs)
 
     next = auth.sign_out_redirect or '/'

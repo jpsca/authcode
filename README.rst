@@ -1,13 +1,17 @@
 
 ===========================
-Authcode  |travis|
+Authcode
 ===========================
 
 Awesome authentication code.
 
-.. |travis| image:: https://travis-ci.org/lucuma/authcode.png
-   :alt: Build Status
+.. image:: https://travis-ci.org/lucuma/authcode.png
    :target: https://travis-ci.org/lucuma/authcode
+   :alt: Build Status
+
+.. image:: https://coveralls.io/repos/lucuma/authcode/badge.png
+    :target: https://coveralls.io/r/lucuma/authcode
+    :alt: Tests coverage status
 
 
 Community & support

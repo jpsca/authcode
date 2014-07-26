@@ -2,31 +2,35 @@
 from __future__ import print_function
 import os
 
-import authcode
 from authcode._compat import to_unicode
 from authcode.views import pop_next_url
 from flask import Flask, request
 from sqlalchemy_wrapper import SQLAlchemy
+import authcode
 
 from helpers import SECRET_KEY
 
 
 def test_pop_next_url():
     auth = authcode.Auth(SECRET_KEY)
-    session = {auth.redirect_key: '/abc'}
+    session = {auth.redirect_key: '/abc/'}
     next_url = pop_next_url(auth, request, session)
-    assert next_url == '/abc'
+    assert next_url == '/abc/'
 
-    auth.sign_in_redirect = '/test'
+    auth.sign_in_redirect = '/test/'
     next_url = pop_next_url(auth, request, {})
     assert next_url == auth.sign_in_redirect
+
+    auth.sign_in_redirect = lambda request: '/dynamic/'
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == '/dynamic/'
 
     auth.sign_in_redirect = None
     next_url = pop_next_url(auth, request, {})
     assert next_url == '/'
 
 
-def get_flask_app(roles=False, **kwargs):
+def _get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
     User = auth.User
@@ -46,7 +50,7 @@ def get_flask_app(roles=False, **kwargs):
 
 
 def test_login_view():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
 
     r = client.get(auth.url_sign_in)
@@ -64,7 +68,7 @@ def test_login_view():
 
 
 def test_login_wrong_credentials():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
 
     data = {
@@ -77,8 +81,22 @@ def test_login_wrong_credentials():
     assert auth.session_key not in auth.session
 
 
+def test_login_very_wrong_credentials():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+
+    data = {
+        'login': None,
+        'password': int,
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    r = client.post(auth.url_sign_in, data=data)
+    assert u'<!-- ERROR -->' in to_unicode(r.data)
+    assert auth.session_key not in auth.session
+
+
 def test_login_right_credentials():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
 
     data = {
@@ -92,7 +110,7 @@ def test_login_right_credentials():
 
 
 def test_login_redirect_if_already_logged_in():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     auth.login(user)
 
@@ -101,19 +119,56 @@ def test_login_redirect_if_already_logged_in():
     assert r.status == '303 SEE OTHER'
 
 
-def test_redirect_after_logout():
-    auth, app, user = get_flask_app()
+def test_unprotected_logout():
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     auth.login(user)
 
+    r = client.get(auth.url_sign_out)
+    assert r.status == '403 FORBIDDEN'
+
+
+def test_redirect_after_logout():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+
+    auth.login(user)
     url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
     r = client.get(url)
     assert r.status == '303 SEE OTHER'
     assert auth.session_key not in auth.session
 
+    auth.login(user)
+    auth.sign_out_redirect = '/test/'
+    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
+    r = client.get(url)
+    assert r.status == '303 SEE OTHER'
+    assert r.location.endswith('/test/')
+    assert auth.session_key not in auth.session
+
+    auth.login(user)
+    auth.sign_out_redirect = lambda request: '/dynamic/'
+    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
+    r = client.get(url)
+    assert r.status == '303 SEE OTHER'
+    assert r.location.endswith('/dynamic/')
+    assert auth.session_key not in auth.session
+
+
+def test_logout_view():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+
+    auth.login(user)
+    auth.template_sign_out = 'auth/sign-out.html'
+    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
+    r = client.get(url)
+    assert r.status == '200 OK'
+    assert u'<!-- SIGNED OUT -->' in to_unicode(r.data)
+
 
 def test_reset_password():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     log = []
 
@@ -130,7 +185,7 @@ def test_reset_password():
 
 
 def test_reset_password_wrong_account():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     log = []
 
@@ -148,7 +203,7 @@ def test_reset_password_wrong_account():
 
 
 def test_reset_password_email_sent():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     log = []
 
@@ -166,7 +221,7 @@ def test_reset_password_email_sent():
 
 
 def test_reset_password_wrong_token():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     log = []
 
@@ -182,7 +237,7 @@ def test_reset_password_wrong_token():
 
 
 def test_reset_password_good_token():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
     log = []
 
@@ -202,7 +257,7 @@ def test_reset_password_good_token():
 
 
 def test_change_password():
-    auth, app, user = get_flask_app()
+    auth, app, user = _get_flask_app()
     client = app.test_client()
 
     r = client.get(auth.url_change_password)

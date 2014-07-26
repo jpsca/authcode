@@ -33,7 +33,7 @@ test-all:
 	tox
 
 coverage:
-	py.test --cov-config .coveragerc --cov authcode --cov-report html tests/
+	py.test -x --cov-config .coveragerc --cov authcode --cov-report html tests/
 	open htmlcov/index.html
 
 publish: clean
