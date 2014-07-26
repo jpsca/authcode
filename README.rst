@@ -17,7 +17,7 @@ Awesome authentication code.
 Community & support
 --------------------
 
-Issue tracker: <https://github.com/lucuma/authcode/issues>
+Issue tracker: https://github.com/lucuma/authcode/issues
 
 ______
 
