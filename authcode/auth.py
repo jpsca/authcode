@@ -116,7 +116,10 @@ class Auth(object):
         self.rounds = rounds
 
     def prepare_password(self, secret):
-        return self.pepper + to_unicode(secret)
+        return u'{0}{1}'.format(
+            to_unicode(self.pepper),
+            to_unicode(secret)
+        )
 
     def hash_password(self, secret):
         secret = self.prepare_password(secret)

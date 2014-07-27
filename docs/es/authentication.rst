@@ -8,13 +8,13 @@ Autenticación
 Integración con tus modelos
 =============================================
 
-No tiene sentido una biblioteca de autenticación que no se integre con tu modelo de usuarios. El problema es que motras bibliotecas en el pasado te han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos [1]_ o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
+No tiene sentido una biblioteca de autenticación que no se integre con tu modelo de usuarios. El problema es que otras bibliotecas en el pasado te han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos [#]_ o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
 
 Authcode en cambio, aprovecha el poder de SQLAlchemy y los *mixins* para dar la mayor flexibilidad sin sacrificar funcionalidad.
 
 Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en un mixin. Y puedes llamar la tabla como quieras, si tu mixin incluye un ``__tablename__`` (si no, por defecto es ``users``).
 
-De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “perfil” [2]_.
+De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “perfil” [#]_.
 
 .. code-block:: python
 
@@ -117,8 +117,11 @@ Cuando los roles están activados, las instancias de usuarios tienen estos tres 
         assert user.has_role('bar', 'admin')  # False
 
 
-Manejo de las contraseñas
+Manejo de contraseñas
 =============================================
+
+Si estás familiarizado con conceptos como *hasheado* de contraseñas y sales sigue leyendo. Si no, mejor si lees primero la sección :ref:`about_passwords` en la guía de :ref:`security`.
+
 
 
 Proceso de login
@@ -144,5 +147,5 @@ cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
-.. [1] *cof cof Django*.
-.. [2] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.
+.. [#] *cof cof Django*.
+.. [#] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.
