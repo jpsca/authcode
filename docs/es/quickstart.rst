@@ -1,16 +1,16 @@
 .. _quickstart:
 
-============================
+=============================================
 Introducción a Authcode
-============================
+=============================================
 
 .. container:: lead
 
-    Esta guía cubre lo que necesitas saber para empezar a usarla desde cero.
+    Esta guía cubre lo que necesitas saber para empezar a usar Authcode.
 
 
-Casi todas las aplicaciones web necesitan manejar usuarios, y eso significa poder identificarlos y poder darles acceso para hacer algunas cosas y no otras. El problema que
-
+Requisitos
+=============================================
 
 Aunque Authcode no depende de ningún framework web específico, si necesita que exista cierta infraestructura básica para funcionar. :
 
@@ -22,9 +22,26 @@ Aunque Authcode no depende de ningún framework web específico, si necesita que
 - Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy-Wrapper`_ o `Flask-SQLAlchemy`_ ya tienes uno. Si no, solo pasa un objeto propio con el modelo base en ``db.Model`` y la sesión de SQLAlchemy en ``db.session``.
 
 
-
 .. _Werkzeug: http://werkzeug.pocoo.org/
 .. _WebOb: http://webob.org/
 .. _CherryPy: http://www.cherrypy.org/
 .. _SQLAlchemy-Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
 .. _Flask-SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
+
+
+Meh
+=============================================
+
+    .. code-block:: python
+        import authcode
+        from flask.ext.sqlalchemy import SQLAlchemy
+
+        app = Flask(__name__)
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+        db = SQLAlchemy(app)
+
+        auth = authcode.Auth(SECRET_KEY, db=db)
+        authcode.setup_for_flask(auth, app)
+        User = auth.User
+
+

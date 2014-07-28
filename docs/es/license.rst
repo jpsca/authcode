@@ -13,19 +13,36 @@ Autores
 
 .. include:: ../../AUTHORS
 
+
 Definiciones generales de la licencia
 ---------------------------------------
 
-Las siguientes secciones contienen el texto completo de la licencia para Authcode y su documentación.
+- La “:ref:`authcode_license`” aplica a todo el código fuente distribuido como parte de Authcode: Authcode mismo, test y al tema base de la documentación (HTML, CSS y JavaScript).
 
--   "AUTHORS" se refiere a los autores listados en la sección :ref:`authors`.
+- La “:ref:`docs_license`” aplica al contenido de la documentación: texto, imágenes y código de ejemplo.
 
--   La ":ref:`authcode-license`" aplica a todo el código fuente distribuido como parte de Authcode (Authcode mismo, sus ejemplos y tests) así como a su documentación.
+- La “:ref:`artwork_license`” aplica al logo de Authcode.
 
-.. _authcode-license:
+
+.. _authcode_license:
 
 Licencia de Authcode
 ---------------------------------------
 
 .. include:: ../../LICENSE
 
+
+.. _docs_license:
+
+Licencia de la documentación
+---------------------------------------
+
+.. include:: ../../docs/DOCS-LICENSE
+
+
+.. _artwork_license:
+
+Licencia del arte
+---------------------------------------
+
+.. include:: ../../artwork/ARTWORK-LICENSE

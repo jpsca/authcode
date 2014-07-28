@@ -15,7 +15,7 @@ Guías de usuario
    advanced
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    security
    license

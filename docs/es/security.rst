@@ -14,7 +14,7 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 .. _about_passwords:
 
-Sobre las contraseñas
+Manejando contraseñas
 =============================================
 
 Las contraseñas no solo protegen tu sito si no que, como muchos suelen reusarla en muchos sitios, también son la llave de entrada a otros sistemas, por lo demás seguros.
@@ -66,8 +66,9 @@ No importa que tan avanzado sea tu sistema de hashing si la contraseña que usas
 
 Otro tipo de ataque, órdenes de magnitud más rápido que la fuerza bruta, es un *ataque de diccionario*. Es básicamente probar una lista de palabras –y combinaciones de ellas— comúnmente usadas en contraseñas. “12345678”, “pizzapizza” o incluso variaciones como “p”$$word" y “123456789j” son casos perdidos contra este ataque.
 
-Como la sal, la “pimienta” es un valor que se agrega a la contraseña antes de hashearla: tu “123456” se vuelve ``$pimienta . 123456``, pero a diferencia de la sal, este valor es único para todos los hashes del sistema, y no se guarda junto al hash original sino como un valor secreto dentro de tu código.
+Como la sal, la “pimienta” es un texto que se agrega a la contraseña antes de hashearla: tu “123456” con una pimienta de “loremipsum” se vuelve ``loremipsum123456``.
 
+A diferencia de la sal, este valor es (1) único para todos los hashes del sistema, (2) secreto, (3) definido por ti, y (4) no se guarda junto al hash original sino en tu mismo código fuente.
 
 .. figure:: _static/pepper.png
    :align: center
@@ -77,9 +78,7 @@ Aunque se tenga una copia de la base de datos, la teoría es que sin acceso al c
 
 .. warning::
 
-    Aunque parece tener mucho sentido, no ha sido categóricamente “demostrado” que agregar una pimienta realmente aumente la seguridad; como tampoco hay absolutamente ningún indicio de que la reduzca.
-
-    Por si las dudas, Authcode por defecto no usa una pimienta, a menos que tu le pases una como parámetro ``pepper`` (y haz que sea de al menos 32 caracteres).
+    A algunas personas les preocupa que no haya sido categóricamente “demostrado” que agregar una pimienta realmente aumenta la seguridad. Por si las dudas, a menos que tu le pases una como parámetro ``pepper`` (haz que sea de al menos 32 caracteres), Authcode por defecto no usa ninguna.
 
 
 .. _security_response:

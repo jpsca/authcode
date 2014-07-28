@@ -24,4 +24,3 @@ Ventajas
 - Compatible with Python 2.6 y 2.7, Pypy y Python 3.3 o superior.
 
 .. include:: contents.rst.inc
-

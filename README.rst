@@ -10,8 +10,8 @@ Awesome authentication code.
    :alt: Build Status
 
 .. image:: https://coveralls.io/repos/lucuma/authcode/badge.png
-    :target: https://coveralls.io/r/lucuma/authcode
-    :alt: Tests coverage status
+   :target: https://coveralls.io/r/lucuma/authcode
+   :alt: Tests coverage status
 
 
 Community & support

@@ -9,7 +9,7 @@ Autorización
     Si fueras a crear un sistema para tu blog, tendrías páginas públicas pero no quisieras que cualquiera pudiera editar o borrar posts en él. Necesitas un mecanismo para que a ciertas páginas solo tengan acceso usuarios autenticados, quizas que también cumplan con algunas condiciones. De eso se trata esta guía.
 
 
-Protegiendo tus vistas
+Protegiendo tus vistas: *@auth.protected*
 =============================================
 
 Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios autenticados. Authcode te hace fácil lograrlo por medio del decorador ``@auth.protected()``. Ejemplo:

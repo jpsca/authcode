@@ -4,15 +4,21 @@
 Autenticación
 =============================================
 
+.. |br| raw:: html
+
+   <br>
+
 
 Integración con tus modelos
 =============================================
 
-No tiene sentido una biblioteca de autenticación que no se integre con tu modelo de usuarios. El problema es que otras bibliotecas en el pasado te han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos [#]_ o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
+No tiene sentido una biblioteca de autenticación que no se integre con tu modelo de usuarios.
+
+El problema con otras bibliotecas y frameworks del pasado han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
 
 Authcode en cambio, aprovecha el poder de SQLAlchemy y los *mixins* para dar la mayor flexibilidad sin sacrificar funcionalidad.
 
-Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en un mixin. Y puedes llamar la tabla como quieras, si tu mixin incluye un ``__tablename__`` (si no, por defecto es ``users``).
+Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en una clase. Y puedes llamar la tabla como quieras incluyendo un atributo ``__tablename__`` (si no, por defecto es ``users``).
 
 De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “perfil” [#]_.
 
@@ -53,10 +59,10 @@ El modelo combinado está en ``auth.User``, para que lo conectes con el resto de
             last_sign_in = Column(DateTime, nullable=True)
             deleted = Column(Boolean, default=False)
 
-    :``login``: Puede ser un nombre de usuario o un email.
-    :``password``: Automáticamente *hashea* cualquier valor que se le asigne.
+    :login: Puede ser un nombre de usuario o un email.
+    :password: Automáticamente *hashea* cualquier valor que se le asigne.
         Más abajo hay detalles de este proceso.
-    :``las_sign_in``: Es la fecha de la última autenticación.
+    :las_sign_in: Es la fecha de la última autenticación.
         La vista de autenticación por defecto se encarga de actualizarla.
         Es necesaria para poder invalidar los enlaces de recuperación de contraseña
         (antes de que pase su tiempo de expiración) entrando con tus credenciales
@@ -117,12 +123,101 @@ Cuando los roles están activados, las instancias de usuarios tienen estos tres 
         assert user.has_role('bar', 'admin')  # False
 
 
-Manejo de contraseñas
+
+Contraseñas
 =============================================
 
-Si estás familiarizado con conceptos como *hasheado* de contraseñas y sales sigue leyendo. Si no, mejor si lees primero la sección :ref:`about_passwords` en la guía de :ref:`security`.
+.. seealso::
+
+    Si estás familiarizado con el concepto de *hashing* de contraseñas sigue leyendo. Si no, lee primero la sección :ref:`about_passwords` en la guía de :ref:`security`.
+
+Cualquier valor que le asignes a la propiedad ``password`` de un usuario, automáticamente será hasheado:
+
+.. code-block:: python
+
+    >>> user = db.query(User).first()
+    >>> user.password = 'lorem ipsum'
+    >>> print(user.password)
+    '$pbkdf2-sha512$10$E6JUKkVozVnL2RsDYKx1jg$GTG6q7WPH2/IO2DHvEM5rO6RrU (...)'
+
+Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``has_password``, pero usualmente no necesitas hacerlo por que Authcode se encarga de manejar todo el proceso de autenticación por ti (ver :ref:`login_process`).
+
+.. code-block:: python
+
+    >>> user.has_password('lorem ipsum')
+    True
+    >>> user.has_password('foobar')
+    False
 
 
+Funciones de hashing
+---------------------------------------------
+
+Authcode no implementa los algoritmos de hasheado, sino que se apoya en la excelente biblioteca `PassLib <https://pythonhosted.org/passlib/>`_.
+
+Aunque puede leer algunos otros, por motivos de seguridad solo puedes elegir tres familias de funciones de hashing:
+
+- bcrypt.
+- sha512_crypt y sha256_crypt.
+- pbkdf2_sha512 y pbkdf2_sha256.
+
+A las tres funciones:
+
+- no se les conoce vulnerabilidades.
+- están basados en algoritmos documentados y ampliamente revisados.
+- tienen implementaciones de referencia con licencias libres o en dominio público.
+- se usan en gran variedad de sistemas operativos y aplicaciones.
+- puede especificarse el número de rondas y usan sales de al menos 96bits.
+
+Según la función que elijas, puede ser necesario o recomendado instalar una biblioteca adicional:
+
+- bcrypt:
+    Necesita que instales una biblioteca extra en sistemas no basados en BSD. |br|
+    Puedes usar: `bcrypt <https://pypi.python.org/pypi/bcrypt>`_, `py-bcrypt <https://pypi.python.org/pypi/py-bcrypt>`_ o `bcryptor <https://bitbucket.org/ares/bcryptor/overview>`_.
+
+- sha512_crypt o sha256_crypt:
+    Linux o OSX traen soporte nativo para ella, pero se incluye también una versión en Python puro para otros sistemas.
+
+- pbkdf2_sha512 y pbkdf2_sha256:
+    Implementado en Python puro. |br|
+    No es necesario, pero es muy recomendable que instales `M2Crypto <https://pypi.python.org/pypi/M2Crypto>`_ para mejorar la velocidad de los cálculos.
+
+
+Tanto la función de hashing a usar como el número de repeticiones puedes definirlas al inicializar Authcode:
+
+.. code-block :: python
+
+    auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
+
+Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. No recomiendo que definas un número de rondas a menos que necesites ese tipo de control. Por defecto se usa el recomendado por PassLib para el algoritmo elegido.
+
+
+Pimienta (sal global)
+---------------------------------------------
+
+Authcode soporta el concepto de “pimienta” o “sal global”. Una *pimienta* es un texto fijo que se agrega a todas las contraseñas antes de hashearlas, para hacerlas inmunes a un *ataque por diccionario*.
+
+A diferencia de la *sal*, este es un texto que (1) no cambia entre hashes, (2) es secreto y (3) lo defines tu mismo, al inicializar Authcode.
+
+.. code-block :: python
+
+    auth = authcode.Auth(SECRET_KEY, pepper='lorem ipsum')
+
+Si no defines una, no se usará ninguna; Pero si lo haces, **recomiendo que sea de almenos 32 caracteres** ¡No uses la del ejemplo!
+
+
+Formato del hash
+---------------------------------------------
+
+El formato del hash final varía con la función utilizada, pero en general tiene esta estructura:
+
+.. code ::
+
+    $ nombredelhash $ numero de repeticiones $ sal $ hash de la contraseña
+
+
+
+.. _login_process:
 
 Proceso de login
 =============================================
@@ -132,8 +227,10 @@ Authcode separa la *autenticación* del *login*. La parte de autenticación reci
 ¿Por qué separarlos? Por que así puede autenticarse a un usuario por otros medios, como via OAuth por Twitter o Facebook, pero sin perder el resto de la funcionalidad que Authcode te da.
 
 
+
 Vistas de autenticación
 =============================================
+
 
 
 Recuperar contraseña
@@ -147,5 +244,7 @@ cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
-.. [#] *cof cof Django*.
+
+.. rubric:: Notas al pie
+
 .. [#] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.
