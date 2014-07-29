@@ -211,6 +211,16 @@ def test_reset_password_email_sent():
     assert u'{0}{1}'.format(auth.url_reset_password, token[:5]) in log[0]
 
 
+def test_reset_password_default_emailer():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+
+    data = dict(login=user.login, _csrf_token=auth.get_csrf_token())
+    resp = client.post(auth.url_reset_password, data=data)
+    data = to_unicode(resp.data)
+    assert u'<!-- EMAIL SENT -->' in data
+
+
 def test_reset_password_wrong_token():
     auth, app, user = _get_flask_app()
     client = app.test_client()
