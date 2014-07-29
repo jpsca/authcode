@@ -259,12 +259,6 @@ class LazyUser(object):
     def __float__(self):
         return float(self.__get_user())
 
-    def __oct__(self):
-        return oct(self.__get_user())
-
-    def __hex__(self):
-        return hex(self.__get_user())
-
     def __enter__(self):
         return self.__get_user().__enter__()
 

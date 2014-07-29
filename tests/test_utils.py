@@ -109,21 +109,43 @@ def test_lazy_user():
     assert storage.user == user
     assert getattr(user, 'last_sign_in', None) is None
 
+    storage.user = None
     assert lazy == user
+    assert storage.user == user
+
+    storage.user = None
     assert not lazy != user
-    assert lazy >= user
-    assert lazy <= user
-    assert not lazy > user
-    assert not lazy < user
+    assert storage.user == user
+
+    storage.user = None
     assert lazy and user == user
+    assert storage.user == user
+
+    storage.user = None
     assert lazy or user == user
+    assert storage.user == user
+
+    storage.user = None
     assert hash(lazy) == hash(user)
+    assert storage.user == user
 
 
 def test_lazy_user_unusual_methods():
     class UserMixin(object):
 
         items = []
+
+        def __lt__(self, other):
+            return True
+
+        def __le__(self, other):
+            return True
+
+        def __gt__(self, other):
+            return True
+
+        def __ge__(self, other):
+            return True
 
         def __call__(self, *args, **kwargs):
             return 'called'
@@ -206,12 +228,6 @@ def test_lazy_user_unusual_methods():
         def __float__(self):
             return 42.0
 
-        def __oct__(self):
-            return b'42'
-
-        def __hex__(self):
-            return b'42'
-
         def __invert__(self):
             return 42
 
@@ -237,100 +253,74 @@ def test_lazy_user_unusual_methods():
     user.items = 'a b c d e f g'.split(' ')
     auth.login(user)
 
-    storage.user = None
-    assert lazy() == b'called'
+    assert lazy >= user
 
-    storage.user = None
-    lazy[0] = b'a'  # __setitem__
-    assert user.items[0] == b'a'
+    assert lazy <= user
 
-    storage.user = None
+    assert lazy > user
+
+    assert lazy < user
+
+    assert lazy() == 'called'
+
+    lazy[0] = 'a'  # __setitem__
+    assert user.items[0] == 'a'
+
     del lazy[1]  # __delitem__
-    assert lazy[1] == b'c'  # __getitem__
+    assert lazy[1] == 'c'  # __getitem__
 
-    storage.user = None
     assert 'f' in lazy  # __contains__
 
-    storage.user = None
     assert list(iter(lazy)) == list(iter(user))  # __iter__
 
-    storage.user = None
     assert lazy + 1 == 42  # __add__
 
-    storage.user = None
     assert lazy - 1 == 42  # __sub__
 
-    storage.user = None
     assert lazy * 3 == 42  # __mul__
 
-    storage.user = None
     assert lazy / 3 == 42  # __div__
 
-    storage.user = None
     assert lazy.__floordiv__(3) == 42  # __floordiv__
 
-    storage.user = None
     assert lazy.__truediv__(3) == 42  # __truediv__
 
-    storage.user = None
     assert lazy % 33 == 42  # __mod__
 
-    storage.user = None
     assert divmod(lazy, 5) == (42, 0)  # __divmod__
 
-    storage.user = None
     assert lazy ** 3 == 42  # __pow__
 
-    storage.user = None
     assert lazy << 1 == 42  # __lshift__
 
-    storage.user = None
     assert lazy >> 1 == 42  # __rshift__
 
-    storage.user = None
     assert lazy & 6 == 42  # __and__
 
-    storage.user = None
     assert lazy | 6 == 42  # __or__
 
-    storage.user = None
     assert lazy ^ 6 == 42  # __xor__
 
-    storage.user = None
     assert -lazy == -42  # __neg__
 
-    storage.user = None
     assert +lazy == 42  # __pos__
 
-    storage.user = None
     assert abs(lazy) == 42  # __abs__
 
-    storage.user = None
     assert len(lazy) == 42  # __len__
 
-    storage.user = None
     assert int(lazy) == 42  # __int__
 
-    storage.user = None
     assert float(lazy) == 42.0  # __float__
 
-    storage.user = None
-    assert hex(lazy) == b'42'  # __hex__
-
-    storage.user = None
-    assert oct(lazy) == b'42'  # __oct__
-
-    storage.user = None
     assert ~lazy == 42  # __invert__
 
-    storage.user = None
     assert lazy.__complex__() == 42j  # __complex__
 
-    storage.user = None
     with lazy:  # __enter__ and __exit__
         pass
-    assert user.items[0] == b'enter'
-    assert user.items[-1] == b'exit'
+    assert user.items[0] == 'enter'
+    assert user.items[-1] == 'exit'
 
 
 def test_to36():
