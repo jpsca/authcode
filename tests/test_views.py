@@ -11,25 +11,6 @@ import authcode
 from helpers import SECRET_KEY
 
 
-def test_pop_next_url():
-    auth = authcode.Auth(SECRET_KEY)
-    session = {auth.redirect_key: '/abc/'}
-    next_url = pop_next_url(auth, request, session)
-    assert next_url == '/abc/'
-
-    auth.sign_in_redirect = '/test/'
-    next_url = pop_next_url(auth, request, {})
-    assert next_url == auth.sign_in_redirect
-
-    auth.sign_in_redirect = lambda request: '/dynamic/'
-    next_url = pop_next_url(auth, request, {})
-    assert next_url == '/dynamic/'
-
-    auth.sign_in_redirect = None
-    next_url = pop_next_url(auth, request, {})
-    assert next_url == '/'
-
-
 def _get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
@@ -47,6 +28,25 @@ def _get_flask_app(roles=False, **kwargs):
     authcode.setup_for_flask(auth, app)
     auth.session = {}
     return auth, app, user
+
+
+def test_pop_next_url():
+    auth = authcode.Auth(SECRET_KEY)
+    session = {auth.redirect_key: '/abc/'}
+    next_url = pop_next_url(auth, request, session)
+    assert next_url == '/abc/'
+
+    auth.sign_in_redirect = '/test/'
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == auth.sign_in_redirect
+
+    auth.sign_in_redirect = lambda request: '/dynamic/'
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == '/dynamic/'
+
+    auth.sign_in_redirect = None
+    next_url = pop_next_url(auth, request, {})
+    assert next_url == '/'
 
 
 def test_login_view():
@@ -127,6 +127,9 @@ def test_unprotected_logout():
     r = client.get(auth.url_sign_out)
     assert r.status == '403 FORBIDDEN'
 
+    r = client.post(auth.url_sign_out)
+    assert r.status == '403 FORBIDDEN'
+
 
 def test_redirect_after_logout():
     auth, app, user = _get_flask_app()
@@ -153,18 +156,6 @@ def test_redirect_after_logout():
     assert r.status == '303 SEE OTHER'
     assert r.location.endswith('/dynamic/')
     assert auth.session_key not in auth.session
-
-
-def test_logout_view():
-    auth, app, user = _get_flask_app()
-    client = app.test_client()
-
-    auth.login(user)
-    auth.template_sign_out = 'auth/sign-out.html'
-    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
-    r = client.get(url)
-    assert r.status == '200 OK'
-    assert u'<!-- SIGNED OUT -->' in to_unicode(r.data)
 
 
 def test_reset_password():
@@ -301,3 +292,55 @@ def test_change_password():
     data = to_unicode(r.data)
     assert u'<!-- PASSWORD UPDATED -->' in data
     assert user.has_password('lalala')
+
+
+def test_custom_templates():
+    db = SQLAlchemy()
+    options = {
+        'template_sign_in': 'sign-in.html',
+        'template_sign_out': 'sign-out.html',
+        'template_reset': 'reset-password.html',
+        'template_reset_email': 'reset-password-email.html',
+        'template_change_password': 'change-password.html',
+    }
+    inbox = []
+
+    def send_email(user, subject, msg):
+        inbox.append(msg)
+
+    auth = authcode.Auth(SECRET_KEY, db=db, send_email=send_email, **options)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.add(user)
+    db.commit()
+
+    custom_templates = os.path.join(
+        os.path.dirname(__file__),
+        'custom_templates'
+    )
+    app = Flask('test', template_folder=custom_templates)
+    app.secret_key = os.urandom(32)
+    app.testing = True
+    authcode.setup_for_flask(auth, app)
+    auth.session = {}
+    client = app.test_client()
+
+    resp = client.get(auth.url_sign_in)
+    assert resp.data == b'OK SIGN IN'
+
+    resp = client.get(auth.url_reset_password)
+    assert resp.data == b'OK RESET PASSWORD'
+
+    data = dict(login=user.login, _csrf_token=auth.get_csrf_token())
+    resp = client.post(auth.url_reset_password, data=data)
+    assert inbox[0] == 'OK RESET PASSWORD EMAIL'
+
+    auth.login(user)
+
+    resp = client.get(auth.url_change_password)
+    assert resp.data == b'OK CHANGE PASSWORD'
+
+    url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
+    resp = client.get(url)
+    assert resp.data == b'OK SIGN OUT'

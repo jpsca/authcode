@@ -94,14 +94,6 @@ def split_token(token):
     return from36(t36), uid
 
 
-def default_render(template, **context):
-    from jinja2 import Environment, PackageLoader
-    loader = PackageLoader('authcode', 'templates')
-    env = Environment(loader=loader)
-    tmpl = env.get_template(template)
-    return tmpl.render(context)
-
-
 def default_send_email(user, subject, msg):  # pragma: no cover
     print(user, subject, msg)
 

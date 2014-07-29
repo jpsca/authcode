@@ -32,16 +32,16 @@ Aunque Authcode no depende de ningún framework web específico, si necesita que
 Meh
 =============================================
 
-    .. code-block:: python
-        import authcode
-        from flask.ext.sqlalchemy import SQLAlchemy
+.. code-block:: python
 
-        app = Flask(__name__)
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
-        db = SQLAlchemy(app)
+    import authcode
+    from flask.ext.sqlalchemy import SQLAlchemy
 
-        auth = authcode.Auth(SECRET_KEY, db=db)
-        authcode.setup_for_flask(auth, app)
-        User = auth.User
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
+    db = SQLAlchemy(app)
 
+    auth = authcode.Auth(SECRET_KEY, db=db)
+    authcode.setup_for_flask(auth, app)
+    User = auth.User
 

@@ -16,10 +16,7 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
     if send_email:
         auth.send_email = send_email
 
-    if render == True:  # noqa
-        auth.render = render_template
-    elif render:
-        auth.render = render
+    auth.render = render or render_template
 
     def set_user():
         # By doing this, ``g`` now has a ``user`` attribute that it's
@@ -62,10 +59,7 @@ def setup_for_shake(auth, app, views=True, send_email=None,
     if send_email:
         auth.send_email = send_email
 
-    if render == True:  # noqa
-        auth.render = app.render
-    elif render:
-        auth.render = render
+    auth.render = render or app.render
 
     def set_user_shake(request, **kwargs):
         auth.session = request.session

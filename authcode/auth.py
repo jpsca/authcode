@@ -37,11 +37,11 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
         'views': 'sign_in sign_out reset_password change_password'.split(' '),
 
-        'template_sign_in': 'auth/sign-in.html',
+        'template_sign_in': None,
         'template_sign_out': None,
-        'template_reset': 'auth/reset-password.html',
-        'template_reset_email': 'auth/reset-password-email.html',
-        'template_change_password': 'auth/change-password.html',
+        'template_reset': None,
+        'template_reset_email': None,
+        'template_change_password': None,
 
         'password_minlen': 5,
         'token_life': 3 * 60,  # minutes
@@ -63,7 +63,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
         self.session = session or {}
         self.request = request
-        self.render = render or utils.default_render
+        self.render = render or self.default_render
         self.send_email = send_email or utils.default_send_email
 
         self.backends = [

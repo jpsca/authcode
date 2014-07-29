@@ -19,6 +19,13 @@ DEPRECATED_HASHERS = [
 
 MIN_SECRET_LENGTH = 15
 
+TEMPLATES = {
+    'sign_in': 'sign-in.html',
+    'sign_out': None,
+    'reset': 'reset-password.html',
+    'reset_email': 'reset-password-email.html',
+    'change_password': 'change-password.html',
+}
 
 WRONG_HASH_MESSAGE = """Invalid hash format.
 Authcode can *read* many hash formats but, for security reasons,

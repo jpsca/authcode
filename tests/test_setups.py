@@ -66,34 +66,21 @@ def test_setup_flask_render():
     db = SQLAlchemy('sqlite:///', app)
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    authcode.setup_for_flask(auth, app, render=True)
+    authcode.setup_for_flask(auth, app)
     assert auth.send_email
     assert auth.render == render_template
     assert app.jinja_env.globals['csrf_token']
     assert app.jinja_env.globals['auth']
 
 
-def test_setup_flask_no_render_is_default():
+def test_setup_flask_false_render():
     app = Flask(__name__)
     db = SQLAlchemy('sqlite:///', app)
     auth = authcode.Auth(SECRET_KEY, db=db)
-    default = auth.render
-
-    authcode.setup_for_flask(auth, app)
-    assert auth.render == default
-    assert app.jinja_env.globals['csrf_token']
-    assert app.jinja_env.globals['auth']
-
-
-def test_setup_flask_false_render_is_default():
-    app = Flask(__name__)
-    db = SQLAlchemy('sqlite:///', app)
-    auth = authcode.Auth(SECRET_KEY, db=db)
-    default = auth.render
 
     authcode.setup_for_flask(auth, app, render=None)
     assert auth.send_email
-    assert auth.render == default
+    assert auth.render == render_template
     assert app.jinja_env.globals['csrf_token']
     assert app.jinja_env.globals['auth']
 
@@ -258,38 +245,23 @@ def test_setup_shake_render():
     db = SQLAlchemy('sqlite:///', app)
     auth = authcode.Auth(SECRET_KEY, db=db)
 
-    authcode.setup_for_shake(auth, app, render=True)
+    authcode.setup_for_shake(auth, app)
     assert auth.send_email
     assert auth.render == app.render
     assert app.render.env.globals['csrf_token']
     assert app.render.env.globals['auth']
 
 
-def test_setup_shake_no_render_is_default():
+def test_setup_shake_false_render():
     shake = pytest.importorskip("shake")
 
     app = shake.Shake(__file__, {})
     db = SQLAlchemy('sqlite:///', app)
     auth = authcode.Auth(SECRET_KEY, db=db)
-    default = auth.render
-
-    authcode.setup_for_shake(auth, app)
-    assert auth.render == default
-    assert app.render.env.globals['csrf_token']
-    assert app.render.env.globals['auth']
-
-
-def test_setup_shake_false_render_is_default():
-    shake = pytest.importorskip("shake")
-
-    app = shake.Shake(__file__, {})
-    db = SQLAlchemy('sqlite:///', app)
-    auth = authcode.Auth(SECRET_KEY, db=db)
-    default = auth.render
 
     authcode.setup_for_shake(auth, app, render=None)
     assert auth.send_email
-    assert auth.render == default
+    assert auth.render == app.render
     assert app.render.env.globals['csrf_token']
     assert app.render.env.globals['auth']
 

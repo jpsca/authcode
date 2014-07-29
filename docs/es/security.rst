@@ -29,15 +29,21 @@ En cambio, lo único que guardas es un *hash* de la contraseña. Para verificar 
 
     La segunda regla del manejo de contraseñas es que no cualquier función de hashing sirve.
 
-En primer lugar las funciones de hashing no debe de generar el mismo hash para contraseñas diferentes (es decir que es “resistente a colisiones”), o alguien podría entrar a tu cuenta con una contraseña diferente a la tuya!
+En primer lugar las funciones de hashing no debe de generar el mismo hash para contraseñas diferentes (es decir que deben ser “resistentes a colisiones”), o alguien podría entrar a tu cuenta con una contraseña diferente a la tuya.
 
 En segundo lugar, muchos de las funciones más populares, como MD5, SHA1, etc. son muy rápidas y eficientes. Lo cual es perfecto para lo que fueron inventadas, pero es lo último que quieres para hashear contraseñas.
 
-Cuando un atacante ha conseguido una copia de tu base de datos, ya que no es posible obtener la contraseña original desde el hash, lo que le queda  es probar uno por uno, los hash de todas las combinaciones de números, letras y símbolos. Es lo que se llama un ataque *por fuerza bruta*. Suena como un proceso imposíblemente largo, pero cuando usas una función de hashing que puede botar miles de resultados por segundo, es cuestión de horas ¡Incluso de minutos!
+Cuando un atacante ha conseguido una copia de tu base de datos –ya que no es posible obtener la contraseña original desde el hash– lo que le queda  es probar uno por uno, los hash de todas las combinaciones de números, letras y símbolos. Es lo que se llama un ataque *por fuerza bruta*.
 
-Por eso una función de hash para contraseñas debe estar *diseñada para ser lenta*. Las tres funciones de hashing que Authcode puede usar (``bcrypt``, `` sha_crypt`` y ``pbkdf2``) no solo lo son, sino que además retrasan todo el proceso calculando el hash final en muchas rondas, re-hasheando el hash del resultado anterior una y otra vez. `` sha_crypt`` por ejemplo, por defecto hace esto 100'000 veces.
+Suena como un proceso imposíblemente largo, pero cuando usas una función de hashing que puede botar miles de resultados por segundo, es cuestión de horas ¡Incluso de minutos en algunos casos!
 
-Para los usuarios normales, esto significa una demora de apenas una fracción de segundo, pero para un atacante puede ser la diferencia entre minutos y semanas.
+.. pull-quote::
+
+    Una función de hash para contraseñas debe estar *diseñada para ser lenta*.
+
+Las tres funciones de hashing que Authcode puede usar (``bcrypt``, ``sha_crypt`` y ``pbkdf2``) no solo son calculadamente lentas, sino que además retrasan todo el proceso aun más calculando el hash final en muchas rondas, re-hasheando el hash del resultado anterior una y otra vez. ``sha_crypt`` por ejemplo, por defecto hace esto 100'000 veces.
+
+Para los usuarios normales, esto significa una demora de apenas una fracción de segundo, pero para un atacante puede ser la diferencia entre horas y meses.
 
 .. note::
 
