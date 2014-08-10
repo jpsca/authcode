@@ -25,8 +25,20 @@
 {% include "header.html" %}
 {% block content %}{% endblock %}
 {% include "footer.html" %}
+<script>
+var DOCUMENTATION_OPTIONS = {
+    URL_ROOT:    '{{ url_root }}',
+    VERSION:     '{{ release|e }}',
+    COLLAPSE_INDEX: false,
+    FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}',
+    HAS_SOURCE:  {{ has_source|lower }}
+};
+</script>
 <script src="{{ pathto('_static/scripts/jquery.min.js', 1) }}"></script>
+<script src="{{ pathto('_static/scripts/lodash.js', 1) }}"></script>
+<script src="{{ pathto('_static/scripts/doctools.js', 1) }}"></script>
 <script src="{{ pathto('_static/scripts/main.js', 1) }}"></script>
 {#<script src="{{ pathto('_static/scripts/scripts.min.js', 1) }}"></script>#}
+{% block scripts %}{% endblock %}
 </body>
 </html>

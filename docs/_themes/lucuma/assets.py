@@ -30,6 +30,8 @@ assets_env.register(
     'js_main',
 
     'scripts/jquery.min.js',
+    'scripts/lodash.js',
+    'scripts/doctools.js',
     'scripts/main.js',
 
     filters='closure_js',

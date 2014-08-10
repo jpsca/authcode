@@ -179,7 +179,6 @@ header .nav .search-form input {
 
 header .nav .search-form button {
   color: #444;
-  background-image: url('../images/search.png');
   background-position: center center;
   background-repeat: no-repeat;
   width: 40px;
