@@ -1,0 +1,19 @@
+@media print {
+
+  header .nav,
+  #page-toc {
+    display: none;
+  }
+
+  body {
+    font-size: 14px;
+  }
+  blockquote {
+    font-size: 15px;
+  }
+  .admonition {
+    font-size: 14px;
+    page-break-inside:avoid;
+  }
+
+}

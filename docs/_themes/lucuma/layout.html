@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  {%- block htmltitle %}
+  <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
+  {%- endblock %}
+  <link rel="shortcut icon" type="image/x-icon" href="{{ pathto('_static/favicon.ico', 1) }}">
+  <link href="{{ pathto('_static/styles/normalize.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/font-awesome.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/main.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/type.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/responsive.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/pygments.css', 1) }}" rel="stylesheet">
+  <link href="{{ pathto('_static/styles/print.css', 1) }}" rel="stylesheet">
+  {#<link href="{{ pathto('_static/styles.min.css', 1) }}" rel="stylesheet">#}
+
+  {% if hasdoc('genindex') %}<link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}">{% endif %}
+  {% if parents %}<link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}">{% endif %}
+  {% if next %}<link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}">{% endif %}
+  {% if prev %}<link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}">{% endif %}
+</head>
+<body>
+{% include "header.html" %}
+{% block content %}{% endblock %}
+{% include "footer.html" %}
+<script src="{{ pathto('_static/scripts/jquery.min.js', 1) }}"></script>
+<script src="{{ pathto('_static/scripts/main.js', 1) }}"></script>
+{#<script src="{{ pathto('_static/scripts/scripts.min.js', 1) }}"></script>#}
+</body>
+</html>

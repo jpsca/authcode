@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div id="main">
+  <div class="wrapper">
+  {% include "page-toc.html" %}
+  {{ body }}
+  </div>
+</div>
+{% endblock %}

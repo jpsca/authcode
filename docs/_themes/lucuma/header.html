@@ -1,0 +1,26 @@
+<header>
+  <div class="wrapper clearfix">
+    <h1><a href="{{ pathto('index') }}" title="Return to home page">Authcode</a></h1>
+    <ul class="nav">
+      <li>
+        {% include "search-form.html" %}
+      </li>
+      <li class="hidden-xs">
+        <a class="nav-item" href="{{ pathto('index') }}">Home</a>
+      </li>
+      <li class="hidden-xs">
+        <a class="nav-item" href="https://github.com/lucuma/authcode" title="https://github.com/lucuma/authcode"><i class="fa fa-github"></i> Github</a>
+      </li>
+      <li class="toc toc-large">
+        <a data-toggle="dropdown" href="#toc-large" class="nav-item">
+          <span class="hidden-xs">{{ _('Table Of Contents') }}</span>
+          <span class="visible-xs"><i class="fa fa-bars"></i></span>
+        </a>
+      </li>
+    </ul>
+    <div id="toc-large" class="clearfix" style="display: none;">
+      <a data-toggle="dropdown" href="#toc-large" class="nav-item">{{ _('Table Of Contents') }}</a>
+      <div class="toc-wrapper">{{ toctree() }}</div>
+    </div>
+  </div>
+</header>
