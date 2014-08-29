@@ -48,6 +48,10 @@ class AuthenticationMixin(object):
             logger.debug(u'User `{0}` not found'.format(login))
             return None
 
+        if not user.password:
+            logger.debug(u'User `{0}` ha sno password'.format(login))
+            return None
+
         if not self.password_is_valid(secret, user.password):
             logger.debug(u'Invalid password for user `{0}`'.format(login))
             return None

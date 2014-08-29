@@ -29,6 +29,8 @@ def from36(snumber):
 
 
 def get_hash_extract(hash):
+    if not hash:
+        return u''
     half = hash.rsplit('$', 1)[0]
     return half[-10:]
 

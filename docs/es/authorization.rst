@@ -126,7 +126,7 @@ Asi mismo, si lo necesias, puedes desactivar la revisión automática usando el 
     @auth.protected(csrf=False)
     def myview():
         ...
-        if auth.csrf_token_is_valid():
+        if not auth.csrf_token_is_valid(request):
             raise Forbidden()
         ...
 

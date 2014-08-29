@@ -245,6 +245,4 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
 
-.. rubric:: Notas al pie
-
 .. [#] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.
