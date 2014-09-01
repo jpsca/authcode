@@ -79,6 +79,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
                 auth.url_reset_password + user.get_token() + '/'
             )
             data = {
+                'user': user,
                 'login': user.login,
                 'reset_url': reset_url,
                 'site_name': auth.wsgi.get_site_name(request),
@@ -97,7 +98,11 @@ def _email_token(auth, user, data):
     msg = to_unicode(
         auth.render_template('reset_email', **data)
     )
-    auth.send_email(user, 'Reset your password', msg)
+    auth.send_email(
+        user,
+        auth.reset_email_subject or u'Reset your password',
+        msg
+    )
 
 
 def change_password(auth, request, manual=True, *args, **kwargs):

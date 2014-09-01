@@ -42,6 +42,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'template_reset': None,
         'template_reset_email': None,
         'template_change_password': None,
+        'reset_email_subject': u'Reset your password',
 
         'password_minlen': 5,
         'token_life': 3 * 60,  # minutes
