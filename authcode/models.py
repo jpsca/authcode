@@ -30,7 +30,7 @@ def get_auth_user_mixin(auth):
 
     class AuthUserMixin(object):
         id = Column(Integer, primary_key=True)
-        login = Column(Unicode, nullable=False, unique=True)
+        login = Column(Unicode, nullable=False, unique=True, index=True)
         password = Column(String(255), nullable=True)
         last_sign_in = Column(DateTime, nullable=True)
         deleted = Column(Boolean, default=False)
