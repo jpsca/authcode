@@ -99,8 +99,8 @@ def extend_role_model(auth, User, RoleMixin=None):
 
     Table(
         'users_roles', db.metadata,
-        Column('user_id', Integer, ForeignKey(User.id)),
-        Column('role_id', Integer, ForeignKey(Role.id))
+        Column('user_id', Integer, ForeignKey(User.id), index=True),
+        Column('role_id', Integer, ForeignKey(Role.id), index=True)
     )
 
     extend_user_model_with_role_methods(User, Role)
