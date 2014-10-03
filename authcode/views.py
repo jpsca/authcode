@@ -38,11 +38,11 @@ def sign_in(auth, request, session, *args, **kwargs):
 
 
 def sign_out(auth, request, *args, **kwargs):
-    # this view is CSRF protected
-    if not auth.csrf_token_is_valid(request):
-        auth.wsgi.raise_forbidden()
+    # the logout action itself must be CSRF protected,
+    # but the view could be called twice by mistake
+    if auth.csrf_token_is_valid(request):
+        auth.logout()
 
-    auth.logout()
     if auth.template_sign_out:
         kwargs['auth'] = auth
         return auth.render_template('sign_out', **kwargs)
