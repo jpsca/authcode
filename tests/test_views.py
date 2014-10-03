@@ -125,10 +125,12 @@ def test_unprotected_logout():
     auth.login(user)
 
     r = client.get(auth.url_sign_out)
-    assert r.status == '403 FORBIDDEN'
+    assert auth.session_key in auth.session  # still signed in
+    assert r.status == '303 SEE OTHER'
 
     r = client.post(auth.url_sign_out)
-    assert r.status == '403 FORBIDDEN'
+    assert auth.session_key in auth.session  # still signed in
+    assert r.status == '303 SEE OTHER'
 
 
 def test_redirect_after_logout():
