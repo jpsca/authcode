@@ -34,7 +34,8 @@ def sign_in(auth, request, session, *args, **kwargs):
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
     kwargs['csrf_token'] = auth.get_csrf_token
-    return auth.render_template('sign_in', **kwargs)
+    resp = auth.render_template('sign_in', **kwargs)
+    return auth.wsgi.make_response(resp)
 
 
 def sign_out(auth, request, *args, **kwargs):
@@ -45,7 +46,8 @@ def sign_out(auth, request, *args, **kwargs):
 
     if auth.template_sign_out:
         kwargs['auth'] = auth
-        return auth.render_template('sign_out', **kwargs)
+        resp = auth.render_template('sign_out', **kwargs)
+        return auth.wsgi.make_response(resp)
 
     next = auth.sign_out_redirect or '/'
     if callable(next):
@@ -91,7 +93,8 @@ def reset_password(auth, request, token=None, *args, **kwargs):
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
     kwargs['csrf_token'] = auth.get_csrf_token
-    return auth.render_template('reset', **kwargs)
+    resp = auth.render_template('reset', **kwargs)
+    return auth.wsgi.make_response(resp)
 
 
 def _email_token(auth, user, data):
@@ -140,4 +143,5 @@ def change_password(auth, request, manual=True, *args, **kwargs):
     kwargs['auth'] = auth
     kwargs['manual'] = manual
     kwargs['csrf_token'] = auth.get_csrf_token
-    return auth.render_template('change_password', **kwargs)
+    resp = auth.render_template('change_password', **kwargs)
+    return auth.wsgi.make_response(resp)

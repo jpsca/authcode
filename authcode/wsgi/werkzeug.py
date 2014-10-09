@@ -52,3 +52,8 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return request.form
+
+
+def make_response(body, mimetype='text/html'):
+    from werkzeug.wrappers import BaseResponse as Response
+    return Response(body, mimetype=mimetype)

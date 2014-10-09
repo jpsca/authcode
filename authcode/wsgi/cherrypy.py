@@ -49,3 +49,9 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return getattr(request, 'body_params', request.body.params)
+
+
+def make_response(body, mimetype='text/html'):
+    import cherrypy
+    cherrypy.response.headers['Content-Type'] = mimetype
+    return body

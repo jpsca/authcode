@@ -42,3 +42,8 @@ def get_from_headers(request, key):
 
 def get_post_data(request):
     return request.POST
+
+
+def make_response(body, mimetype='text/html'):
+    from webob import Response
+    return Response(body, content_type=mimetype)
