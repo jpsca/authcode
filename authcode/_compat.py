@@ -13,7 +13,7 @@ _identity = lambda x: x
 if PY2:
     text_type = unicode
 
-    def to_bytes(x, charset=sys.getdefaultencoding(), errors='ignore'):
+    def to_bytes(x, charset='utf8', errors='ignore'):
         if x is None:
             return None
         if isinstance(x, (bytes, bytearray, buffer)):
@@ -25,7 +25,7 @@ if PY2:
 else:
     text_type = str
 
-    def to_bytes(x, charset=sys.getdefaultencoding(), errors='ignore'):
+    def to_bytes(x, charset='utf8', errors='ignore'):
         if x is None:
             return None
         if isinstance(x, (bytes, bytearray, memoryview)):
@@ -35,7 +35,7 @@ else:
         raise TypeError('Expected bytes')
 
 
-def to_unicode(x, charset=sys.getdefaultencoding(), errors='ignore',
+def to_unicode(x, charset='utf8', errors='ignore',
                allow_none_charset=False):
     if x is None:
         return None
@@ -46,7 +46,7 @@ def to_unicode(x, charset=sys.getdefaultencoding(), errors='ignore',
     return x.decode(charset, errors)
 
 
-def to_native(x, charset=sys.getdefaultencoding(), errors='ignore'):
+def to_native(x, charset='utf8', errors='ignore'):
     if x is None or isinstance(x, str):
         return x
     return x.decode(charset, errors)
