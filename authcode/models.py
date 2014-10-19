@@ -46,10 +46,17 @@ def get_auth_user_mixin(auth):
             self.set_raw_password(value)
 
         @validates('password')
-        def _hash_password(self, key, secret):
+        def __hash_password(self, key, secret):
             logger = logging.getLogger(__name__)
             logger.debug(u'Hash updated for user `{0}`'.format(self.login))
             return auth.hash_password(secret)
+
+        @validates('login')
+        def __clean_login(self, key, login):
+            login = to_unicode(login or u'').strip()
+            if auth.case_insensitive:
+                login = login.lower()
+            return login
 
         @classmethod
         def by_id(cls, pk):
@@ -58,6 +65,8 @@ def get_auth_user_mixin(auth):
         @classmethod
         def by_login(cls, login):
             login = to_unicode(login).strip()
+            if auth.case_insensitive:
+                login = login.lower()
             return db.session.query(cls).filter(cls.login == login).first()
 
         def set_raw_password(self, secret):

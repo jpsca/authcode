@@ -17,6 +17,34 @@ except MissingBackendError:
     bcrypt_available = False
 
 
+def test_automatic_case_insensitiveness():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'MeH', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.login == u'meh'
+    assert User.by_login(u'MEH') == User.by_login(u'MeH') == user
+
+
+def test_disabled_case_insensitiveness():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db, case_insensitive=False)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'MeH', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.login == u'MeH'
+    assert not User.by_login(u'meh')
+    assert not User.by_login(u'MEH')
+    assert User.by_login(u'MeH') == user
+
+
 def test_automatic_password_hashing():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)

@@ -44,6 +44,9 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'template_change_password': None,
         'reset_email_subject': u'Reset your password',
 
+        # Should logins be case insensitive?
+        'case_insensitive': True,
+
         'password_minlen': 5,
         'token_life': 3 * 60,  # minutes
         'update_hash': True,
