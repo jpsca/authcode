@@ -44,9 +44,3 @@ def to_unicode(x, charset='utf8', errors='ignore',
     if charset is None and allow_none_charset:
         return x
     return x.decode(charset, errors)
-
-
-def to_native(x, charset='utf8', errors='ignore'):
-    if x is None or isinstance(x, str):
-        return x
-    return x.decode(charset, errors)
