@@ -8,7 +8,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates, relationship, backref
 
 from .utils import get_uhmac, get_token
-from ._compat import to_unicode, to_bytes
+from ._compat import to_unicode, to_native
 
 
 def extend_user_model(auth, UserMixin=None):
@@ -90,7 +90,7 @@ def get_auth_user_mixin(auth):
 
         def __repr__(self):
             repr = '<User {0}>'.format(self.login)
-            return to_bytes(repr)
+            return to_native(repr)
 
     return AuthUserMixin
 
@@ -152,7 +152,7 @@ def get_auth_role_mixin(auth, User):
 
         def __repr__(self):
             repr = '<Role {0}>'.format(self.name)
-            return to_bytes(repr)
+            return to_native(repr)
 
     return AuthRoleMixin
 

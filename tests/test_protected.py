@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 
 import authcode
-from authcode._compat import to_bytes
+from authcode._compat import to_native
 from flask import Flask, g
 from sqlalchemy_wrapper import SQLAlchemy
 
@@ -213,7 +213,7 @@ def test_protected_csrf():
     assert resp.status == '200 OK'
 
     resp = client.get('/gettoken/')
-    token = to_bytes(resp.data)
+    token = to_native(resp.data)
 
     resp = client.get('/delete/?{0}={1}'.format(auth.csrf_key, token))
     assert resp.status == '200 OK'

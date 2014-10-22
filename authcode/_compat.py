@@ -21,7 +21,6 @@ if PY2:
         if isinstance(x, unicode):
             return x.encode(charset, errors)
         raise TypeError('Expected bytes')
-
 else:
     text_type = str
 
@@ -33,6 +32,13 @@ else:
         if isinstance(x, str):
             return x.encode(charset, errors)
         raise TypeError('Expected bytes')
+
+
+def to_native(x, charset='utf8', errors='ignore'):
+    bb = to_bytes(x, charset=charset, errors=errors)
+    if not bb:
+        return bb
+    return bb.decode('utf8')
 
 
 def to_unicode(x, charset='utf8', errors='ignore',
