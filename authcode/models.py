@@ -59,15 +59,19 @@ def get_auth_user_mixin(auth):
             return login
 
         @classmethod
+        def _auth_base_query(cls):
+            return db.session.query(cls)
+
+        @classmethod
         def by_id(cls, pk):
-            return db.session.query(cls).get(pk)
+            return cls._auth_base_query().filter(cls.id == pk).first()
 
         @classmethod
         def by_login(cls, login):
             login = to_unicode(login).strip()
             if auth.case_insensitive:
                 login = login.lower()
-            return db.session.query(cls).filter(cls.login == login).first()
+            return cls._auth_base_query().filter(cls.login == login).first()
 
         def set_raw_password(self, secret):
             """Sets the password without hashing.
@@ -109,7 +113,7 @@ def extend_role_model(auth, User, RoleMixin=None):
     Role = type(auth.roles_model_name, parents, {'__tablename__': tablename})
 
     Table(
-        '{}_{}'.format(User.__tablename__, Role.__tablename__),
+        '{0}_{1}'.format(User.__tablename__, Role.__tablename__),
         db.metadata,
         Column('user_id', Integer, ForeignKey(User.id), index=True),
         Column('role_id', Integer, ForeignKey(Role.id), index=True)

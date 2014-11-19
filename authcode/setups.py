@@ -39,7 +39,7 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_sign_in,
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_sign_in')
+            endpoint='{0}{1}'.format(views_prefix, 'auth_sign_in')
         )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
@@ -47,7 +47,7 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_sign_out,
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_sign_out')
+            endpoint='{0}{1}'.format(views_prefix, 'auth_sign_out')
         )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
@@ -55,7 +55,7 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_change_password,
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_change_password')
+            endpoint='{0}{1}'.format(views_prefix, 'auth_change_password')
         )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
@@ -63,12 +63,12 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_reset_password,
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_reset_password')
+            endpoint='{0}{1}'.format(views_prefix, 'auth_reset_password')
         )(auth.auth_reset_password)
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_reset_password')
+            endpoint='{0}{1}'.format(views_prefix, 'auth_reset_password')
         )(auth.auth_reset_password)
 
 
