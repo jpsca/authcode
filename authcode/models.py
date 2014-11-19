@@ -16,13 +16,13 @@ def extend_user_model(auth, UserMixin=None):
     AuthUserMixin = get_auth_user_mixin(auth)
 
     if UserMixin is not None:
-        class User(UserMixin, AuthUserMixin, db.Model):
-            __tablename__ = getattr(UserMixin, '__tablename__', 'users')
+        parents = (UserMixin, AuthUserMixin, db.Model)
+        tablename = getattr(UserMixin, '__tablename__', 'users')
     else:
-        class User(AuthUserMixin, db.Model):
-            __tablename__ = 'users'
+        parents = (AuthUserMixin, db.Model)
+        tablename = 'users'
 
-    return User
+    return type(auth.users_model_name, parents, {'__tablename__': tablename})
 
 
 def get_auth_user_mixin(auth):
@@ -100,14 +100,17 @@ def extend_role_model(auth, User, RoleMixin=None):
     AuthRoleMixin = get_auth_role_mixin(auth, User)
 
     if RoleMixin is not None:
-        class Role(RoleMixin, AuthRoleMixin, db.Model):
-            __tablename__ = 'roles'
+        parents = (RoleMixin, AuthRoleMixin, db.Model)
+        tablename = getattr(RoleMixin, '__tablename__', 'roles')
     else:
-        class Role(AuthRoleMixin, db.Model):
-            __tablename__ = 'roles'
+        parents = (AuthRoleMixin, db.Model)
+        tablename = 'roles'
+
+    Role = type(auth.roles_model_name, parents, {'__tablename__': tablename})
 
     Table(
-        'users_roles', db.metadata,
+        '{}_{}'.format(User.__tablename__, Role.__tablename__),
+        db.metadata,
         Column('user_id', Integer, ForeignKey(User.id), index=True),
         Column('role_id', Integer, ForeignKey(Role.id), index=True)
     )

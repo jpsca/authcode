@@ -68,7 +68,7 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
             methods=['GET', 'POST'],
-            endpoint='{}{}'.format(views_prefix, 'auth_reset_password_token')
+            endpoint='{}{}'.format(views_prefix, 'auth_reset_password')
         )(auth.auth_reset_password)
 
 

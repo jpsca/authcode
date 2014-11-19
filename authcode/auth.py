@@ -55,8 +55,9 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
     }
 
     def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
-                 db=None, UserMixin=None, RoleMixin=None, roles=False,
-                 session=None, request=None,
+                 db=None, UserMixin=None, RoleMixin=None,
+                 users_model_name='User', roles_model_name='Role',
+                 roles=False, session=None, request=None,
                  render=None, send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
@@ -65,6 +66,8 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         self.pepper = pepper
         self.db = db
 
+        self.users_model_name = users_model_name
+        self.roles_model_name = roles_model_name
         self.session = session or {}
         self.request = request
         self.render = render or self.default_render
