@@ -8,7 +8,8 @@ def eval_url(url):
     return url
 
 
-def setup_for_flask(auth, app, views=True, send_email=None, render=None):
+def setup_for_flask(auth, app, views=True, views_prefix='', send_email=None,
+                    render=None):
     from flask import g, request, session, render_template
 
     auth.request = request
@@ -29,32 +30,49 @@ def setup_for_flask(auth, app, views=True, send_email=None, render=None):
 
     if views:
         assert auth.render
-        setup_for_flask_views(auth, app)
+        setup_for_flask_views(auth, app, views_prefix)
 
 
-def setup_for_flask_views(auth, app):
+def setup_for_flask_views(auth, app, views_prefix=''):
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
-        app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
+        app.route(
+            url_sign_in,
+            methods=['GET', 'POST'],
+            endpoint='{}{}'.format(views_prefix, 'auth_sign_in')
+        )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
         url_sign_out = eval_url(auth.url_sign_out)
-        app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
+        app.route(
+            url_sign_out,
+            methods=['GET', 'POST'],
+            endpoint='{}{}'.format(views_prefix, 'auth_sign_out')
+        )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
         url_change_password = eval_url(auth.url_change_password)
-        app.route(url_change_password,
-                  methods=['GET', 'POST'])(auth.auth_change_password)
+        app.route(
+            url_change_password,
+            methods=['GET', 'POST'],
+            endpoint='{}{}'.format(views_prefix, 'auth_change_password')
+        )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
         url_reset_password = eval_url(auth.url_reset_password)
-        app.route(url_reset_password,
-                  methods=['GET', 'POST'])(auth.auth_reset_password)
-        app.route(url_reset_password.rstrip('/') + '/<token>/',
-                  methods=['GET', 'POST'])(auth.auth_reset_password)
+        app.route(
+            url_reset_password,
+            methods=['GET', 'POST'],
+            endpoint='{}{}'.format(views_prefix, 'auth_reset_password')
+        )(auth.auth_reset_password)
+        app.route(
+            url_reset_password.rstrip('/') + '/<token>/',
+            methods=['GET', 'POST'],
+            endpoint='{}{}'.format(views_prefix, 'auth_reset_password_token')
+        )(auth.auth_reset_password)
 
 
-def setup_for_shake(auth, app, views=True, send_email=None,
+def setup_for_shake(auth, app, views=True, views_prefix='', send_email=None,
                     render=None):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
@@ -71,10 +89,10 @@ def setup_for_shake(auth, app, views=True, send_email=None,
 
     if views:
         assert auth.render
-        setup_for_shake_views(auth, app)
+        setup_for_shake_views(auth, app, views_prefix)
 
 
-def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
+def setup_for_shake_views(auth, app, views_prefix=''):  # pragma: no cover (deprecated)
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)

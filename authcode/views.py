@@ -20,6 +20,8 @@ def sign_in(auth, request, session, *args, **kwargs):
     credentials = auth.wsgi.get_post_data(request) or {}
 
     if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
+        if auth.session_key in session:
+            del session[auth.session_key]
         user = auth.authenticate(credentials)
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
