@@ -107,10 +107,11 @@ class LazyUser(object):
     """
     __slots__ = ('__auth', '__storage', '__dict__')
 
-    def __init__(self, auth, storage):
+    def __init__(self, auth, storage, user_name='user'):
         object.__setattr__(self, '_LazyUser__auth', auth)
         object.__setattr__(self, '_LazyUser__storage', storage)
-        setattr(storage, 'user', self)
+        object.__setattr__(self, '_LazyUser__user_name', user_name)
+        setattr(storage, user_name, self)
 
     def __get_user(self):
         """Return the current object.  This is useful if you want the real
@@ -119,7 +120,7 @@ class LazyUser(object):
         """
         storage = object.__getattribute__(self, '_LazyUser__storage')
         user = getattr(self.__auth, 'get_user')()
-        setattr(storage, 'user', user)
+        setattr(storage, self.__user_name, user)
         return user
 
     @property

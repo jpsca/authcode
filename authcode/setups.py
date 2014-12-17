@@ -9,7 +9,7 @@ def eval_url(url):
 
 
 def setup_for_flask(auth, app, views=True, views_prefix='', send_email=None,
-                    render=None):
+                    render=None, user_name='user'):
     from flask import g, request, session, render_template
 
     auth.request = request
@@ -22,7 +22,7 @@ def setup_for_flask(auth, app, views=True, views_prefix='', send_email=None,
     def set_user():
         # By doing this, ``g`` now has a ``user`` attribute that it's
         # replaced by the real user object the first time is used.
-        LazyUser(auth, g)
+        LazyUser(auth, g, user_name=user_name)
 
     app.before_request_funcs.setdefault(None, []).insert(0, set_user)
     app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
@@ -72,8 +72,9 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         )(auth.auth_reset_password)
 
 
-def setup_for_shake(auth, app, views=True, views_prefix='', send_email=None,
-                    render=None):  # pragma: no cover (deprecated)
+def setup_for_shake(
+        auth, app, views=True, views_prefix='', send_email=None,
+        render=None, user_name='user'):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
 
@@ -81,7 +82,7 @@ def setup_for_shake(auth, app, views=True, views_prefix='', send_email=None,
 
     def set_user_shake(request, **kwargs):
         auth.session = request.session
-        LazyUser(auth, request)
+        LazyUser(auth, request, user_name=user_name)
 
     app.before_request_funcs.insert(0, set_user_shake)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
