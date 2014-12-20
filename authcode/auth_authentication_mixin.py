@@ -128,4 +128,7 @@ class AuthenticationMixin(object):
     def logout(self, session=None):
         if session is None:
             session = self.session
-        session.clear()
+        if self.session_key in session:
+            del session[self.session_key]
+        if self.clear_session_on_logout:
+            session.clear()

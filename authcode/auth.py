@@ -47,6 +47,12 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         # Should logins be case insensitive?
         'case_insensitive': True,
 
+        # Prevent session fixation attacks, but
+        # block having multiple logins at the same time.
+        # If you set this to False, make sure to delete on logout all user's
+        # information stored in the session.
+        'clear_session_on_logout': True,
+
         'password_minlen': 5,
         'token_life': 3 * 60,  # minutes
         'update_hash': True,

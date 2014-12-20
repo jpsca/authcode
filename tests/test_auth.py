@@ -282,6 +282,54 @@ def test_login_logout():
     assert auth.session_key not in session
 
 
+def test_clear_session_on_logout():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+    User = auth.User
+
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    session = {}
+    auth.login(user, session=session)
+    session['foo'] = 'bar'
+
+    print(session)
+    assert session['foo'] == 'bar'
+
+    auth.logout(session=session)
+    print(session)
+    assert auth.session_key not in session
+    assert 'foo' not in session
+
+
+def test_dont_clear_session_on_logout():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db, clear_session_on_logout=False)
+
+    User = auth.User
+
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    session = {}
+    auth.login(user, session=session)
+    session['foo'] = 'bar'
+
+    print(session)
+    assert session['foo'] == 'bar'
+
+    auth.logout(session=session)
+    print(session)
+    assert auth.session_key not in session
+    assert session['foo'] == 'bar'
+
+
 def test_get_user():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)
