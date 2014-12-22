@@ -11,9 +11,9 @@ from .utils import get_uhmac, get_token
 from ._compat import to_unicode, to_native
 
 
-def extend_user_model(auth, UserMixin=None):
+def extend_user_model(auth, UserMixin=None, roles=False):
     db = auth.db
-    AuthUserMixin = get_auth_user_mixin(auth)
+    AuthUserMixin = get_auth_user_mixin(auth, roles=roles)
 
     if UserMixin is not None:
         parents = (UserMixin, AuthUserMixin, db.Model)
@@ -25,7 +25,7 @@ def extend_user_model(auth, UserMixin=None):
     return type(auth.users_model_name, parents, {'__tablename__': tablename})
 
 
-def get_auth_user_mixin(auth):
+def get_auth_user_mixin(auth, roles=False):
     db = auth.db
 
     class AuthUserMixin(object):
@@ -95,6 +95,14 @@ def get_auth_user_mixin(auth):
         def __repr__(self):
             repr = '<User {0}>'.format(self.login)
             return to_native(repr)
+
+    if roles and auth.lazy_roles:
+        def _auth_base_query(cls, lazy_roles=auth.lazy_roles):
+            q = db.session.query(cls)
+            if lazy_roles:
+                q = q.options(db.lazyload('roles'))
+            return q
+        AuthUserMixin._auth_base_query = classmethod(_auth_base_query)
 
     return AuthUserMixin
 

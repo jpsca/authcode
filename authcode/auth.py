@@ -62,18 +62,26 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
     def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
                  db=None, UserMixin=None, RoleMixin=None,
+                 roles=False, lazy_roles=True,
                  users_model_name='User', roles_model_name='Role',
-                 roles=False, session=None, request=None,
-                 render=None, send_email=None, **kwargs):
+                 session=None, request=None, render=None, send_email=None, **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
             "`secret_key` must be at least {0} chars long".format(MIN_SECRET_LENGTH)
         self.pepper = pepper
-        self.db = db
+        self.set_hasher(hash, rounds)
 
-        self.users_model_name = users_model_name
-        self.roles_model_name = roles_model_name
+        self.db = db
+        if db:
+            self.users_model_name = users_model_name
+            self.lazy_roles = lazy_roles
+            roles = roles or RoleMixin
+            self.User = extend_user_model(self, UserMixin, roles=roles)
+            if roles:
+                self.roles_model_name = roles_model_name
+                self.Role = extend_role_model(self, self.User, RoleMixin)
+
         self.session = session or {}
         self.request = request
         self.render = render or self.default_render
@@ -83,11 +91,6 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
             self.auth_password,
             self.auth_token,
         ]
-        self.set_hasher(hash, rounds)
-        if db:
-            self.User = extend_user_model(self, UserMixin)
-            if roles or RoleMixin:
-                self.Role = extend_role_model(self, self.User, RoleMixin)
 
         for key, val in self.defaults.items():
             setattr(self, key, kwargs.get(key, self.defaults[key]))

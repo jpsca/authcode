@@ -4,9 +4,9 @@
 Autenticación
 =============================================
 
-.. |br| raw:: html
+La **autenticación** es el verificar que un usuario sea quien dice ser. En una aplicación web eso suele hacerse pidiendo al visitante un usuario (quien es) y una contraseña (la prueba de que es quien dice ser), pero puede hacerse de otras formas (por ejemplo mediante OAuth o similares).
 
-   <br>
+Una vez autenticado, Authcode guarda, en la *cookie* de sesión del navegador, una clave que identifica al usuario en el sitio por el resto de su sesión (hasta que haga manualmente *logout* por ejemplo).
 
 
 Integración con tus modelos
@@ -74,9 +74,9 @@ El modelo combinado está en ``auth.User``, para que lo conectes con el resto de
 Roles
 ---------------------------------------------
 
-Opcionalmente, Authcode también puede crear un modelo de “roles” y conectarlo al de los usuarios. Un ``rol`` es simplemente un texto como “admin”, puedes verlo también como un `grupo` de usuarios. Un usuario puede tener uno, muchos o ningún rol según lo necesites.
+Opcionalmente, Authcode también puede crear un modelo de “roles” y conectarlo al de los usuarios. Un ``rol`` es simplemente un texto con algo general como “admin” o mucho más específico como “puede-editar-post”; puedes verlo también como un `grupo` de usuarios. Un usuario puede tener uno, muchos o ningún rol según lo necesites.
 
-No tiene ningún efecto de por sí, pero puede servirte para activar o desactivar funcionalidades en tu sitio deacuerdo a que roles el usuario autenticado tiene.
+De por si no tienen ningún efecto, pero pueden servirte para activar o desactivar funcionalidades en tu sitio deacuerdo a que roles el usuario autenticado tenga. Por ejemplo, hacer que ciertas páginas solo sean accesibles a usuarios con el rol ”admin”.
 
 Hay dos formas de activar los roles; Una es inicializando Authcode con el argumento ``roles=True``:
 
@@ -117,11 +117,13 @@ Cuando los roles están activados, las instancias de usuarios tienen estos tres 
 
     .. code-block:: python
 
-        user.add_role('foo')
-        assert user.has_role('bar', 'foo', 'admin')  # True
-        assert user.has_role('foo')  # True
-        assert user.has_role('bar', 'admin')  # False
-
+        >>> user.add_role('foo')
+        >>> user.has_role('foo')
+        True
+        >>> user.has_role('bar', 'foo', 'admin')
+        True
+        >>> user.has_role('bar', 'admin')
+        False
 
 
 Contraseñas
@@ -175,12 +177,11 @@ Según la función que elijas, puede ser necesario o recomendado instalar una bi
     Necesita que instales una biblioteca extra en sistemas no basados en BSD. |br|
     Puedes usar: `bcrypt <https://pypi.python.org/pypi/bcrypt>`_, `py-bcrypt <https://pypi.python.org/pypi/py-bcrypt>`_ o `bcryptor <https://bitbucket.org/ares/bcryptor/overview>`_.
 
-- sha512_crypt o sha256_crypt:
-    Linux o OSX traen soporte nativo para ella, pero se incluye también una versión en Python puro para otros sistemas.
-
 - pbkdf2_sha512 y pbkdf2_sha256:
-    Implementado en Python puro. |br|
-    No es necesario, pero es muy recomendable que instales `M2Crypto <https://pypi.python.org/pypi/M2Crypto>`_ para mejorar la velocidad de los cálculos.
+    No es necesario (se incluye una versión en Python puro), pero es muy recomendable que instales `M2Crypto <https://pypi.python.org/pypi/M2Crypto>`_ para mejorar la velocidad de los cálculos.
+
+- sha512_crypt o sha256_crypt:
+    Linux y OSX traen soporte nativo para ella, pero se incluye también una versión en Python puro para otros sistemas.
 
 
 Tanto la función de hashing a usar como el número de repeticiones puedes definirlas al inicializar Authcode:
@@ -189,7 +190,7 @@ Tanto la función de hashing a usar como el número de repeticiones puedes defin
 
     auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
 
-Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. No recomiendo que definas un número de rondas a menos que necesites ese tipo de control. Por defecto se usa el recomendado por PassLib para el algoritmo elegido.
+Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. No recomiendo que definas un número de rondas a menos que realmente necesites ese tipo de control. Por defecto se usa el recomendado por PassLib para el algoritmo elegido.
 
 
 Pimienta (sal global)

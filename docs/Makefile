@@ -3,7 +3,7 @@
 
 .PHONY: all clean html latexpdf epub htmlhelp
 
-langs = en es
+langs = es
 
 html: $(foreach lang,$(langs),html-$(lang))
 

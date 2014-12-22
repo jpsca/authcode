@@ -4,12 +4,9 @@
 Seguridad
 ============================
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Esta sección expande algunos de los temas y decisiones de diseño de esta biblioteca.
+
+Al final también incluye instrucciones para que, en el caso que encontraras algún problema de seguridad, puedas reportarlo.
 
 
 .. _about_passwords:
@@ -55,9 +52,9 @@ Sal
 
 Aunque tome tiempo y/o recursos, podría pre-calcularse la tabla de hashes para todas las combinaciones de letras, números y símbolos hasta x caracteres. Una vez terminada, sería muy rápido comparar los hashes de los usuarios con los de la tabla, encontrando todas las contraseñas de ese largo o menos.
 
-Para contrarestar ese ataque, se le agregar a la contraseña un grupo de letras, números y símbolos al azar para hacerla única.
+Para contrarestar ese ataque, siempre se agregar a la contraseña un grupo de letras, números y símbolos al azar para hacerla única.
 
-La sal se genera al azar y cambia *para cada contraseña*. Y no es un secreto, su función es únicamente evitar las tablas precalculadas. Además necesitas tenerla para verificar las contraseñas, así que la guardas en “texto plano” concatenada al hash final.
+La sal se genera al azar y cambia *para cada contraseña*. Y no es un secreto, su función es únicamente evitar las tablas precalculadas. Además necesitas tenerla para verificar las contraseñas, así que la guardas en “texto plano” junto con el hash final.
 
 .. figure:: _static/salt.png
    :align: center
@@ -70,7 +67,7 @@ Pimienta (o “sal global”)
 
 No importa que tan avanzado sea tu sistema de hashing si la contraseña que usas es “pasword”.
 
-Otro tipo de ataque, órdenes de magnitud más rápido que la fuerza bruta, es un *ataque de diccionario*. Es básicamente probar una lista de palabras –y combinaciones de ellas— comúnmente usadas en contraseñas. “12345678”, “pizzapizza” o incluso variaciones como “p”$$word" y “123456789j” son casos perdidos contra este ataque.
+Otro tipo de ataque, órdenes de magnitud más rápido que la fuerza bruta, es un *ataque de diccionario*. Es básicamente probar una lista de palabras –y combinaciones de ellas— comúnmente usadas en contraseñas. “12345678”, “pizzapizza” o incluso variaciones en apariencia seguras como “p4$$word" y “123456789j” son casos perdidos contra este ataque.
 
 Como la sal, la “pimienta” es un texto que se agrega a la contraseña antes de hashearla: tu “123456” con una pimienta de “loremipsum” se vuelve ``loremipsum123456``.
 

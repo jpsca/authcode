@@ -298,7 +298,7 @@ def test_clear_session_on_logout():
     session['foo'] = 'bar'
 
     print(session)
-    assert session['foo'] == 'bar'
+    assert 'foo' in session
 
     auth.logout(session=session)
     print(session)
@@ -322,7 +322,7 @@ def test_dont_clear_session_on_logout():
     session['foo'] = 'bar'
 
     print(session)
-    assert session['foo'] == 'bar'
+    assert 'foo' in session
 
     auth.logout(session=session)
     print(session)
