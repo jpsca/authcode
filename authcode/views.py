@@ -25,7 +25,7 @@ def sign_in(auth, request, session, *args, **kwargs):
         user = auth.authenticate(credentials)
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
-            auth.db.commit()
+            auth.db.session.commit()
             remember = bool(credentials.get('remember', True))
             auth.login(user, remember=remember)
             next = pop_next_url(auth, request, session)
@@ -138,7 +138,7 @@ def change_password(auth, request, manual=True, *args, **kwargs):
 
         else:
             user.password = np1
-            auth.db.commit()
+            auth.db.session.commit()
             auth.login(user)
             kwargs['ok'] = True
 

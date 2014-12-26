@@ -61,8 +61,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
     }
 
     def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
-                 db=None, UserMixin=None, RoleMixin=None,
-                 roles=False, lazy_roles=True,
+                 db=None, UserMixin=None, RoleMixin=None, roles=False, lazy_roles=True,
                  users_model_name='User', roles_model_name='Role',
                  session=None, request=None, render=None, send_email=None, **kwargs):
 

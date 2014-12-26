@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =============================================
-Introducción a Authcode
+Inicio rápido
 =============================================
 
 .. container:: lead
@@ -19,7 +19,7 @@ Aunque Authcode no depende de ningún framework web específico, si necesita que
 
 - Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask) y `WebOb`_ (Pyramid), pero es fácilmente extensible para trabajar con otros, como el de `CherryPy`_ por ejemplo.
 
-- Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy-Wrapper`_ o `Flask-SQLAlchemy`_ ya tienes uno.
+- Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy-Wrapper`_ [#]_ o `Flask-SQLAlchemy`_ ya tienes uno.
 
 .. _Beaker: http://beaker.readthedocs.org/
 .. _Werkzeug: http://werkzeug.pocoo.org/
@@ -29,23 +29,20 @@ Aunque Authcode no depende de ningún framework web específico, si necesita que
 .. _Flask-SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
 
 
-
-
-Meh
+Inicio rápido
 =============================================
+
+Puedes usar Authcode en tu aplicación web en solo dos pasos:
+
+1. Configurar
+---------------------------------------------
+
+
 
 .. code-block:: python
 
-    import authcode
-    from flask.ext.sqlalchemy import SQLAlchemy
 
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
-    db = SQLAlchemy(app)
 
-    auth = authcode.Auth(SECRET_KEY, db=db)
-    authcode.setup_for_flask(auth, app)
-    User = auth.User
 
 
 .. [#] Usar `SQLAlchemy-Wrapper`_ te ahorrará mucho trabajo, independientemente si usas o no Authcode. En serio, dale una mirada.

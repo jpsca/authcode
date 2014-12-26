@@ -21,6 +21,6 @@ Ventajas
 - Auto-actualiza tus hashes de contraseñas antiguos (cuando el usuario se autentica).
 - Muy fácil de usar con otras formas de autenticación (eg: Facebook).
 - Protección contra los ataques por Cross Site Request Forgery (CSRF).
-- Compatible with Python 2.6 y 2.7, Pypy y Python 3.3 o superior.
+- Compatible con Python 2.6 y 2.7, Pypy y Python 3.3 o posterior.
 
 .. include:: contents.rst.inc

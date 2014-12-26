@@ -49,7 +49,7 @@ class AuthenticationMixin(object):
             return None
 
         if not user.password:
-            logger.debug(u'User `{0}` ha sno password'.format(login))
+            logger.debug(u'User `{0}` has no password'.format(login))
             return None
 
         if not self.password_is_valid(secret, user.password):

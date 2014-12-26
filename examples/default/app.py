@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask import Flask
 from mailshake import ToConsoleMailer, SMTPMailer
-from orm import SQLAlchemy
+from sqlalchemy_wrapper import SQLAlchemy
 
 import settings
 
@@ -15,4 +15,3 @@ if settings.DEBUG:
     mailer = ToConsoleMailer()
 else:
     mailer = SMTPMailer(**settings.MAILER_SETTINGS)
-
