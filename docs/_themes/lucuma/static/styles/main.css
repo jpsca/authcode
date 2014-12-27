@@ -342,8 +342,6 @@ footer a:hover {
   margin: 0 7px;
 }
 
-
-
 .figure {
   margin: 20px 0 30px;
   border: none;
@@ -351,4 +349,12 @@ footer a:hover {
 .figure a.image-reference {
   text-decoration: none;
   border: none;
+}
+
+.caption {
+  font-style: italic;
+  font-size: small;
+  color: #444;
+  padding: 10px;
+  margin: 5px;
 }

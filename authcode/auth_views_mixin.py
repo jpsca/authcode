@@ -47,3 +47,13 @@ class ViewsMixin(object):
     def default_render(self, template, **kwargs):
         tmpl = def_env.get_template(template)
         return tmpl.render(kwargs)
+
+    def render(self, template, **kwargs):
+        """Should be overwritten in the setup"""
+        return self.default_render(template, **kwargs)
+
+    def send_email(self, user, subject, msg):
+        """Should be overwritten in the setup"""
+        print('To:', user)
+        print('Subject:', subject)
+        print (msg)

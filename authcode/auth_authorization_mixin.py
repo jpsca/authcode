@@ -29,13 +29,15 @@ class AuthorizationMixin(object):
         :Parameters:
             tests : *function, optional
                 One or more functions that takes the args and kwargs of the
-                function and returns either `True` or `False`.
+                view and returns either `True` or `False`.
                 All test must return True to show the view.
 
         :Options:
-            url_sign_in : str, function, optional
-                If any required condition fail, redirect to this place.
-                Override the default URL. This can also be a callable.
+            role : str, optional
+                Test for the user having a role with this name.
+
+            roles : list, optional
+                Test for the user having **any** role in this list of names.
 
             csrf : bool, None, optional
                 If ``None`` (the default), the decorator will check the value
@@ -43,11 +45,9 @@ class AuthorizationMixin(object):
                 If ``True`` it will do the same also for all requests.
                 If ``False``, the value of the CSFR token will not be checked.
 
-            role : str, optional
-                Test for the user having a role with this name.
-
-            roles : list, optional
-                Test for the user having **any** role in this list of names.
+            url_sign_in : str, function, optional
+                If any required condition fail, redirect to this place.
+                Override the default URL. This can also be a callable.
 
         """
         csrf = options.get('csrf')

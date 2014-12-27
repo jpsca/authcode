@@ -25,4 +25,3 @@ MAILER_SETTINGS = {
     'port': os.getenv('MAILER_PORT', 587),
     'use_tls': True,
 }
-

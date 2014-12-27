@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import g, redirect, url_for, request
+from flask import g, redirect, url_for
 
 from app import app, db
 
@@ -13,5 +13,3 @@ def delete_me():
     db.commit()
     auth.logout()
     return redirect(url_for('index'))
-
-

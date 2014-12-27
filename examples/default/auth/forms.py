@@ -16,9 +16,13 @@ class UsernameDoesNotExist(v.Validator):
 class RegisterForm(f.Form):
     _model = User
 
-    login = f.Text(validate=[v.Required, v.LongerThan(4),
-        UsernameDoesNotExist,])
+    login = f.Text(validate=[
+        v.Required,
+        v.LongerThan(4),
+        UsernameDoesNotExist,
+    ])
     email = f.Text(validate=[v.ValidEmail])
-    password = f.Password(validate=[v.Required,
-        v.LongerThan(auth.password_minlen)])
-
+    password = f.Password(validate=[
+        v.Required,
+        v.LongerThan(auth.password_minlen)
+    ])

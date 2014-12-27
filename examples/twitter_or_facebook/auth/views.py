@@ -1,12 +1,9 @@
 # coding=utf-8
-from flask import g, render_template, redirect, url_for, abort
+from flask import g, render_template, redirect, url_for
 
 from app import app, db
 
-from .models import auth, User
-
-
-HTTP_FORBIDDEN = 403
+from .models import auth
 
 
 @app.route('/sign-in/')
@@ -28,5 +25,3 @@ def delete_me():
     db.commit()
     auth.logout()
     return redirect(url_for('index'))
-
-

@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import print_function
-
 from passlib import hash as ph
 from passlib.context import CryptContext
 
@@ -36,6 +34,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'url_change_password': '/change-password/',
 
         'views': 'sign_in sign_out reset_password change_password'.split(' '),
+        'views_prefix': u'',
 
         'template_sign_in': None,
         'template_sign_out': None,
@@ -61,9 +60,10 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
     }
 
     def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
-                 db=None, UserMixin=None, RoleMixin=None, roles=False, lazy_roles=True,
-                 users_model_name='User', roles_model_name='Role',
-                 session=None, request=None, render=None, send_email=None, **kwargs):
+                 db=None, UserMixin=None, RoleMixin=None, roles=False,
+                 lazy_roles=True, users_model_name='User', roles_model_name='Role',
+                 session=None, request=None,
+                 **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
@@ -81,11 +81,6 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
                 self.roles_model_name = roles_model_name
                 self.Role = extend_role_model(self, self.User, RoleMixin)
 
-        self.session = session or {}
-        self.request = request
-        self.render = render or self.default_render
-        self.send_email = send_email or utils.default_send_email
-
         self.backends = [
             self.auth_password,
             self.auth_token,
@@ -93,6 +88,10 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
         for key, val in self.defaults.items():
             setattr(self, key, kwargs.get(key, self.defaults[key]))
+
+        # backwards compatibility
+        self.session = session or {}
+        self.request = request
 
     def set_hasher(self, hash, rounds=None):
         """Updates the has algorithm and, optionally, the number of rounds

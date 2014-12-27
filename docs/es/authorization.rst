@@ -9,10 +9,10 @@ Autorización
     Si fueras a crear un sistema para tu blog, tendrías páginas públicas pero no quisieras que cualquiera pudiera editar o borrar posts en él. Necesitas un mecanismo para que a ciertas páginas solo tengan acceso usuarios autenticados, quizas que también cumplan con algunas condiciones. De eso se trata esta guía.
 
 
-Protegiendo tus vistas: *@auth.protected*
+Protegiendo tus vistas: *auth.protected*
 =============================================
 
-Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios autenticados. Authcode te hace fácil lograrlo por medio del decorador ``@auth.protected()``. Ejemplo:
+Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios autenticados. Authcode te hace fácil lograrlo por medio del decorador ``auth.protected()``. Ejemplo:
 
 .. code-block:: python
 
@@ -22,9 +22,7 @@ Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios a
 
 .. note::
 
-    Nota que el decorador está siendo llamado (tiene un par de paréntesis al final de la línea).
-    Estos son necesarios, si los olvidas tendrás un error.
-
+    Nota que el decorador está siendo llamado (tiene un par de paréntesis al final de la línea). Estos son necesarios, si los olvidas tendrás un error. [#]_
 
 .. warning:: ¡Cuidado!
     Si defines las rutas a tus vistas con decoradores —como lo hace Flask— ten mucho cuidado en poner el decorador de autenticación **después** del de la ruta o, de otro modo, tus vistas quedarán desprotegidas. Hazlo de esta forma:
@@ -37,16 +35,18 @@ Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios a
             ...
 
 
-Roles
+Roles/Permisos
 ---------------------------------------------
 
-Una necesidad muy común es darle acceso al usuario solo si tiene un rol específico. Por lo mismo, Authcode tiene una forma directa de hacerlo: usando el argumento
+Una necesidad muy común es darle acceso al usuario solo si tiene un rol o permiso específico. Por lo mismo, Authcode tiene una forma directa de hacerlo: usando el argumento
 
     ``role = nombredelrol``
 
 Para darle acceso a más de un rol, puedes usar
 
     ``roles = [nombredelrol1, nombredelrol2,  ...]``
+
+(nota que, en este caso, el argumento se llama ``roles``, en plural)
 
 Ejemplo:
 
@@ -76,7 +76,7 @@ El decorador también puede tomar como argumento una o más funciones para “pr
         ...
 
 
-Finalmente, el último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, pero es lo puedes ver en la siguiente sección.
+Finalmente, el último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, como podrás leerlo en la siguiente sección.
 
 
 Protección CSRF
@@ -174,10 +174,13 @@ La URL que el usuario intentaba visitar queda guardada en su sesión y una vez q
 
 Hay casos, sin embargo, que un usuario autenticado no tendrá permisos para acceder a una vista, si no tiene cierto rol o no pasa cierta prueba, o si se requería un código CSRF y este no se encuentra o es inválido. En esos caso, el decorador ``@auth.protected()`` lanza una excepción ``403 Forbidden``.
 
-No suele haber una página por defecto para este error, o si la hay no es muy amigable, por lo que vas a querer usar tu propia vista. Los detalles de como hacerlo varían en cada framework, pero por ejemplo en Flask lo haces de este modo:
+No suele haber una página por defecto para este error, o si la hay no es muy amigable, por lo que vas a querer usar tu propia vista. Los detalles de como hacerlo varían en cada framework, pero por ejemplo en Flask puedes agragarla de este modo:
 
 .. code-block:: python
 
     @app.errorhandler(403)
     def gone(error=None):
         return render_template('forbidden.html'), 403
+
+
+.. [#] Técnicamente es una función que al ejecutarse devuelve un decorador.

@@ -1,5 +1,5 @@
 git+git://github.com/lucuma/authcode.git
-flask==0.9
-orm==1.0
+flask
+sqlalchemy_wrapper
 mailshake
 solution

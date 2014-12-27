@@ -58,6 +58,10 @@ def get_auth_user_mixin(auth, roles=False):
                 login = login.lower()
             return login
 
+        @property
+        def email(self):
+            return self.login
+
         @classmethod
         def _auth_base_query(cls):
             return db.session.query(cls)

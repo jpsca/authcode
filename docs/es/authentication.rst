@@ -12,7 +12,7 @@ Una vez autenticado, Authcode guarda, en la *cookie* de sesión del navegador, u
 Integración con tus modelos
 =============================================
 
-No tiene sentido una biblioteca de autenticación que no se integre con tu modelo de usuarios.
+Aunque Authcode genera un modelo de usuario por defecto, no tiene sentido una biblioteca de autenticación que no te permita integrarla con tu propio modelo de usuarios.
 
 El problema con otras bibliotecas y frameworks del pasado han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
 
@@ -131,7 +131,7 @@ Contraseñas
 
 .. seealso::
 
-    Si estás familiarizado con el concepto de *hashing* de contraseñas sigue leyendo. Si no, lee primero la sección :ref:`about_passwords` en la guía de :ref:`security`.
+    Si estás familiarizado con el concepto de *hashing* de contraseñas sigue leyendo. Si no, lee primero la sección :ref:`security.about_passwords` en la guía de :ref:`security`.
 
 Cualquier valor que le asignes a la propiedad ``password`` de un usuario, automáticamente será hasheado:
 

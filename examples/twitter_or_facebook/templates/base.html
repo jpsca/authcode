@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html class="no-js" lang="en">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>{% block title %}Authcode example{% endblock %}</title>
   <link href="{{ url_for('static', filename='styles/main.css') }}" rel="stylesheet">
 </head>
-
 <body {% block bodyclass %}{% endblock %}>
   <header>
     <div>
@@ -18,13 +17,11 @@
       {%- endif %}
     </div>
   </header>
-
   <div id="main-content">
     <div>{% block content %}{% endblock %}</div>
   </div>
-
   <footer>
-    <div>This is an example on how to use the <a href="http://authcode.lucuma.co">Authcode</a> python library. See the <a href="http://autchode.lucuma.co/examples">rest of examples here</a>.</div>
+    <div>This is an example on how to use the <a href="http://authcode.lucumalabs.com">Authcode</a> python library. See the <a href="http://authcode.lucumalabs.com/examples">rest of examples here</a>.</div>
   </footer>
 </body>
 </html>

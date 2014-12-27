@@ -4,7 +4,7 @@ import os
 from flask import g, render_template, redirect, url_for
 
 from app import app, db
-from auth.models import auth, User
+from auth.models import auth
 
 
 @app.route('/')
@@ -21,8 +21,7 @@ def profile():
 
 
 if __name__ == '__main__':
-    db.create_all() # just for this demo
+    db.create_all()  # just for this demo
 
     port = int(os.getenv("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
-

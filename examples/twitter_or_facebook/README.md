@@ -25,9 +25,9 @@ For the OAuth part I'm using the [flask_oauth](http://pythonhosted.org/Flask-OAu
 
        Make a new application and paste in the settings the key and the secret.
 
-4. Run the server with: `python main.py`
+4. Run the development server with: `python main.py`
 
 --------
-**Note**:  The `Procfile` and `runtime.txt` is for deploying on Heroku.
+**Note**:  The `Procfile` and `runtime.txt` files exists for deploying on Heroku.
 
 

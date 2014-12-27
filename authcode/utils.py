@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import print_function
-
 import hashlib
 import hmac
 from time import time
@@ -94,10 +92,6 @@ def split_uhmac(uhmac):
 def split_token(token):
     uid, t36, mac = token.split('$', 2)
     return from36(t36), uid
-
-
-def default_send_email(user, subject, msg):
-    print(user, subject, msg)
 
 
 class LazyUser(object):

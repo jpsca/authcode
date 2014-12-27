@@ -4,12 +4,14 @@
 Seguridad
 ============================
 
-Esta sección expande algunos de los temas y decisiones de diseño de esta biblioteca.
+.. container:: lead
 
-Al final también incluye instrucciones para que, en el caso que encontraras algún problema de seguridad, puedas reportarlo.
+    Esta sección expande algunos de los temas y decisiones de diseño de esta biblioteca.
+
+    Al final también incluye instrucciones para que, en el caso que encontraras algún problema de seguridad, puedas reportarlo.
 
 
-.. _about_passwords:
+.. _security.about_passwords:
 
 Manejando contraseñas
 =============================================
@@ -84,7 +86,7 @@ Aunque se tenga una copia de la base de datos, la teoría es que sin acceso al c
     A algunas personas les preocupa que no haya sido categóricamente “demostrado” que agregar una pimienta realmente aumenta la seguridad. Por si las dudas, a menos que tu le pases una como parámetro ``pepper`` (haz que sea de al menos 32 caracteres), Authcode por defecto no usa ninguna.
 
 
-.. _security_response:
+.. _security.response:
 
 Reportar un problema de seguridad
 =============================================

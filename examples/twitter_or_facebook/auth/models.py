@@ -1,5 +1,4 @@
 # coding=utf-8
-from flask import url_for
 from authcode import Auth, setup_for_flask
 
 import settings
@@ -17,18 +16,16 @@ class UserMixin(object):
 
 
 auth = Auth(settings.SECRET_KEY, db=db, UserMixin=UserMixin, roles=False,
-    **settings.AUTH_SETTINGS)
-
+            **settings.AUTH_SETTINGS)
+setup_for_flask(auth, app)
 User = auth.User
-
-setup_for_flask(auth, app, views=False)
 
 
 def get_unique_login(target):
     num = 1
     login = target
     while True:
-        if not db.query(User).filter(User.login==login).count():
+        if not User.by_login(login):
             return login
         num = num + 1
-        login = '{0}{1}'.format(target, num)
+        login = '{target}{num}'.format(target=target, num=num)

@@ -39,8 +39,9 @@ facebook = oauth.remote_app(
 @app.route('/sign-in/twitter/')
 def twitter_login():
     next = request.args.get('next') or url_for('profile')
-    return twitter.authorize(callback=url_for('twitter_authorized',
-        next=next))
+    return twitter.authorize(
+        callback=url_for('twitter_authorized', next=next)
+    )
 
 
 @app.route('/sign-in/twitter/authorized/')
@@ -60,7 +61,7 @@ def twitter_authorized(resp):
     #     "screen_name": "jpscaletti"
     # }
 
-    user = db.query(User).filter_by(twitter_id=resp['user_id']).first()
+    user = db.query(User).filter(User.twitter_id == resp['user_id']).first()
     # user never signed on
     if user is None:
         if g.user is None:
@@ -95,8 +96,9 @@ def get_twitter_token(token=None):
 @app.route('/sign-in/facebook/')
 def facebook_login():
     next = request.args.get('next') or None
-    return facebook.authorize(callback=url_for('facebook_authorized',
-        next=next, _external=True))
+    return facebook.authorize(
+        callback=url_for('facebook_authorized', next=next, _external=True)
+    )
 
 
 @app.route('/sign-in/facebook/authorized/')
@@ -127,7 +129,7 @@ def facebook_authorized(resp):
     #     "updated_time": "2013-04-15T06:33:55+0000",
     # }
 
-    user = db.query(User).filter_by(facebook_id=me.data['id']).first()
+    user = db.query(User).filter(User.facebook_id == me.data['id']).first()
     # user never signed on
     if user is None:
         if g.user is None:
@@ -155,4 +157,3 @@ def facebook_authorized(resp):
 @facebook.tokengetter
 def get_facebook_oauth_token():
     return session.get('facebook_token')
-

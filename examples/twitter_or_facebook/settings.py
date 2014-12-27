@@ -27,5 +27,5 @@ AUTH_SETTINGS = {
     'password_minlen': 5,
 
     'url_sign_in': lambda r: url_for('sign_in'),
+    'views': [],
 }
-

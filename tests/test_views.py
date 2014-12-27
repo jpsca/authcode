@@ -320,7 +320,7 @@ def test_custom_templates():
     def send_email(user, subject, msg):
         inbox.append(msg)
 
-    auth = authcode.Auth(SECRET_KEY, db=db, send_email=send_email, **options)
+    auth = authcode.Auth(SECRET_KEY, db=db, **options)
     User = auth.User
     db.create_all()
     user = User(login=u'meh', password='foobar')
@@ -334,7 +334,7 @@ def test_custom_templates():
     app = Flask('test', template_folder=custom_templates)
     app.secret_key = os.urandom(32)
     app.testing = True
-    authcode.setup_for_flask(auth, app)
+    authcode.setup_for_flask(auth, app, send_email=send_email)
     auth.session = {}
     client = app.test_client()
 

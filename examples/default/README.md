@@ -13,9 +13,9 @@ This is an example on how you use Authcode in a regular login/password web appli
 
     `pip install -r requirements-dev.txt`
 
-3. Run the server with: `python main.py`
+3. Run the development server with: `python main.py`
 
 --------
-**Note**:  The `Procfile` and `runtime.txt` is for deploying on Heroku.
+**Note**:  The `Procfile` and `runtime.txt` files exists for deploying on Heroku.
 
 

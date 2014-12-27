@@ -17,7 +17,7 @@ def index():
     if request.method == 'POST' and form.is_valid():
         user = form.save()
         user.add_role('user')
-        db.commit() # commit BEFORE doing auth.login!
+        db.commit()  # commit BEFORE doing auth.login!
         auth.login(user)
         return redirect(url_for('profile'))
 

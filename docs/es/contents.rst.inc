@@ -13,6 +13,7 @@ Guías de usuario
    authentication
    authorization
    advanced
+   api
 
 .. toctree::
    :maxdepth: 2

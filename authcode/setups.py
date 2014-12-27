@@ -8,38 +8,42 @@ def eval_url(url):
     return url
 
 
-def setup_for_flask(auth, app, views=True, views_prefix='', send_email=None,
-                    render=None, user_name='user'):
-    from flask import g, request, session, render_template
+def setup_for_flask(
+        auth, app, send_email=None, user_name='user',
+        render=None, session=None, request=None):
+    import flask
 
-    auth.request = request
-    auth.session = session
+    auth.request = request or flask.request
+    auth.session = session or flask.session
     if send_email:
         auth.send_email = send_email
 
-    auth.render = render or render_template
+    auth.render = render or flask.render_template
 
     def set_user():
         # By doing this, ``g`` now has a ``user`` attribute that it's
         # replaced by the real user object the first time is used.
-        LazyUser(auth, g, user_name=user_name)
+        LazyUser(auth, flask.g, user_name=user_name)
 
     app.before_request_funcs.setdefault(None, []).insert(0, set_user)
     app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
     app.jinja_env.globals['auth'] = auth
 
-    if views:
+    if auth.views:
         assert auth.render
-        setup_for_flask_views(auth, app, views_prefix)
+        setup_for_flask_views(auth, app, auth.views_prefix)
 
 
-def setup_for_flask_views(auth, app, views_prefix=''):
+def setup_for_flask_views(auth, app):
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(
             url_sign_in,
             methods=['GET', 'POST'],
-            endpoint='{0}{1}'.format(views_prefix, 'auth_sign_in')
+            endpoint='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_sign_in'
+            )
         )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
@@ -47,7 +51,10 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_sign_out,
             methods=['GET', 'POST'],
-            endpoint='{0}{1}'.format(views_prefix, 'auth_sign_out')
+            endpoint='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_sign_out'
+            )
         )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
@@ -55,7 +62,10 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_change_password,
             methods=['GET', 'POST'],
-            endpoint='{0}{1}'.format(views_prefix, 'auth_change_password')
+            endpoint='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_change_password'
+            )
         )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
@@ -63,53 +73,91 @@ def setup_for_flask_views(auth, app, views_prefix=''):
         app.route(
             url_reset_password,
             methods=['GET', 'POST'],
-            endpoint='{0}{1}'.format(views_prefix, 'auth_reset_password')
+            endpoint='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_reset_password'
+            )
         )(auth.auth_reset_password)
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
             methods=['GET', 'POST'],
-            endpoint='{0}{1}'.format(views_prefix, 'auth_reset_password')
+            endpoint='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_reset_password'
+            )
         )(auth.auth_reset_password)
 
 
 def setup_for_shake(
-        auth, app, views=True, views_prefix='', send_email=None,
-        render=None, user_name='user'):  # pragma: no cover (deprecated)
+        auth, app, send_email=None, user_name='user',
+        render=None, session=None, request=None):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
 
     auth.render = render or app.render
 
-    def set_user_shake(request, **kwargs):
-        auth.session = request.session
-        LazyUser(auth, request, user_name=user_name)
+    def set_user_shake(_request, **kwargs):
+        auth.session = session or request.session
+        LazyUser(auth, request or _request, user_name=user_name)
 
     app.before_request_funcs.insert(0, set_user_shake)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token
     app.render.env.globals['auth'] = auth
 
-    if views:
+    if auth.views:
         assert auth.render
-        setup_for_shake_views(auth, app, views_prefix)
+        setup_for_shake_views(auth, app, auth.views_prefix)
 
 
-def setup_for_shake_views(auth, app, views_prefix=''):  # pragma: no cover (deprecated)
+def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
-        app.route(url_sign_in, methods=['GET', 'POST'])(auth.auth_sign_in)
+        app.route(
+            url_sign_in,
+            methods=['GET', 'POST'],
+            name='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_sign_in'
+            )
+        )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
         url_sign_out = eval_url(auth.url_sign_out)
-        app.route(url_sign_out, methods=['GET', 'POST'])(auth.auth_sign_out)
+        app.route(
+            url_sign_out,
+            methods=['GET', 'POST'],
+            name='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_sign_out'
+            )
+        )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
         url_change_password = eval_url(auth.url_change_password)
-        app.route(url_change_password,
-                  methods=['GET', 'POST'])(auth.auth_change_password)
+        app.route(
+            url_change_password,
+            methods=['GET', 'POST'],
+            name='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_change_password'
+            )
+        )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
         url_reset_password = eval_url(auth.url_reset_password)
-        app.route(url_reset_password,
-                  methods=['GET', 'POST'])(auth.auth_reset_password)
-        app.route(url_reset_password.rstrip('/') + '/<token>/',
-                  methods=['GET', 'POST'])(auth.auth_reset_password)
+        app.route(
+            url_reset_password,
+            methods=['GET', 'POST'],
+            name='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_reset_password'
+            )
+        )(auth.auth_reset_password)
+        app.route(
+            url_reset_password.rstrip('/') + '/<token>/',
+            methods=['GET', 'POST'],
+            name='{prefix}{name}'.format(
+                prefix=auth.views_prefix,
+                name='auth_reset_password'
+            )
+        )(auth.auth_reset_password)
