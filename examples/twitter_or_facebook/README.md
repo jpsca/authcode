@@ -3,7 +3,7 @@
 
 This is an example on how you use Authcode when the signing in is made via OAuth instead of the standard login/password views.
 
-For the OAuth part I'm using the [flask_oauth](http://pythonhosted.org/Flask-OAuth/) library, but the principles are the same for any other OAuth library you might use.
+For the OAuth part I'm using the excellent [flask_oauth](http://pythonhosted.org/Flask-OAuth/) library, but the principles are the same for any other OAuth library you might use.
 
 
 ## How to run locally

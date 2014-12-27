@@ -39,6 +39,8 @@ facebook = oauth.remote_app(
 @app.route('/sign-in/twitter/')
 def twitter_login():
     next = request.args.get('next') or url_for('profile')
+    if 'twitter_token' in session:
+        del session['twitter_token']
     return twitter.authorize(
         callback=url_for('twitter_authorized', next=next)
     )
@@ -63,13 +65,13 @@ def twitter_authorized(resp):
     user = db.query(User).filter(User.twitter_id == resp['user_id']).first()
 
     # user never signed on
-    if user is None:
-        if g.user is None:
+    if not user:
+        if g.user:
+            user = g.user
+        else:
             login = get_unique_login(resp['screen_name'])
             user = User(login=login)
             db.add(user)
-        else:
-            user = g.user
         user.twitter_id = resp['user_id']
 
     user.last_sign_in = datetime.utcnow()
@@ -82,8 +84,7 @@ def twitter_authorized(resp):
     # don't forget to commit **before** doing ``auth.login(user)`
     db.commit()
 
-    if g.user is None:
-        auth.login(user)
+    auth.login(user)
     next = request.args.get('next') or url_for('profile')
     return redirect(next)
 
@@ -96,6 +97,8 @@ def get_twitter_token(token=None):
 @app.route('/sign-in/facebook/')
 def facebook_login():
     next = request.args.get('next') or None
+    if 'facebook_token' in session:
+        del session['facebook_token']
     return facebook.authorize(
         callback=url_for('facebook_authorized', next=next, _external=True)
     )
@@ -133,12 +136,12 @@ def facebook_authorized(resp):
 
     # user never signed on
     if user is None:
-        if g.user is None:
+        if g.user:
+            user = g.user
+        else:
             login = get_unique_login(me.data.get('username'))
             user = User(login=login)
             db.add(user)
-        else:
-            user = g.user
         user.facebook_id = me.data['id']
 
     user.last_sign_in = datetime.utcnow()
@@ -149,8 +152,7 @@ def facebook_authorized(resp):
     # don't forget to commit **before** doing ``auth.login(user)`
     db.commit()
 
-    if g.user is None:
-        auth.login(user)
+    auth.login(user)
     next = request.args.get('next') or url_for('profile')
     return redirect(next)
 

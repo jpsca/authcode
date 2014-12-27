@@ -3,7 +3,8 @@ import os
 from flask import url_for
 
 
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
 # Create an app and get your own credentials here:
 # https://dev.twitter.com/apps
@@ -32,3 +33,8 @@ AUTH_SETTINGS = {
     'url_sign_in': lambda r: url_for('sign_in'),
     'views': [],
 }
+
+try:
+    from local import *
+except ImportError:
+    pass
