@@ -60,8 +60,8 @@ def twitter_authorized(resp):
     #     "user_id": "11640332",
     #     "screen_name": "jpscaletti"
     # }
-
     user = db.query(User).filter(User.twitter_id == resp['user_id']).first()
+
     # user never signed on
     if user is None:
         if g.user is None:
@@ -130,6 +130,7 @@ def facebook_authorized(resp):
     # }
 
     user = db.query(User).filter(User.facebook_id == me.data['id']).first()
+
     # user never signed on
     if user is None:
         if g.user is None:

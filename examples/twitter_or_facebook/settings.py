@@ -7,14 +7,17 @@ DEBUG = True
 
 # Create an app and get your own credentials here:
 # https://dev.twitter.com/apps
-TWITTER_KEY = os.getenv('TWITTER_KEY', 'twitter app key')
-TWITTER_SECRET = os.getenv('TWITTER_SECRET', 'twitter app secret')
+TWITTER_KEY = os.getenv(
+    'TWITTER_KEY', '<paste your twitter app key here>')
+TWITTER_SECRET = os.getenv(
+    'TWITTER_SECRET', '<paste your twitter app secret here>')
 
 # Create an app and get your own credentials here:
 # https://developers.facebook.com/apps
-FACEBOOK_APP_ID = os.getenv('FACEBOOK_APP_ID', 'facebook app id')
-FACEBOOK_APP_SECRET = os.getenv('FACEBOOK_APP_SECRET', 'facebook app secret')
-
+FACEBOOK_APP_ID = os.getenv(
+    'FACEBOOK_APP_ID', '<paste your facebook app_id here>')
+FACEBOOK_APP_SECRET = os.getenv(
+    'FACEBOOK_APP_SECRET', '<paste your facebook app secret here>')
 
 SQLALCHEMY_URI = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite')
 

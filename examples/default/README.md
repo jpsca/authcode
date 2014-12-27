@@ -16,6 +16,4 @@ This is an example on how you use Authcode in a regular login/password web appli
 3. Run the development server with: `python main.py`
 
 --------
-**Note**:  The `Procfile` and `runtime.txt` files exists for deploying on Heroku.
-
-
+**Note**:  The `Procfile`, `runtime.txt` and `os.getenv(…)` stuff is for deploying on Heroku.
