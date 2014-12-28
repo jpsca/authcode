@@ -1,6 +1,12 @@
-<form class="search-form" method="get" action="{{ pathto('search') }}" novalidate>
-  <input type="text" name="q" value="">
-  <button type="submit"><i class="fa fa-search"></i></button>
+<form id="searchbox"
+  style="display: none"
+  class="search-form" method="get" action="{{ pathto('search') }}"
+novalidate>
+  <input type="text" name="q" value=""
+    placeholder="{{ _('Enter search terms or a module, class or function name.') }}">
+  <button type="submit" title="{{ _('Go') }}"><i class="fa fa-search"></i></button>
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
+{# You cannot search without JS so we show the form only if you have it #}
+<script>document.getElementById('searchbox').style.display = 'inline-block';</script>

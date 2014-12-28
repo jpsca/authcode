@@ -173,8 +173,16 @@ header .nav .search-form {
 header .nav .search-form input {
   color: #444;
   border-radius: 6px;
-  max-width: 220px;
+  width: 220px;
   padding: 2px 40px 2px 2px;
+  -moz-transition: width 0.5s;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+}
+@media (min-width: 580px) {
+  header .nav .search-form input:focus {
+    width: 340px;
+  }
 }
 
 header .nav .search-form button {

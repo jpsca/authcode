@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  {%- block htmltitle %}
+  {%- block htmltitle -%}
   <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
   {%- endblock %}
+  <link rel="search" type="application/opensearchdescription+xml"
+    title="Buscan en "
+    href="{{ pathto('_static/opensearch.xml', 1) }}"/>
   <link rel="shortcut icon" type="image/x-icon" href="{{ pathto('_static/favicon.ico', 1) }}">
   {#<link href="{{ pathto('_static/styles/normalize.css', 1) }}" rel="stylesheet">
   <link href="{{ pathto('_static/styles/font-awesome.css', 1) }}" rel="stylesheet">
@@ -16,10 +19,18 @@
   <link href="{{ pathto('_static/styles/print.css', 1) }}" rel="stylesheet">#}
   <link href="{{ pathto('_static/styles/styles.min.css', 1) }}" rel="stylesheet">
 
-  {% if hasdoc('genindex') %}<link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}">{% endif %}
-  {% if parents %}<link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}">{% endif %}
-  {% if next %}<link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}">{% endif %}
-  {% if prev %}<link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}">{% endif %}
+  {% if hasdoc('genindex') -%}
+    <link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}">
+  {%- endif %}
+  {% if parents -%}
+    <link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}">
+  {%- endif %}
+  {% if next -%}
+    <link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}">
+  {%- endif %}
+  {% if prev -%}
+    <link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}">
+  {%- endif %}
 </head>
 <body>
 {% include "header.html" %}

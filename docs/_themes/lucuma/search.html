@@ -1,5 +1,43 @@
 {% extends "layout.html" %}
-{% set title = _('Search') %}
+{% set title = 'Buscar' %}
+
+{% block content %}
+<div id="search">
+  <div class="wrapper">
+    <h1 id="search-documentation">{{ 'Buscar' }}</h1>
+    <noscript>
+      <div id="fallback" class="admonition warning">
+        <p>Esta búsqueda se hace a través de JavaScript, por favor actívalo para poder usarla.</p>
+      </div>
+    </noscript>
+
+    <form action="" method="get" novalidate>
+      <input type="text" name="q" value="{{ q }}"
+        placeholder="{{ _('Enter search terms or a module, class or function name.') }}">
+      <button type="submit" class="btn">{{ _('Go') }}</button>
+      <span id="search-progress" style="padding-left: 10px"></span>
+    </form>
+    {% if search_performed %}
+      <h2>{{ 'Resultados' }}</h2>
+      {% if not search_results %}
+        <p>Tú búsqueda no regresó ningún resultado :(</p>
+      {% endif %}
+    {% endif %}
+
+    <div id="search-results">
+    {% if search_results -%}
+      <ul>
+      {%- for href, caption, context in search_results %}
+        <li><a href="{{ pathto(item.href) }}">{{ caption }}</a>
+          <div class="context">{{ context|e }}</div>
+        </li>
+      {%- endfor %}
+      </ul>
+    {%- endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block scripts %}
 <script src="{{ pathto('_static/scripts/searchtools.js', 1) }}"></script>
@@ -7,47 +45,4 @@
   Search.loadIndex("{{ pathto('searchindex.js', 1) }}");
 });</script>
 <script id="searchindexloader"></script>
-{% endblock %}
-
-
-{% block content %}
-<div id="search">
-  <div class="wrapper">
-    <h1 id="search-documentation">{{ _('Search') }}</h1>
-    <noscript>
-      <div id="fallback" class="admonition warning">
-        <p>{% trans %}Please activate JavaScript to enable the search
-          functionality.{% endtrans %}</p>
-      </div>
-    </noscript>
-    <p>
-      {% trans %}From here you can search these documents. Enter your search
-      words into the box below and click "search". Note that the search
-      function will automatically search for all of the words. Pages
-      containing fewer words won't appear in the result list.{% endtrans %}
-    </p>
-    <form action="" method="get">
-      <input type="text" name="q" value="{{ q }}">
-      <button type="submit" class="btn">{{ _('search') }}</button>
-      <span id="search-progress" style="padding-left: 10px"></span>
-    </form>
-    {% if search_performed %}
-      <h2>{{ _('Search Results') }}</h2>
-      {% if not search_results %}
-        <p>{{ _('Your search did not match any documents. Please make sure that all words are spelled correctly.') }}</p>
-      {% endif %}
-    {% endif %}
-    <div id="search-results">
-    {% if search_results %}
-      <ul>
-      {% for href, caption, context in search_results %}
-        <li><a href="{{ pathto(item.href) }}">{{ caption }}</a>
-          <div class="context">{{ context|e }}</div>
-        </li>
-      {% endfor %}
-      </ul>
-    {% endif %}
-    </div>
-  </div>
-</div>
 {% endblock %}

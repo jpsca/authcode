@@ -157,7 +157,7 @@ html_static_path = ['_static']
 html_domain_indices = False
 
 # If false, no index is generated.
-# html_use_index = True
+html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
 # html_split_index = False
@@ -174,10 +174,10 @@ html_domain_indices = False
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-# html_use_opensearch = ''
+html_use_opensearch = 'http://authcode.lucumalabs.com/es/'
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
-# html_file_suffix = None
+html_file_suffix = '.html'
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Authcodedoc'
@@ -200,7 +200,7 @@ latex_additional_files = []
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('index', 'Authcode.tex', u'Documentación de Authcode',
-    u'Juan-Pablo Scaletti', 'manual'),
+     u'Juan-Pablo Scaletti', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -244,7 +244,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'Authcode', u'Documentación de Authcode',
-     u'Juan-Pablo Scaletti', 'Authcode', 'One line description of project.',
+     u'Juan-Pablo Scaletti', 'Authcode', 'Awesome authentication code.',
      'Miscellaneous'),
 ]
 
