@@ -35,7 +35,7 @@ Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios a
             ...
 
 
-Roles/Permisos
+Roles
 ---------------------------------------------
 
 Una necesidad muy común es darle acceso al usuario solo si tiene un rol o permiso específico. Por lo mismo, Authcode tiene una forma directa de hacerlo: usando el argumento

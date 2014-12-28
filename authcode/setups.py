@@ -31,7 +31,7 @@ def setup_for_flask(
 
     if auth.views:
         assert auth.render
-        setup_for_flask_views(auth, app, auth.views_prefix)
+        setup_for_flask_views(auth, app)
 
 
 def setup_for_flask_views(auth, app):
@@ -106,7 +106,7 @@ def setup_for_shake(
 
     if auth.views:
         assert auth.render
-        setup_for_shake_views(auth, app, auth.views_prefix)
+        setup_for_shake_views(auth, app)
 
 
 def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)

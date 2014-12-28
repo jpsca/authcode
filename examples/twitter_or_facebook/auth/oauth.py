@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from flask import g, flash, request, redirect, url_for, session
-from flask_oauth import OAuth
+from flask_oauthlib.client import OAuth
 
 from app import app, db
 import settings
@@ -64,8 +64,7 @@ def twitter_authorized(resp):
     # }
     user = db.query(User).filter(User.twitter_id == resp['user_id']).first()
 
-    # user never signed on
-    if not user:
+    if not user:  # new user!
         if g.user:
             user = g.user
         else:
@@ -134,8 +133,7 @@ def facebook_authorized(resp):
 
     user = db.query(User).filter(User.facebook_id == me.data['id']).first()
 
-    # user never signed on
-    if user is None:
+    if not user:  # new user!
         if g.user:
             user = g.user
         else:

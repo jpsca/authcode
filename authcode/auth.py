@@ -59,7 +59,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'wsgi': wsgi.werkzeug,
     }
 
-    def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
+    def __init__(self, secret_key, hash=DEFAULT_HASHER, rounds=None, pepper=u'',
                  db=None, UserMixin=None, RoleMixin=None, roles=False,
                  lazy_roles=True, users_model_name='User', roles_model_name='Role',
                  session=None, request=None,

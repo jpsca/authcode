@@ -88,9 +88,9 @@ def test_setup_flask_false_render():
 def test_setup_flask_no_views():
     app = Flask(__name__)
     db = SQLAlchemy('sqlite:///', app)
-    auth = authcode.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db, views=[])
 
-    authcode.setup_for_flask(auth, app, views=False)
+    authcode.setup_for_flask(auth, app)
     assert len(app.url_map._rules) == 1
 
 

@@ -140,8 +140,7 @@ button::-moz-focus-inner,input::-moz-focus-inner {
 .btn:first-child {
   *margin-left: 0;
 }
-.btn:hover,
-.btn:focus {
+.btn:hover {
   color: #333333;
   text-decoration: none;
   background-position: 0 -15px;

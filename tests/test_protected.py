@@ -10,9 +10,10 @@ from sqlalchemy_wrapper import SQLAlchemy
 from helpers import SECRET_KEY
 
 
-def get_flask_app(roles=False, **kwargs):
+def get_flask_app(roles=False, views=None, **kwargs):
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
+    views = views or []
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, views=views, **kwargs)
     User = auth.User
 
     db.create_all()
@@ -23,7 +24,7 @@ def get_flask_app(roles=False, **kwargs):
     app = Flask('test')
     app.secret_key = os.urandom(32)
     app.testing = True
-    authcode.setup_for_flask(auth, app, views=False)
+    authcode.setup_for_flask(auth, app)
 
     @app.route('/login/')
     def login():

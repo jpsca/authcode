@@ -10,7 +10,7 @@ from ._compat import to_unicode
 class AuthenticationMixin(object):
 
     def prepare_password(self, secret):
-        return u'{peper}{secret}'.format(
+        return u'{pepper}{secret}'.format(
             pepper=to_unicode(self.pepper),
             secret=to_unicode(secret)
         )

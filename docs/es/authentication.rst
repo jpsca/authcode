@@ -4,9 +4,13 @@
 Autenticación
 =============================================
 
-La **autenticación** es el verificar que un usuario sea quien dice ser. En una aplicación web eso suele hacerse pidiendo al visitante un usuario (quien es) y una contraseña (la prueba de que es quien dice ser), pero puede hacerse de otras formas (por ejemplo mediante OAuth o similares).
+.. container:: lead
 
-Una vez autenticado, Authcode guarda, en la *cookie* de sesión del navegador, una clave que identifica al usuario en el sitio por el resto de su sesión (hasta que haga manualmente *logout* por ejemplo).
+    La **autenticación** es el verificar que un usuario sea quien dice ser.
+
+    Authcode separa la *autenticación* del *login*. La parte de autenticación recibe unas credenciales —como un nombre de usuario y una contraseña— y regresa al usuario identificado.
+
+    El login recibe a ese usuario y guarda en la *cookie* de sesión del navegador un código para identificarlo en el sitio por el resto de su sesión (hasta que haga manualmente *logout* por ejemplo).
 
 
 Integración con tus modelos
@@ -218,31 +222,15 @@ El formato del hash final varía con la función utilizada, pero en general tien
 
 
 
-.. _login_process:
-
-Proceso de login
-=============================================
-
-Authcode separa la *autenticación* del *login*. La parte de autenticación recibe unas credenciales —como un nombre de usuario y una contraseña— y regresa a la instancia del usuario identificado. El login recibe a una instancia de usuario y guarda en la sesión un un código para identificarlo en adelante (hasta que se haga logout).
-
-¿Por qué separarlos? Por que así puede autenticarse a un usuario por otros medios, como via OAuth por Twitter o Facebook, pero sin perder el resto de la funcionalidad que Authcode te da.
-
-
-
 Vistas de autenticación
 =============================================
 
-
+TO DO
 
 Recuperar contraseña
 =============================================
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+TO DO
 
 
 
