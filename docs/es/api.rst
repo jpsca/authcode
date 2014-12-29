@@ -9,7 +9,7 @@ API
     Esta parte de la documentación cubre las interfaces principales de Authcode.
 
 
-.. api.auth
+.. _api.auth:
 
 Objeto Auth
 =============================================
@@ -199,7 +199,7 @@ protected(*tests, **options):
             Puede ser una URL o un ejecutable que devuelva la URL.
 
 
-.. api.setup_functions
+.. _api.setup_functions:
 
 Funciones de setup
 =============================================

@@ -146,7 +146,7 @@ Cualquier valor que le asignes a la propiedad ``password`` de un usuario, autom�
     >>> print(user.password)
     '$pbkdf2-sha512$10$E6JUKkVozVnL2RsDYKx1jg$GTG6q7WPH2/IO2DHvEM5rO6RrU (...)'
 
-Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``has_password``, pero usualmente no necesitas hacerlo por que Authcode se encarga de manejar todo el proceso de autenticación por ti (ver :ref:`login_process`).
+Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``has_password``, pero usualmente no necesitas hacerlo por que Authcode se encarga de manejar todo el proceso de autenticación por ti.
 
 .. code-block:: python
 

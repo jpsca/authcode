@@ -1,40 +1,12 @@
 {% extends "layout.html" %}
 {% set title = 'Buscar' %}
 
+{% block bodyclass %}search{% endblock %}
+
 {% block content %}
-<div id="search">
+<div>
   <div class="wrapper">
-    <h1 id="search-documentation">{{ 'Buscar' }}</h1>
-    <noscript>
-      <div id="fallback" class="admonition warning">
-        <p>Esta búsqueda se hace a través de JavaScript, por favor actívalo para poder usarla.</p>
-      </div>
-    </noscript>
-
-    <form action="" method="get" novalidate>
-      <input type="text" name="q" value="{{ q }}"
-        placeholder="{{ _('Enter search terms or a module, class or function name.') }}">
-      <button type="submit" class="btn">{{ _('Go') }}</button>
-      <span id="search-progress" style="padding-left: 10px"></span>
-    </form>
-    {% if search_performed %}
-      <h2>{{ 'Resultados' }}</h2>
-      {% if not search_results %}
-        <p>Tú búsqueda no regresó ningún resultado :(</p>
-      {% endif %}
-    {% endif %}
-
-    <div id="search-results">
-    {% if search_results -%}
-      <ul>
-      {%- for href, caption, context in search_results %}
-        <li><a href="{{ pathto(item.href) }}">{{ caption }}</a>
-          <div class="context">{{ context|e }}</div>
-        </li>
-      {%- endfor %}
-      </ul>
-    {%- endif %}
-    </div>
+    {% include "searchresults.html" %}
   </div>
 </div>
 {% endblock %}

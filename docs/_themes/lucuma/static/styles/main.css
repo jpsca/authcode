@@ -366,3 +366,14 @@ footer a:hover {
   padding: 10px;
   margin: 5px;
 }
+
+body.search #searchbox {
+  display: none !important;
+}
+
+#searchbox-body input {
+  padding: 4px 2px;
+  border-radius: 6px;
+  font-size: 15px;
+  width: 80%;
+}
