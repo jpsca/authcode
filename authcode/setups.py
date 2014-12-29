@@ -97,7 +97,7 @@ def setup_for_shake(
     auth.render = render or app.render
 
     def set_user_shake(_request, **kwargs):
-        auth.session = session or request.session
+        auth.session = session or _request.session
         LazyUser(auth, request or _request, user_name=auth.user_name)
 
     app.before_request_funcs.insert(0, set_user_shake)
