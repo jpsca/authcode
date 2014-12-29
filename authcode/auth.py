@@ -97,8 +97,11 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
     def set_hasher(self, hash, rounds=None):
         """Updates the has algorithm and, optionally, the number of rounds
         to use.
-        :raises: `~WrongHashAlgorithm` if new algorithm isn't one of the three
+
+        Raises:
+            `~WrongHashAlgorithm` if new algorithm isn't one of the three
             recomended options.
+
         """
         hash = hash.replace('-', '_')
         if hash not in VALID_HASHERS:

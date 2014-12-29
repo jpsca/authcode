@@ -19,7 +19,7 @@
   </fieldset>
   <fieldset>
     <label for="regpassword">Password</label>
-    {{ form.password(id="regpassword") }}
+    {{ form.password(id="regpassword", type="password") }}
     {% if form.password.error %}<div class="error">{{ form.password.error.msg }}</div>{% endif %}
   </fieldset>
   <fieldset>

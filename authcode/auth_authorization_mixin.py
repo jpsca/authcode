@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import print_function
 import logging
 from uuid import uuid4
 from functools import wraps

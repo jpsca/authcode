@@ -60,7 +60,8 @@ def sign_out(auth, request, *args, **kwargs):
 def reset_password(auth, request, token=None, *args, **kwargs):
     credentials = auth.wsgi.get_post_data(request) or {}
     kwargs['ok'] = False
-    kwargs['error'] = None
+    kwargs['error'] = False
+    kwargs['token'] = token
 
     if not token and auth.get_user():
         return auth.wsgi.redirect(auth.url_change_password)
@@ -70,14 +71,15 @@ def reset_password(auth, request, token=None, *args, **kwargs):
         if user:
             auth.login(user)
             return change_password(auth, request, manual=False, **kwargs)
-        kwargs['error'] = 'WRONG TOKEN'
+        kwargs['error'] = True
 
     elif auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
         login = auth.wsgi.get_from_params(request, 'login') or ''
         user = auth.User.by_login(login)
-        if not user:
-            kwargs['error'] = 'NOT FOUND'
-        else:
+        # If the login provided does not exist in the system
+        # or the user is inactive, no error is raised
+        # (but an email is not sent)
+        if user:
             reset_url = auth.wsgi.make_full_url(
                 request,
                 auth.url_reset_password + user.get_token() + '/'
@@ -90,7 +92,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
                 'expire_after': auth.token_life,
             }
             _email_token(auth, user, data)
-            kwargs['ok'] = True
+        kwargs['ok'] = True
 
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials

@@ -13,4 +13,5 @@
 from .auth import Auth, WrongHashAlgorithm  # noqa
 from .setups import setup_for_flask, setup_for_shake  # noqa
 
-__version__ = '1.1.0'
+
+__version__ = '1.1.1'

@@ -21,7 +21,6 @@ def send_auth_email(user, subject, msg):
 
 auth = authcode.Auth(SECRET_KEY, db=db)
 authcode.setup_for_flask(auth, app, send_email=send_auth_email)
-authcode.setup_for_flask(auth, app)
 User = auth.User
 
 

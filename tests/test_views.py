@@ -192,7 +192,7 @@ def test_reset_password_wrong_account():
     r = client.post(auth.url_reset_password, data=data)
     data = to_unicode(r.data)
     print(data)
-    assert u'<!-- ERROR NOT FOUND -->' in data
+    assert u'<!-- EMAIL SENT -->' in data
 
 
 def test_reset_password_email_sent():

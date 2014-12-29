@@ -22,7 +22,10 @@ class RegisterForm(f.Form):
         UsernameDoesNotExist,
     ])
     email = f.Text(validate=[v.ValidEmail])
-    password = f.Password(validate=[
-        v.Required,
-        v.LongerThan(auth.password_minlen)
-    ])
+    password = f.Text(
+        hidden=True,
+        validate=[
+            v.Required,
+            v.LongerThan(auth.password_minlen)
+        ]
+    )

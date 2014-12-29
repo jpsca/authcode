@@ -56,4 +56,4 @@ class ViewsMixin(object):
         """Should be overwritten in the setup"""
         print('To:', user)
         print('Subject:', subject)
-        print (msg)
+        print(msg)
