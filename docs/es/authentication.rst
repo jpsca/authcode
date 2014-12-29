@@ -222,16 +222,25 @@ El formato del hash final varía con la función utilizada, pero en general tien
 
 
 
-Vistas de autenticación
+Vistas automáticas
 =============================================
+
+TO DO
+
+Iniciar sesión
+---------------------------------------------
+
+.. figure:: _static/loginpage.png
+   :align: center
+
+   Página estándar de inicio de sesión.
 
 TO DO
 
 Recuperar contraseña
-=============================================
+---------------------------------------------
 
 TO DO
-
 
 
 .. [#] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.

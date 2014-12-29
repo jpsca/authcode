@@ -57,13 +57,14 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'update_hash': True,
 
         'wsgi': wsgi.werkzeug,
+        'user_name': 'user',
     }
 
-    def __init__(self, secret_key, hash=DEFAULT_HASHER, rounds=None, pepper=u'',
-                 db=None, UserMixin=None, RoleMixin=None, roles=False,
-                 lazy_roles=True, users_model_name='User', roles_model_name='Role',
-                 session=None, request=None,
-                 **kwargs):
+    def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
+                 db=None, UserMixin=None, RoleMixin=None,
+                 users_model_name='User', roles_model_name='Role',
+                 roles=False, lazy_roles=True,
+                 session=None, request=None, **kwargs):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \

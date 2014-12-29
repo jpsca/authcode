@@ -9,7 +9,7 @@ def eval_url(url):
 
 
 def setup_for_flask(
-        auth, app, send_email=None, user_name='user',
+        auth, app, send_email=None,
         render=None, session=None, request=None):
     import flask
 
@@ -23,7 +23,7 @@ def setup_for_flask(
     def set_user():
         # By doing this, ``g`` now has a ``user`` attribute that it's
         # replaced by the real user object the first time is used.
-        LazyUser(auth, flask.g, user_name=user_name)
+        LazyUser(auth, flask.g, user_name=auth.user_name)
 
     app.before_request_funcs.setdefault(None, []).insert(0, set_user)
     app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
@@ -89,7 +89,7 @@ def setup_for_flask_views(auth, app):
 
 
 def setup_for_shake(
-        auth, app, send_email=None, user_name='user',
+        auth, app, send_email=None,
         render=None, session=None, request=None):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
@@ -98,7 +98,7 @@ def setup_for_shake(
 
     def set_user_shake(_request, **kwargs):
         auth.session = session or request.session
-        LazyUser(auth, request or _request, user_name=user_name)
+        LazyUser(auth, request or _request, user_name=auth.user_name)
 
     app.before_request_funcs.insert(0, set_user_shake)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token

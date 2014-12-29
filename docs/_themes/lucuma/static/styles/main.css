@@ -377,3 +377,9 @@ body.search #searchbox {
   font-size: 15px;
   width: 80%;
 }
+.highlight-link {
+  position: absolute;
+  top: 44px;
+  left: 10px;
+  font-size: 13px;
+}
