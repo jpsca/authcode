@@ -83,7 +83,9 @@ Aunque se tenga una copia de la base de datos la teoría, es que sin acceso al c
 
 .. warning::
 
-    A algunas personas les preocupa que no haya sido categóricamente “demostrado” que agregar una pimienta realmente aumenta la seguridad. Por si las dudas, a menos que tu le pases una como parámetro ``pepper``, Authcode por defecto no usa ninguna.
+    A algunas personas les preocupa que no haya sido categóricamente demostrado que agregar una pimienta realmente aumente la seguridad o que de alguna forma inesperada no la disminuya.
+
+    Por si las dudas, a menos que tu le pases una como parámetro ``pepper``, Authcode no usa ninguna.
 
 
 .. _security.response:

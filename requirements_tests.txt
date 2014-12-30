@@ -6,6 +6,6 @@ sqlalchemy
 sqlalchemy_wrapper
 jinja2
 flask
-https://github.com/mitsuhiko/flask-sqlalchemy/archive/master.zip
+flask-sqlalchemy
 werkzeug
 webob

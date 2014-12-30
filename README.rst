@@ -33,19 +33,23 @@ Features
 TODO
 ======================
 
-* Better documentation
+* English documentation
+* More documentation (always!):
+    - Automatic views: how to usea and customize
+    - Manual views
+    - etc.
 
 * Code:
     - CherryPy setup and tests
     - Pyramid setup and tests
+    - <Your web framework here> setup and tests
 
-* Examples:
-    - Nicer templates/CSS
-    - Upload examples to Heroku
-    - Login/password example
-    - Twitter + login/password example
-    - Mozilla Persona example
-    - Login/Password + Mozilla Persona example
+    - MultiAuth tests
+
+    - Examples:
+        - Twitter + login/password example
+        - Mozilla Persona example
+        - Login/Password + Mozilla Persona example
 
 
 Community & support
@@ -55,5 +59,5 @@ Issue tracker: https://github.com/lucuma/authcode/issues
 
 ______
 
-:copyright: © 2012-2014 by `Juan-Pablo Scaletti <http://jpscaletti.com>`_.
+:copyright: © 2012-2015 by `Juan-Pablo Scaletti <http://jpscaletti.com>`_.
 :license: MIT, see LICENSE for more details.
