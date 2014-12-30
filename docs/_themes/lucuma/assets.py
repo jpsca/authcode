@@ -29,7 +29,7 @@ assets_env.register(
 assets_env.register(
     'js_main',
 
-    'scripts/jquery.min.js',
+    'scripts/jquery.js',
     'scripts/lodash.js',
     'scripts/doctools.js',
     'scripts/main.js',

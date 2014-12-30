@@ -10,13 +10,6 @@
     title="{{ _('opensearch_search_in') }}"
     href="{{ pathto('_static/opensearch.xml', 1) }}"/>
   <link rel="shortcut icon" type="image/x-icon" href="{{ pathto('_static/favicon.ico', 1) }}">
-  {#<link href="{{ pathto('_static/styles/normalize.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/font-awesome.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/main.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/type.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/responsive.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/pygments.css', 1) }}" rel="stylesheet">
-  <link href="{{ pathto('_static/styles/print.css', 1) }}" rel="stylesheet">#}
   <link href="{{ pathto('_static/styles/styles.min.css', 1) }}" rel="stylesheet">
 
   {% if hasdoc('genindex') -%}
@@ -44,10 +37,6 @@ var DOCUMENTATION_OPTIONS = {
     HAS_SOURCE: true // neccesary for showing context in the search results
 };
 </script>
-{#<script src="{{ pathto('_static/scripts/jquery.min.js', 1) }}"></script>
-<script src="{{ pathto('_static/scripts/lodash.js', 1) }}"></script>
-<script src="{{ pathto('_static/scripts/doctools.js', 1) }}"></script>
-<script src="{{ pathto('_static/scripts/main.js', 1) }}"></script>#}
 <script src="{{ pathto('_static/scripts/scripts.min.js', 1) }}"></script>
 <script src="{{ pathto('_static/translations.js', 1) }}"></script>
 {% block scripts %}{% endblock %}

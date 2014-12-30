@@ -9,7 +9,7 @@ Autorización
     Si fueras a crear un sistema para tu blog, tendrías páginas públicas pero no quisieras que cualquiera pudiera editar o borrar posts en él. Necesitas un mecanismo para que a ciertas páginas solo tengan acceso usuarios autenticados, quizas que también cumplan con algunas condiciones. De eso se trata esta guía.
 
 
-Protegiendo tus vistas: *auth.protected*
+Protegiendo tus vistas
 =============================================
 
 Para lograr que a ciertas vistas solo tengan acceso los usuarios autenticados usas el decorador ``auth.protected()``. Ejemplo:
