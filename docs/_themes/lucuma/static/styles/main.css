@@ -383,3 +383,10 @@ body.search #searchbox {
   left: 10px;
   font-size: 13px;
 }
+
+#search-progress {
+  font-size: 12px;
+  display: block;
+  color: #999;
+  padding: 7px 2px!important;
+}

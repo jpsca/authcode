@@ -40,7 +40,8 @@
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT:    '{{ url_root }}',
     VERSION:     '{{ release|e }}',
-    FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}'
+    FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}',
+    HAS_SOURCE: true // neccesary for showing context in the search results
 };
 </script>
 {#<script src="{{ pathto('_static/scripts/jquery.min.js', 1) }}"></script>
