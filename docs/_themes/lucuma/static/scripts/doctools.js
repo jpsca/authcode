@@ -139,13 +139,13 @@ var Documentation = {
     $('div[id] > :header:first').each(function() {
       $('<a class="headerlink">\u00B6</a>').
       attr('href', '#' + this.id).
-      attr('title', _('Permalink to this headline')).
+      attr('title', _('permalink_header')).
       appendTo(this);
     });
     $('dt[id]').each(function() {
       $('<a class="headerlink">\u00B6</a>').
       attr('href', '#' + this.id).
-      attr('title', _('Permalink to this definition')).
+      attr('title', _('permalink_definition')).
       appendTo(this);
     });
   },
@@ -177,7 +177,7 @@ var Documentation = {
         });
       }, 10);
       $('<p class="highlight-link"><a href="javascript:Documentation.' +
-        'hideSearchWords()">' + _('Hide Search Matches') + '</a></p>')
+        'hideSearchWords()">' + _('hide_search_matches') + '</a></p>')
           .appendTo($('#searchbox'));
     }
   },

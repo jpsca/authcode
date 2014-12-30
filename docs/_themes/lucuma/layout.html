@@ -7,7 +7,7 @@
   <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
   {%- endblock %}
   <link rel="search" type="application/opensearchdescription+xml"
-    title="Buscan en "
+    title="{{ _('opensearch_search_in') }}"
     href="{{ pathto('_static/opensearch.xml', 1) }}"/>
   <link rel="shortcut icon" type="image/x-icon" href="{{ pathto('_static/favicon.ico', 1) }}">
   {#<link href="{{ pathto('_static/styles/normalize.css', 1) }}" rel="stylesheet">
@@ -20,7 +20,7 @@
   <link href="{{ pathto('_static/styles/styles.min.css', 1) }}" rel="stylesheet">
 
   {% if hasdoc('genindex') -%}
-    <link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}">
+    <link rel="index" title="{{ _('index') }}" href="{{ pathto('genindex') }}">
   {%- endif %}
   {% if parents -%}
     <link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}">
@@ -50,6 +50,7 @@ var DOCUMENTATION_OPTIONS = {
 <script src="{{ pathto('_static/scripts/doctools.js', 1) }}"></script>
 <script src="{{ pathto('_static/scripts/main.js', 1) }}"></script>#}
 <script src="{{ pathto('_static/scripts/scripts.min.js', 1) }}"></script>
+<script src="{{ pathto('_static/translations.js', 1) }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

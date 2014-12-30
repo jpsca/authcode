@@ -1,9 +1,9 @@
 # MakeFile for building all the docs at once.
 #
 
-.PHONY: all clean html latexpdf epub htmlhelp publish
+.PHONY: clean publish
 
-langs = es
+langs = es en
 
 html: $(foreach lang,$(langs),html-$(lang))
 
@@ -26,11 +26,8 @@ latexpdf-%:
 	cd $* && make latexpdf LANG=$*
 
 clean:
-	rm -rf _build/es
-	rm -rf _build/en
+	rm -rf _build/html/es
+	rm -rf _build/html/en
 
-intl:
-	cd es && sphinx-intl build
-
-publish: html
+publish: clean html
 	scp -r _build/html/* jps@lucuma3:/var/www/lucumalabs/authcode/

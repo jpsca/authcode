@@ -1,19 +1,19 @@
-<h1 id="search-documentation">Buscar</h1>
+<h1 id="search-documentation">{{ _('search_page') }}</h1>
 <noscript>
   <div id="fallback" class="admonition warning">
-    <p>Esta búsqueda se hace a través de JavaScript, por favor actívalo para poder usarla.</p>
+    <p>{{ _('activate_js_to_search') }}.</p>
   </div>
 </noscript>
 
 <form action="" method="get" id="searchbox-body" novalidate>
   <input type="text" name="q" value="{{ q }}">
-  <button type="submit" class="btn">Buscar</button>
+  <button type="submit" class="btn">{{ _('action_search') }}</button>
   <span id="search-progress" style="padding-left: 10px"></span>
 </form>
 {% if search_performed %}
-  <h2>Resultados</h2>
+  <h2>{{ _('search_results') }}</h2>
   {% if not search_results %}
-    <p>Tú búsqueda no regresó ningún resultado :(</p>
+    <p>{{ _('search_results_no_results') }} :(</p>
   {% endif %}
 {% endif %}
 

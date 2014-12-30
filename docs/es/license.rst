@@ -39,7 +39,7 @@ La versión oficial de esta licencia está en el archivo `LICENSE <http://github
 Licencia de la documentación
 ---------------------------------------
 
-El contenido de la documentación de Authcode está licenciado bajo una licencia `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0/>`_.
+El contenido de la documentación de Authcode está licenciado bajo `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0/>`_.
 
 
 .. _artwork_license:
@@ -52,7 +52,7 @@ Algunos derechos reservados.
 
 Este logotipo o una versión modificada puede ser utilizados por cualquier persona para referirse al proyecto AuthCode, pero esto no implica un aval del proyecto.
 
-La redistribución y uso del código fuente (el archivo SVG) y binario (los archivoa
+La redistribución y uso del código fuente (el archivo SVG) y binario (los archivos
 PNG, etc.) de la imagen, con o sin modificaciones, están permitidos sujeto a las siguientes condiciones:
 
 * Las redistribuciones del código fuente deben conservar el copyright anterior y esta lista de condiciones.

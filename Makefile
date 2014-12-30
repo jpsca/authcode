@@ -1,15 +1,5 @@
 .PHONY: clean-pyc clean-build
 
-help:
-	@echo "clean-build - remove build artifacts"
-	@echo "clean-pyc - remove Python file artifacts"
-	@echo "lint - check style with flake8"
-	@echo "test - run tests quickly with the default Python"
-	@echo "testall - run tests on every Python version with tox"
-	@echo "coverage - check code coverage with the default Python"
-	@echo "publish - package and upload a release"
-	@echo "sdist - package"
-
 clean: clean-build clean-pyc
 
 clean-build:
