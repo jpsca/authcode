@@ -50,7 +50,7 @@ OAuth
 
 Para autenticar a tus usuarios por OAuth (via Twitter o Facebook, etc.), la idea es delegar el proceso de autenticación a otra biblioteca y, una vez identificado el usuario, loguearlo con ``auth.login(user)`` usar Authcode para el resto.
 
-Este ejemplo usa la excelente `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/latest/>`_ (revisa su documentación para que el código de abajo tenga sentido):
+Este ejemplo usa `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/latest/>`_ (revisa su documentación para que el código de abajo tenga sentido):
 
 .. code-block:: python
 

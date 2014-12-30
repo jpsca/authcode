@@ -163,7 +163,7 @@ Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``
 Funciones de hashing
 ---------------------------------------------
 
-Authcode no implementa los algoritmos de hasheado, sino que se apoya en la excelente biblioteca `PassLib <https://pythonhosted.org/passlib/>`_.
+Authcode no implementa los algoritmos de hasheado, sino que se apoya en la biblioteca `PassLib <https://pythonhosted.org/passlib/>`_.
 
 Aunque puede leer algunos otros, por motivos de seguridad solo puedes elegir tres familias de funciones de hashing:
 
