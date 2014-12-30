@@ -60,15 +60,15 @@ msgstr "Search in "
 msgid "sections"
 msgstr "Sections"
 
-#: lucuma/search-form.html:6
+#: lucuma/search-form.html:5 lucuma/searchresults.html:10
 msgid "action_search"
 msgstr "Search"
 
-#: lucuma/search.html:2 lucuma/search.html:9
+#: lucuma/search.html:2 lucuma/searchresults.html:1
 msgid "search_page"
 msgstr "Search Page"
 
-#: lucuma/search.html:13
+#: lucuma/searchresults.html:4
 msgid "activate_js_to_search"
 msgstr "The search needs JavaScript to works. Please activate it."
 
@@ -101,10 +101,10 @@ msgstr "Found %s result(s)"
 msgid "search_result_in"
 msgstr "in"
 
-#: lucuma/search.html:23 lucuma/static/translations.js_t:12
+#: lucuma/searchresults.html:14 lucuma/static/translations.js_t:12
 msgid "search_results"
 msgstr "Results"
 
-#: lucuma/search.html:25 lucuma/static/translations.js_t:13
+#: lucuma/searchresults.html:16 lucuma/static/translations.js_t:13
 msgid "search_results_no_results"
 msgstr "No results"
