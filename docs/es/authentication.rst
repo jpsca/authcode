@@ -16,13 +16,17 @@ Autenticación
 Integración con tus modelos
 =============================================
 
-Aunque Authcode genera un modelo de usuario por defecto, no tiene sentido una biblioteca de autenticación que no te permita integrarla con tu propio modelo de usuarios.
+Aunque Authcode genera un modelo de usuario por defecto, no tendría sentido que no te dejara integrarla con tu propio modelo de usuarios.
 
 El problema con otras bibliotecas y frameworks del pasado han obligado a usar su modelo de usuarios, con su estructura y sin que le puedas agregar nuevos campos o ni siquiera definir el nombre de la tabla. Creo que eso es pedir demasiado.
 
 Authcode en cambio, aprovecha el poder de SQLAlchemy y los *mixins* para dar la mayor flexibilidad sin sacrificar funcionalidad.
 
-Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en una clase. Y puedes llamar la tabla como quieras incluyendo un atributo ``__tablename__`` (si no, por defecto es ``users``).
+Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en una clase.
+
+..note::
+
+    Puedes llamar la tabla como quieras incluyendo un atributo ``__tablename__`` (si no, por defecto es ``users``), y también puedes cambiar el nombre con que SQLAlchemy conoce al modelo. Mira el resto de opciones en :ref:`api.auth`.
 
 De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “perfil” [#]_.
 
@@ -104,7 +108,7 @@ la otra es pasarle un *mixin* para la tabla de roles:
 
 Este mixin es muy similar al de la tabla de usuarios. Por defecto un rol tiene solo un campo —su nombre. Utilizando este mixin puedes agregarle los campos extra que quieras (como una descripción, por ejemplo). El modelo final de roles está en ``auth.Role``.
 
-Cuando los roles están activados, las instancias de usuarios tienen estos tres nuevos métodos:
+Cuando los roles han sido activados, las instancias de usuarios tienen estos tres nuevos métodos:
 
 * ``user.add_role(name)``:
     Le agrega el rol con nombre ``name`` a este usuario.
@@ -178,7 +182,7 @@ A las tres funciones:
 Según la función que elijas, puede ser necesario o recomendado instalar una biblioteca adicional:
 
 - bcrypt:
-    Necesita que instales una biblioteca extra en sistemas no basados en BSD. |br|
+    Necesita que instales una biblioteca extra en sistemas no basados en BSD.\n
     Puedes usar: `bcrypt <https://pypi.python.org/pypi/bcrypt>`_, `py-bcrypt <https://pypi.python.org/pypi/py-bcrypt>`_ o `bcryptor <https://bitbucket.org/ares/bcryptor/overview>`_.
 
 - pbkdf2_sha512 y pbkdf2_sha256:
@@ -194,7 +198,7 @@ Tanto la función de hashing a usar como el número de repeticiones puedes defin
 
     auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
 
-Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. No recomiendo que definas un número de rondas a menos que realmente necesites ese tipo de control. Por defecto se usa el recomendado por PassLib para el algoritmo elegido.
+Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. *No recomiendo que definas un número de rondas a menos que realmente necesites ese tipo de control*. Por defecto se usa el número recomendado por PassLib para el algoritmo elegido.
 
 
 Pimienta (sal global)

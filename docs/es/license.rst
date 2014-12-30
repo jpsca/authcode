@@ -4,13 +4,12 @@
 Licencia
 ============================
 
-Authcode está licenciada bajo una licencia MIT. Básicamente significa: haz lo que quieras con ella siempre y cuando el copyright de Authcode se mantenga, las condiciones no se modifiquen y el texto de la licencia siga presente.
-
+Authcode está bajo la licencia MIT. Básicamente significa: haz lo que quieras con ella siempre y cuando el copyright de Authcode se mantenga, las condiciones no se modifiquen y el texto de la licencia siga presente.
 
 Definiciones generales de la licencia
 ---------------------------------------
 
-- La “:ref:`authcode_license`” aplica a todo el código fuente distribuido como parte de Authcode: Authcode mismo, tests y al tema base de la documentación (HTML, CSS y JavaScript).
+- La “:ref:`authcode_license`” aplica a todo el código fuente distribuido como parte de Authcode: Authcode mismo, tests y al tema base de la documentación (HTML, CSS, JavaScript y traducciones).
 
 - La “:ref:`docs_license`” aplica al contenido de la documentación: texto, imágenes y código de ejemplo.
 
@@ -39,7 +38,7 @@ La versión oficial de esta licencia está en el archivo `LICENSE <http://github
 Licencia de la documentación
 ---------------------------------------
 
-El contenido de la documentación de Authcode está licenciado bajo `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0/>`_.
+El contenido de la documentación de Authcode está bajo una licencia `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0/>`_.
 
 
 .. _artwork_license:
@@ -47,7 +46,7 @@ El contenido de la documentación de Authcode está licenciado bajo `Creative Co
 Licencia del arte
 ---------------------------------------
 
-Copyright © 2015 por Alfonso Mello.
+Copyright © 2015 por XXXX.
 Algunos derechos reservados.
 
 Este logotipo o una versión modificada puede ser utilizados por cualquier persona para referirse al proyecto AuthCode, pero esto no implica un aval del proyecto.
@@ -59,6 +58,6 @@ PNG, etc.) de la imagen, con o sin modificaciones, están permitidos sujeto a la
 
 * Los nombres de los autores de AuthCode (ver `AUTHORS <http://github.com/lucuma/authcode/blob/master/AUTHORS>`_) no se utilizarán para respaldar o promocionar productos derivados de este software sin un permiso previo por escrito.
 
-Nota: Agradeceríamos que enlaces las imagen a http://authcode.lucumalabs.com/ si lo usas en una página web.
+Nota: Agradeceríamos que enlaces la imagen a http://authcode.lucumalabs.com/ si lo usas en una página web.
 
 La versión oficial de esta licencia está en el archivo `LICENSE-ARTWORK <http://github.com/lucuma/authcode/blob/master/artwork/LICENSE-ARTWORK>`_ en el código fuente.

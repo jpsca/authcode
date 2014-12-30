@@ -12,7 +12,7 @@ Autorización
 Protegiendo tus vistas: *auth.protected*
 =============================================
 
-Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios autenticados. Authcode te hace fácil lograrlo por medio del decorador ``auth.protected()``. Ejemplo:
+Para lograr que a ciertas vistas solo tengan acceso los usuarios autenticados usas el decorador ``auth.protected()``. Ejemplo:
 
 .. code-block:: python
 
@@ -28,6 +28,7 @@ Hay ciertas vistas a las que solo tiene sentido que tengan acceso los usuarios a
     Si defines las rutas a tus vistas con decoradores —como lo hace Flask— ten mucho cuidado en poner el decorador de autenticación **después** del de la ruta o, de otro modo, tus vistas quedarán desprotegidas. Hazlo de esta forma:
 
    .. code-block:: python
+      :emphasize-lines: 2
 
         @app.route('/admin/')
         @auth.protected()
@@ -168,7 +169,7 @@ y de ahí puede leerlo el código para poner la cabecera en las solicitudes AJAX
 Autorización denegada
 =============================================
 
-Si un usuario no autenticado intenta acceder una de las vistas protegidad por ``@auth.protected()``, es redirigido por a la página de login por defecto, definida en las opciones globales. Esto pagina puede cambiar para una vista específica usando el parámetro ``url_sign_in``, que puede ser una URL fija o un invocable que devuelva la URL que quieres.
+Si un usuario no autenticado intenta acceder una de las vistas protegidas por ``@auth.protected()``, es redirigido por a la página de login por defecto, definida en las opciones globales. Esto pagina puede cambiar para una vista específica usando el parámetro ``url_sign_in``, que puede ser una URL fija o un invocable que devuelva la URL que quieres.
 
 La URL que el usuario intentaba visitar queda guardada en su sesión y una vez que se autentica, se le redirige ahí.
 
@@ -183,4 +184,4 @@ No suele haber una página por defecto para este error, o si la hay no es muy am
         return render_template('forbidden.html'), 403
 
 
-.. [#] Técnicamente es una función que al ejecutarse devuelve un decorador.
+.. [#] Técnicamente es un generador de decoradores: una función que al ejecutarse devuelve un decorador.

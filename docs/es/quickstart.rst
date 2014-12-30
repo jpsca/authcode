@@ -34,7 +34,7 @@ Inicio rápido
 
 Para usar Authcode bastan solo tres pasos.
 
-Lo primero es configurar Authcode, hay varios parámetros que pudes usar, pero lo mínimo necesario es una clave secreta y la conexión a SQLAlchemy
+Lo primero es configurar Authcode, hay varios parámetros que puedes usar, pero lo mínimo necesario es una clave secreta y la conexión a SQLAlchemy.
 
 .. code-block:: python
 
@@ -47,7 +47,7 @@ Lo siguiente es conectarlo a tu aplicación web, esta parte es específica del f
     authcode.setup_for_flask(auth, app)
     User = auth.User
 
-``auth.user`` contiene el modelo de usuario generado automáticamente por Authcode. Necesitas esa referencia para crear usuarios o conectarlos a tus otros modelos.
+``auth.user`` contiene el modelo de usuario generado automáticamente por Authcode. Necesitarás esa referencia para crear usuarios o conectarlos a tus otros modelos.
 
 Finalmente usas ``auth.protected`` para decorar las vistas que quieres que sean solo accesibles para usuarios.
 
@@ -67,16 +67,16 @@ Finalmente usas ``auth.protected`` para decorar las vistas que quieres que sean 
 
 Puedes ver este ejemplo completo en https://github.com/lucuma/authcode/tree/master/examples/minimal.
 
-Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que cuando intentes visitar esa vista, te redirigirá a una página para ingresar un usuario y contraseña (en el ejemplo ambos son “authcode”).
+Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que cuando intentes visitar la página del ejemplo, te redirigirá a otra para ingresar tu usuario y contraseña (en el ejemplo ambos son “authcode”).
 
 .. figure:: _static/loginpage.png
    :align: center
 
    Página estándar de inicio de sesión.
 
-Puedes ver que esa página también tiene un enlace a otra para recuperar tu contraseña; El método es el estándar: escribes tu nombre de usuario y Authcode te envía a tu correo un enlace a una página especial en la que puedes elegir una nueva contraseña.
+Puedes ver que esa página también tiene un enlace a otra para recuperar tu contraseña; El método es el estándar: escribes tu nombre de usuario y Authcode te envía un correo con un enlace especial para que elijas una nueva contraseña.
 
-Al ejemplo le hace falta una cosa para que esto funcione: una forma de enviar el email. Eso es una funcionalidad que tiene que darle tu aplicación [#]_.
+Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, eso es una funcionalidad que tiene que darle tu aplicación [#]_. Por ejemplo:
 
 .. code-block:: python
 
@@ -93,7 +93,7 @@ Al ejemplo le hace falta una cosa para que esto funcione: una forma de enviar el
 
     authcode.setup_for_flask(auth, app, send_email=send_auth_email)
 
-La función toma como argumentos el usuario que quiere recuperar su contraseña, el título del email y el cuerpo del mensaje (por defecto en HTML). Por supuesto que tienes que tener un email asociado al usuario, de modo que o bien usas su email como nombre de usuario o agregas un campo de email usando un *mixin* como se describe en la siguiente sección (:ref:`authentication`).
+La función que le pasas a ``send_email`` toma como argumentos el usuario que quiere recuperar su contraseña, el título del email y el cuerpo del mensaje (por defecto en HTML). Por supuesto que tienes que tener un email asociado al usuario, de modo que o bien usas su email como nombre de usuario o agregas un campo de email usando un *mixin* como se describe en la siguiente sección (:ref:`authentication`).
 
 
 .. [#] `SQLAlchemy-Wrapper`_ te ahorrará mucho trabajo al tratar con ``SQLAlchemy``, independientemente si usas o no Authcode. En serio, dale una mirada.

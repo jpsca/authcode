@@ -10,7 +10,7 @@ Patrones avanzados
 Agregar backends de autenticación
 =============================================
 
-Las credenciales no tienen por que ser siempre el usuario y contraseña. De hecho, Authcode te permite manejar varios tipos de credenciales al mismo tiempo.
+Las credenciales no tienen por que ser siempre el usuario y contraseña. De hecho, Authcode te permite manejar varios tipos de credenciales en paralelo.
 
 Para autenticar a un usuario, ``auth.authenticate`` recibe un diccionario con los datos que le envía la vista y prueba los *backends* registrados, en orden, hasta que uno devuelva un usuario.
 
@@ -48,7 +48,7 @@ Puedes usar este patrón para integrarte con otros metodos de autenticación de 
 OAuth
 =============================================
 
-Para autenticar a tus usuarios por OAuth (via Twitter o Facebook, etc.), la idea es delegar el proceso de autenticación a otra biblioteca y, una vez identificado el usuario, usar Authcode para el resto.
+Para autenticar a tus usuarios por OAuth (via Twitter o Facebook, etc.), la idea es delegar el proceso de autenticación a otra biblioteca y, una vez identificado el usuario, loguearlo con ``auth.login(user)`` usar Authcode para el resto.
 
 Este ejemplo usa la excelente `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/latest/>`_ (revisa su documentación para que el código de abajo tenga sentido):
 
@@ -128,7 +128,7 @@ Puedes ver corriendo el ejemplo completo en http://authcode-tw-fb.herokuapp.com/
 Más de un Auth al mismo tiempo
 =============================================
 
-En muchos casos, un solo Auth y la flexibilidad que te dan los roles, es más que suficiente. Para algunas aplicaciones complejas, sin embargo, tiene sentido de tener sistemas de autenticación/autorización separados, con tablas de usuarios diferentes, vistas separadas, etc.
+En muchos casos, un solo Auth y la flexibilidad que te dan los roles, es más que suficiente. Para algunas aplicaciones complejas, sin embargo, tiene sentido de tener sistemas de autenticación/autorización en paralelo, con tablas de usuarios diferentes, vistas separadas, etc.
 
 
 Auth excluyentes
@@ -201,6 +201,7 @@ Solo necesitas hacer tres cambios más para lograrlo:
 5. Asegurarte que la sesión no se destruye por completo al cerrar sesión en alguna de las Auth.
 
 .. code-block:: python
+   :emphasize-lines: 2,34,35,36
 
     AUTH_SETTINGS = {
         clear_session_on_logout: False,

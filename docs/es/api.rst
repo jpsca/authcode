@@ -18,16 +18,16 @@ Objeto Auth
 
 :Parámetros:
     secret_key:
-        Llave secreta. Usada para generar el identificador de usuario o
+        Llave secreta. Usada para generar el identificador de usuario o el token de recuperación de contraseña.
 
     pepper=u'':
         Texto fijo que se agrega a todas las contraseñas antes de hashearlas, para hacerlas inmunes a un *ataque por diccionario*.
 
     hash='pbkdf2_sha512':
-        Nombre de la función de hasheado a utilizar para guardar las contraseñas. Los valores posibles son ``pbkdf2_sha512``, ``pbkdf2_sha256``, ``sha512_crypt``, ``sha256_crypt`` o ``bcrypt``.
+        Nombre de la función de hashing a utilizar para guardar las contraseñas. Los valores posibles son ``pbkdf2_sha512``, ``pbkdf2_sha256``, ``sha512_crypt``, ``sha256_crypt`` o ``bcrypt``.
 
     rounds:
-        Número de rondas a usar para la función de hasheado. No cambies este valor a menos que tengas una razón poderosa para hacerlo.
+        Número de rondas a usar para la función de hashing. No cambies este valor a menos que tengas una razón poderosa para hacerlo.
 
     db:
         Interfaz con la base de datos (SQLAlchemy). ``db.session`` debe ser la sesión se la base de datos y ``db.Model`` el modelo (declarativo) base.
@@ -39,7 +39,7 @@ Objeto Auth
         El *mixin* usado para crear el modelo de rol final.
 
     roles=False,:
-        Crear un modelo de roles y métodos asociados
+        Crear un modelo de roles y métodos asociados. Si usas `RoleMixin` este valor se ignora.
 
     lazy_roles=True:
         Si es verdadero, los roles de un usuario no se cargan automáticamente (usando un JOIN) junto a la información del usuario sino solo cuando se necesiten.
@@ -58,24 +58,25 @@ Objeto Auth
 
     csrf_header='X-CSRFToken':
         El nombre de la cabecera desde la cual leer el código CSRF al usar AJAX.
+        Es la estándar, así que no deberías tener que cambiarla.
 
     redirect_key='next':
         El nombre del parámetro de la URL que guarda donde redirigir (por una única vez) luego de iniciar sesión exitosamente. Usado cuando se intenta ingresar a una página protegida y Authcode te muestra en cambio la página de inicio de sesión.
 
     sign_in_redirect='/':
-        La URL a la cual Authcode redirige (usualmente) al iniciar la sesión.
+        La URL a la cual Authcode redirige (a menos que se indique otra cosa en la vista) al iniciar la sesión.
 
     sign_out_redirect='/':
         La URL a la cual Authcode redirige al cerrar la sesión.
 
     url_sign_in='/sign-in/':
-        La URL que se usará para la vista automática de inicio de sesión. Ignorada si sign_in no está en la lista de ``views``.
+        La URL que se usará para la vista automática de inicio de sesión. Ignorada si “sign_in” no está en la lista de ``views``.
 
     url_sign_out='/sign-out/':
-        La URL que se usará para la vista automática de cierre de sesión. Ignorada si sign_out no está en la lista de ``views``.
+        La URL que se usará para la vista automática de cierre de sesión. Ignorada si “sign_out” no está en la lista de ``views``.
 
     url_reset_password='/reset-password/':
-        La URL que se usará para la vista automática de recuperación de contraseña. Ignorada si reset_password no está en la lista de ``views``.
+        La URL que se usará para la vista automática de recuperación de contraseña. Ignorada si “reset_password” no está en la lista de ``views``.
 
     url_change_password='/change-password/':
         La URL que se usará para la vista automática de cambio de contraseña. Ignorada si “change_password” no está en la lista de ``views``.
@@ -84,7 +85,7 @@ Objeto Auth
         Lista de vistas agregadas por Authcode automáticamente.
 
     views_prefix:
-        Por defecto las vistas automáticas se crean con el nombre “auth_xyz”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``authcode.Auth`` en una misma aplicación.
+        Por defecto las vistas automáticas se crean con el nombre “auth_nombre”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``authcode.Auth`` en una misma aplicación.
 
     template_sign_in:
         Sobreescribe la plantilla para la página de iniciar sesión.
@@ -114,10 +115,10 @@ Objeto Auth
         Largo mínimo que debe tener una contraseña.
 
     token_life=3*60:
-        Minutos duarnte los cuales el enlace para recuperar una contraseña es válido.
+        Minutos durante los cuales el enlace para recuperar una contraseña es válido.
 
     update_hash=True:
-        Al iniciar sesión, si la función de hasheado o el número de rondas ha cambiado, respecto, actualizar la contraseña guardada con esos nuevos parámetros.
+        Al iniciar sesión, si la función de hashing o el número de rondas ha cambiado, actualizar la contraseña guardada con esos nuevos parámetros.
 
     wsgi=wsgi.werkzeug:
         Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``wsgi.werkzeug`, ``wsgi.webob`` o ``wsgi.cherrypy``.
@@ -127,7 +128,7 @@ Métodos
 ---------------------------------------------
 
 prepare_password(secret):
-    Preprocesa la contraseña antes de hashearla. En la práctica solo le agrega la pimienta al principio.
+    Pre-procesa la contraseña antes de hashearla. En la práctica solo le agrega la pimienta al principio.
 
 hash_password(secret):
     Toma la contraseña en texto plano y devuelve su hash.
