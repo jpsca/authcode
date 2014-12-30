@@ -19,30 +19,3 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
-
-#: sphinx/config.py:75
-#, python-format
-msgid "Fig. %s"
-msgstr "Fig. %s"
-
-#: sphinx/config.py:76
-#, python-format
-msgid "Table %s"
-msgstr "Table %s"
-
-#: sphinx/config.py:77
-#, python-format
-msgid "Listing %s"
-msgstr "Listing %s"
-
-#: sphinx/locale/__init__.py:157
-msgid "Attention"
-msgstr "Attention"
-
-#: sphinx/locale/__init__.py:158
-msgid "Caution"
-msgstr "Caution"
-
-#: sphinx/locale/__init__.py:166
-msgid "Warning"
-msgstr "Warning"

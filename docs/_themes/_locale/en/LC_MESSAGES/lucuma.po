@@ -60,51 +60,51 @@ msgstr "Search in "
 msgid "sections"
 msgstr "Sections"
 
-#: lucuma/search-form.html:6 lucuma/searchresults.html:10
+#: lucuma/search-form.html:6
 msgid "action_search"
 msgstr "Search"
 
-#: lucuma/search.html:2 lucuma/searchresults.html:1
+#: lucuma/search.html:2 lucuma/search.html:9
 msgid "search_page"
 msgstr "Search Page"
 
-#: lucuma/searchresults.html:4
+#: lucuma/search.html:13
 msgid "activate_js_to_search"
 msgstr "The search needs JavaScript to works. Please activate it."
 
-#: lucuma/searchresults.html:14 lucuma/static/scripts/searchtools.js_t:281
-msgid "search_results"
-msgstr "Results"
-
-#: lucuma/searchresults.html:16 lucuma/static/scripts/searchtools.js_t:283
-msgid "search_results_no_results"
-msgstr "Your search did not match any documents"
-
-#: lucuma/static/scripts/doctools.js:142
+#: lucuma/static/translations.js_t:5
 msgid "permalink_header"
 msgstr "Permalink to this headline"
 
-#: lucuma/static/scripts/doctools.js:148
+#: lucuma/static/translations.js_t:6
 msgid "permalink_definition"
 msgstr "Permalink to this definition"
 
-#: lucuma/static/scripts/doctools.js:180
+#: lucuma/static/translations.js_t:7
 msgid "hide_search_matches"
 msgstr "Hide Search Matches"
 
-#: lucuma/static/scripts/searchtools.js_t:119
+#: lucuma/static/translations.js_t:8
 msgid "searching"
 msgstr "Searching ..."
 
-#: lucuma/static/scripts/searchtools.js_t:124
+#: lucuma/static/translations.js_t:9
 msgid "preparing_search"
 msgstr "Preparing search..."
 
-#: lucuma/static/scripts/searchtools.js_t:285
+#: lucuma/static/translations.js_t:10
 #, python-format
 msgid "search_results found %s"
-msgstr "Search finished, found %s page(s) matching the search query"
+msgstr "Found %s result(s)"
 
-#: lucuma/static/scripts/searchtools.js_t:337
+#: lucuma/static/translations.js_t:11
 msgid "search_result_in"
 msgstr "in"
+
+#: lucuma/search.html:23 lucuma/static/translations.js_t:12
+msgid "search_results"
+msgstr "Results"
+
+#: lucuma/search.html:25 lucuma/static/translations.js_t:13
+msgid "search_results_no_results"
+msgstr "No results"

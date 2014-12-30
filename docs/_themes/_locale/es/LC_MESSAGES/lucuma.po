@@ -54,57 +54,57 @@ msgstr "Índice general"
 
 #: lucuma/layout.html:10
 msgid "opensearch_search_in"
-msgstr "Buscar en "
+msgstr "Buscar en la"
 
 #: lucuma/page-toc.html:2
 msgid "sections"
 msgstr "Secciones"
 
-#: lucuma/search-form.html:6 lucuma/searchresults.html:10
+#: lucuma/search-form.html:6
 msgid "action_search"
 msgstr "Buscar"
 
-#: lucuma/search.html:2 lucuma/searchresults.html:1
+#: lucuma/search.html:2 lucuma/search.html:9
 msgid "search_page"
 msgstr "Buscar"
 
-#: lucuma/searchresults.html:4
+#: lucuma/search.html:13
 msgid "activate_js_to_search"
-msgstr "Esta búsqueda necesita que tengas JavaScript activo para funcionar"
+msgstr "Esta búsqueda necesita de JavaScript para funcionar"
 
-#: lucuma/searchresults.html:14 lucuma/static/scripts/searchtools.js_t:281
-msgid "search_results"
-msgstr "Resultados"
-
-#: lucuma/searchresults.html:16 lucuma/static/scripts/searchtools.js_t:283
-msgid "search_results_no_results"
-msgstr "No econtré ningún resultado"
-
-#: lucuma/static/scripts/doctools.js:142
+#: lucuma/static/translations.js_t:5
 msgid "permalink_header"
 msgstr "Enlace a este título"
 
-#: lucuma/static/scripts/doctools.js:148
+#: lucuma/static/translations.js_t:6
 msgid "permalink_definition"
 msgstr "Enlace a esta definición"
 
-#: lucuma/static/scripts/doctools.js:180
+#: lucuma/static/translations.js_t:7
 msgid "hide_search_matches"
 msgstr "Ocultar palabras resaltadas"
 
-#: lucuma/static/scripts/searchtools.js_t:119
+#: lucuma/static/translations.js_t:8
 msgid "searching"
 msgstr "Buscando..."
 
-#: lucuma/static/scripts/searchtools.js_t:124
+#: lucuma/static/translations.js_t:9
 msgid "preparing_search"
 msgstr "Preparando la búsqueda..."
 
-#: lucuma/static/scripts/searchtools.js_t:285
+#: lucuma/static/translations.js_t:10
 #, python-format
 msgid "search_results found %s"
-msgstr "Búsqueda completa, encontradas %s resultado(s)"
+msgstr "Encontrados %s resultado(s)"
 
-#: lucuma/static/scripts/searchtools.js_t:337
+#: lucuma/static/translations.js_t:11
 msgid "search_result_in"
 msgstr "en"
+
+#: lucuma/search.html:23 lucuma/static/translations.js_t:12
+msgid "search_results"
+msgstr "Resultados"
+
+#: lucuma/search.html:25 lucuma/static/translations.js_t:13
+msgid "search_results_no_results"
+msgstr "Ningún resultado encontrado"

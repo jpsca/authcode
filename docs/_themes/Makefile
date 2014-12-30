@@ -1,6 +1,6 @@
 
 extract:
-	pybabel extract -F babel.cfg -o _locale/lucuma.pot
+	pybabel extract -F babel.cfg -o _locale/lucuma.pot lucuma
 
 compile:
 	msgfmt.py _locale/es/LC_MESSAGES/*.po

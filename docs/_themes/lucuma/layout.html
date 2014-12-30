@@ -40,9 +40,7 @@
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT:    '{{ url_root }}',
     VERSION:     '{{ release|e }}',
-    COLLAPSE_INDEX: false,
-    FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}',
-    HAS_SOURCE:  {{ has_source|lower }}
+    FILE_SUFFIX: '{{ '' if no_search_suffix else file_suffix }}'
 };
 </script>
 {#<script src="{{ pathto('_static/scripts/jquery.min.js', 1) }}"></script>
