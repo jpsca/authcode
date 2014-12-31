@@ -122,7 +122,7 @@ Puedes forzar a que se haga la validación con otros métodos de envio, por ejem
     def myview():
         ...
 
-Asi mismo, si lo necesias, puedes desactivar la revisión automática usando el parámetro ``csrf=False``. Luego, el método :meth:`~authcode.Auth.csrf_token_is_valid` te servirá para hacer la validación manual cuando lo necesites.
+Asi mismo, si lo necesias, puedes desactivar la revisión automática usando el parámetro ``csrf=False``. Luego, el método :meth:`~Authcode.Auth.csrf_token_is_valid` te servirá para hacer la validación manual cuando lo necesites.
 
 .. code-block:: python
 

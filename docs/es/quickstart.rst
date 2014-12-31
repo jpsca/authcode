@@ -19,7 +19,7 @@ Hay varios parámetros que puedes usar para configurarlo, pero lo mínimo necesa
 
 .. code-block:: python
 
-    auth = authcode.Auth(SECRET_KEY, db=db)
+    auth = Authcode.Auth(SECRET_KEY, db=db)
     User = auth.User
 
 El objeto ``db`` que es te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
@@ -40,7 +40,7 @@ Lo siguiente es ajustar el objeto Auuth recién creado al framework web que est�
 
 .. code-block:: python
 
-    authcode.setup_for_flask(auth, app)
+    Authcode.setup_for_flask(auth, app)
 
 Esta función de setup se encarga de terminar de conectar a Authcode con las peculiaridades del framework que uses, por ejemplo como interpretar las plantillas, agregar vistas y esas cosas. Por ahora estos son las framework incluidos (lo que no significa que no puedas agregar el tuyo):
 
@@ -67,9 +67,9 @@ Finalmente, usas ``auth.protected`` para decorar las vistas que quieres que sean
 .. warning:: ¡Cuidado!
     Ten mucho cuidado en poner el decorador de autenticación **después** del de la ruta o, de otro modo, tus vistas quedarán desprotegidas.
 
-Puedes ver este ejemplo completo en https://github.com/lucuma/authcode/tree/master/examples/minimal.
+Puedes ver este ejemplo completo en https://github.com/lucuma/Authcode/tree/master/examples/minimal.
 
-Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que cuando intentes visitar la página del ejemplo, te redirigirá a otra para ingresar tu usuario y contraseña (en el ejemplo ambos son “authcode”).
+Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que cuando intentes visitar la página del ejemplo, te redirigirá a otra para ingresar tu usuario y contraseña (en el ejemplo ambos son “Authcode”).
 
 .. figure:: _static/loginpage.png
    :align: center
@@ -93,7 +93,7 @@ Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, e
         except Exception as e:
             print(e)
 
-    authcode.setup_for_flask(auth, app, send_email=send_auth_email)
+    Authcode.setup_for_flask(auth, app, send_email=send_auth_email)
 
 La función que le pasas a ``send_email`` toma como argumentos el usuario que quiere recuperar su contraseña, el título del email y el cuerpo del mensaje (por defecto en HTML). Por supuesto que tienes que tener un email asociado al usuario, de modo que o bien usas su email como nombre de usuario o agregas un campo de email usando un *mixin* como se describe en la siguiente sección (:ref:`authentication`).
 

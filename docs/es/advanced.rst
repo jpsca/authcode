@@ -120,7 +120,7 @@ Este ejemplo usa `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/late
         return session.get('twitter_token')
 
 
-Puedes ver corriendo el ejemplo completo en http://authcode-tw-fb.herokuapp.com/ y su código fuente en https://github.com/lucuma/authcode/tree/master/examples/twitter_or_facebook .
+Puedes ver corriendo el ejemplo completo en http://Authcode-tw-fb.herokuapp.com/ y su código fuente en https://github.com/lucuma/Authcode/tree/master/examples/twitter_or_facebook .
 
 
 .. _advanced.multiauth:
@@ -313,6 +313,6 @@ SQLalchemy sin ayuda
 
     # y finalmente...
     db = DB()
-    auth = authcode.Auth(SECRET_KEY, db=db)
+    auth = Authcode.Auth(SECRET_KEY, db=db)
 
 *No olvides conectarlo a tu framework para que, al final de cada ciclo de request, refresque la sesión llamando a ``db.shutdown()``*

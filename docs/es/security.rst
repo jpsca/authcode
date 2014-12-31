@@ -71,7 +71,7 @@ Pimienta (o “sal global”)
 
     El principal problema de la pimienta es que cambiarla hace inválidas **todas** las contraseñas guardadas, y entonces no puedes cambiarla aunque se haya filtrado.
 
-    Por si las dudas, AuthCode no usa ninguna a menos que tu se la pases como parámetro ``pepper``,
+    Por si las dudas, Authcode no usa ninguna a menos que tu se la pases como parámetro ``pepper``,
 
 
 Otro tipo de ataque, órdenes de magnitud más rápido que la fuerza bruta, es un *ataque de diccionario*. Es básicamente probar una lista de palabras –y combinaciones de ellas— comúnmente usadas en contraseñas. “12345678”, “pizzapizza” o incluso variaciones en apariencia seguras como “p4$$word" y “123456789j” son casos perdidos contra este ataque.
@@ -99,7 +99,7 @@ Mantener la seguridad de una biblioteca de autenticación es crítico, por que a
 
 Si el problema que quieres reportar es urgente o sensible (puede causar que un atacante tenga acceso a la información de otro usuario o que pueda suplantarlo) envíalo diréctamente a security@lucumalabs.com. Usa `nuestra llave pública <http://lucumalabs.com/lucumalabs-security.pub>`_ para mantener tu mensaje seguro [#]_ y por favor danos una forma segura para responderte. Te responderemos apenas nos sea posible, usualmente dentro de las siguientes 24 horas.
 
-Para otro tipo de problemas, por favor crea un reporte en https://github.com/lucuma/authcode/issues .
+Para otro tipo de problemas, por favor crea un reporte en https://github.com/lucuma/Authcode/issues .
 
 
 

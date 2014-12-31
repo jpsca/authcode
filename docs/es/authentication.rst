@@ -205,7 +205,7 @@ Tanto la función de hashing a usar como el número de repeticiones puedes defin
 
 .. code-block :: python
 
-    auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
+    auth = Authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
 
 Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. *No recomiendo que definas un número de rondas a menos que realmente necesites ese tipo de control*. Por defecto se usa el número recomendado por PassLib para el algoritmo elegido.
 

@@ -6,7 +6,7 @@ Authcode
 
 .. container:: lead
 
-    Authocode es una solución limpia para la **autenticación** y **autorización** de *aplicaciones web* en Python.
+    Authcode es una solución limpia y flexible para la **autenticación** y **autorización** de *aplicaciones web* en Python.
 
     Brevemente, la autenticación es verificar que un usuario es quien dice ser, y la autorización es manejar lo que un usuario autenticado tiene permiso para hacer
 

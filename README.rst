@@ -5,12 +5,12 @@ Authcode
 
 Awesome authentication code.
 
-.. image:: https://travis-ci.org/lucuma/authcode.png
-   :target: https://travis-ci.org/lucuma/authcode
+.. image:: https://travis-ci.org/lucuma/Authcode.png
+   :target: https://travis-ci.org/lucuma/Authcode
    :alt: Build Status
 
-.. image:: https://coveralls.io/repos/lucuma/authcode/badge.png
-   :target: https://coveralls.io/r/lucuma/authcode
+.. image:: https://coveralls.io/repos/lucuma/Authcode/badge.png
+   :target: https://coveralls.io/r/lucuma/Authcode
    :alt: Tests coverage status
 
 
@@ -56,7 +56,7 @@ TODO
 Community & support
 ======================
 
-Issue tracker: https://github.com/lucuma/authcode/issues
+Issue tracker: https://github.com/lucuma/Authcode/issues
 
 ______
 

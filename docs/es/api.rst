@@ -14,7 +14,7 @@ API
 Objeto Auth
 =============================================
 
-*class authcode.Auth(secret_key, **kwargs)*
+*class Authcode.Auth(secret_key, **kwargs)*
 
 :Parámetros:
     secret_key:
@@ -82,7 +82,7 @@ Objeto Auth
         Lista de vistas agregadas por Authcode automáticamente.
 
     views_prefix:
-        Por defecto las vistas automáticas se crean con el nombre “auth_nombre”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``authcode.Auth`` en una misma aplicación.
+        Por defecto las vistas automáticas se crean con el nombre “auth_nombre”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``Authcode.Auth`` en una misma aplicación.
 
     template_sign_in:
         Sobreescribe la plantilla para la página de iniciar sesión.
@@ -150,7 +150,7 @@ auth_password(credentials):
     Si la contraseña del usuario encontrado es ``None``, siempre devuelve ``None``, aunque la contraseña indicada en las credenciales también sea ``None``.
 
 auth_token(credentials, token_life=None):
-    Toma un diccionario del que trata de leer un valor ``token``; Este valor debe tener el formato generado por ``authcode.get_token`` (que a su vez puede ser invocado desde una instancia de usuario: ``usuario.get_token``).
+    Toma un diccionario del que trata de leer un valor ``token``; Este valor debe tener el formato generado por ``Authcode.get_token`` (que a su vez puede ser invocado desde una instancia de usuario: ``usuario.get_token``).
     Si el token es válido devuelve al usuario que autentica, de lo contrario devuelve ``None``.
 
 get_user(session=None):
@@ -206,13 +206,13 @@ protected(*tests, **options):
 Funciones de setup
 =============================================
 
-*function authcode.setup_for_<framework>(auth, app, send_email=None, user_name='user', render=None, session=None, request=None)*
+*function Authcode.setup_for_<framework>(auth, app, send_email=None, user_name='user', render=None, session=None, request=None)*
 
-    *function authcode.setup_for_flask*
+    *function Authcode.setup_for_flask*
 
 :Parámetros:
     auth:
-        Una instancia de la clase ``authcode.Auth``.
+        Una instancia de la clase ``Authcode.Auth``.
 
     app:
         La aplicación web.
