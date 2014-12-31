@@ -28,28 +28,29 @@ Features
 -  Auto-update of old password hashes.
 -  Password-reset tokens.
 -  Cross Site Request Forgery (CSRF) protection.
+-  Support multiple users models at the same time
 -  Compatible with Python 2.7, 3.4+ and Pypy.
 
 TODO
 ======================
 
-* English documentation
-* More documentation (always!):
-    - Automatic views: how to usea and customize
+* More documentation (always!)
+    - English documentation
+    - Automatic views: how to use and customize
     - Manual views
-    - etc.
-
-* Code:
-    - CherryPy setup and tests
-    - Pyramid setup and tests
-    - <Your web framework here> setup and tests
-
-    - MultiAuth tests
 
     - Examples:
         - Twitter + login/password example
         - Mozilla Persona example
         - Login/Password + Mozilla Persona example
+
+    - Tutorials, etc.
+
+* Code:
+    - Setup functions for CherryPy, Pyramid, bottle, webpy, etc.
+    - <Your web framework here> setup and tests
+    - MultiAuth tests
+
 
 
 Community & support
