@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =============================================
-Inicio rápido
+Mini tutorial
 =============================================
 
 .. container:: lead
@@ -78,7 +78,7 @@ Authcode genera automáticamente vistas para inicar sesión, salir y recuperar t
 
 Puedes ver que esa página también tiene un enlace a otra para recuperar tu contraseña; El método es el estándar: escribes tu nombre de usuario y Authcode te envía un correo con un enlace especial para que elijas una nueva contraseña.
 
-Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, eso es una funcionalidad que tiene que darle tu aplicación [#]_. Por ejemplo:
+Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, eso es una funcionalidad que tiene que darle tu aplicación [2]_. Por ejemplo:
 
 .. code-block:: python
 
@@ -98,6 +98,6 @@ Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, e
 La función que le pasas a ``send_email`` toma como argumentos el usuario que quiere recuperar su contraseña, el título del email y el cuerpo del mensaje (por defecto en HTML). Por supuesto que tienes que tener un email asociado al usuario, de modo que o bien usas su email como nombre de usuario o agregas un campo de email usando un *mixin* como se describe en la siguiente sección (:ref:`authentication`).
 
 
-.. [#] `SQLAlchemy-Wrapper`_ te ahorrará mucho trabajo al tratar con ``SQLAlchemy``, independientemente si usas o no Authcode. En serio, dale una mirada.
+.. [1] `SQLAlchemy-Wrapper`_ te ahorrará mucho trabajo al tratar con ``SQLAlchemy``, independientemente si usas o no Authcode. En serio, dale una mirada.
 
-.. [#] o también puedes desactivarla por completo en las opciones de configuración.
+.. [2] o también puedes desactivarla por completo en las opciones de configuración.

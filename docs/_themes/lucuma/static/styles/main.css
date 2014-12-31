@@ -18,6 +18,10 @@ html, body {
   position: relative;
 }
 
+.wrapper .section p {
+  overflow-x: hidden;
+}
+
 input,
 button,
 select,

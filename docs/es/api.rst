@@ -180,7 +180,7 @@ protected(*tests, **options):
 
     :Parametros:
         tests:
-            Una o más funciones que tomen los argumentos de la vista y devuelvan verdadero o false. Todos los tests deben devolver verdadero para que la vista se muestre al usuario.
+            Una o más funciones que tomen los argumentos de la vista y devuelvan ``True`` o ``False`. Todos los tests deben devolver verdadero para que la vista se muestre al usuario.
 
     :Opciones:
         role:

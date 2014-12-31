@@ -6,21 +6,8 @@ Authcode
 
 .. container:: lead
 
-    Authcode es una biblioteca para manejar de forma flexible la **autenticación** —verificar que un usuario sea quien dice ser— y **autorización** —lo que un usuario autenticado tiene permiso para hacer— en *aplicaciones web* en Python.
+    Authcode is a clean solution for both authentication and authorization of Python web applications.
 
-Depende de que uses SQLAlchemy, pero no necesita de ningún *framework* web específico.
+    Briefly, authentication verifies a user is who they claim to be, and authorization determines what an authenticated user is allowed to do.
 
-
-Ventajas
---------------------------------------------
-
-- Independiente de cualquier framework.
-- Usa los algoritmos de *hashing* de contraseñas más seguros.
-- Modelos de Usuario y Roles incluidos, pero personalizables.
-- Incluye vistas y plantillas (opcionales) listas para autenticarse o restablecer tu contraseña.
-- Auto-actualiza tus hashes de contraseñas antiguos (cuando el usuario se autentica).
-- Muy fácil de usar con otras formas de autenticación (eg: Facebook).
-- Protección contra los ataques por Cross Site Request Forgery (CSRF).
-- Compatible con Python 2.6 y 2.7, Pypy y Python 3.3 o posterior.
-
-.. include:: contents.rst.inc
+It uses SQLAlchemy models but does not depends of any specific web framework.
