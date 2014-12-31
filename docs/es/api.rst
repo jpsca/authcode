@@ -20,9 +20,6 @@ Objeto Auth
     secret_key:
         Llave secreta. Usada para generar el identificador de usuario o el token de recuperación de contraseña.
 
-    pepper=u'':
-        Texto fijo que se agrega a todas las contraseñas antes de hashearlas, para hacerlas inmunes a un *ataque por diccionario*.
-
     hash='pbkdf2_sha512':
         Nombre de la función de hashing a utilizar para guardar las contraseñas. Los valores posibles son ``pbkdf2_sha512``, ``pbkdf2_sha256``, ``sha512_crypt``, ``sha256_crypt`` o ``bcrypt``.
 
@@ -123,18 +120,21 @@ Objeto Auth
     wsgi=wsgi.werkzeug:
         Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``wsgi.werkzeug`, ``wsgi.webob`` o ``wsgi.cherrypy``.
 
+    pepper=u'':
+        Texto fijo que se agrega a todas las contraseñas antes de hashearlas. El problema es que cambiar este valor hace inválidas **todas** las contraseñas guardadas, y entonces no puedes cambiarlo aunque se haya filtrado.
 
 Métodos
 ---------------------------------------------
 
-prepare_password(secret):
-    Pre-procesa la contraseña antes de hashearla. En la práctica solo le agrega la pimienta al principio.
-
-hash_password(secret):
-    Toma la contraseña en texto plano y devuelve su hash.
 
 set_hasher(hash, rounds=None):
     Reemplaza la función de hasheado por otra nueva, comprobando que este soportada por Authcode.
+
+hash_password(secret):
+    Toma la contraseña en texto plano y devuelve su hash. Si ``secret`` es ``None`` no la hashea si no que devuelve ``None``.
+
+prepare_password(secret):
+    Pre-procesa la contraseña antes de hashearla. En la práctica solo existe para que sobreescribas el método si lo necesitas.
 
 password_is_valid(secret, hashed):
     Toma una contraseña en texto plano y un hash y comprueba si se trata o no de la misma contraseña
@@ -147,6 +147,7 @@ authenticate(credentials):
 auth_password(credentials):
     Toma un diccionario del que trata de leer los valores ``login`` y ``password``. Si los encuentra, busca en la base de datos a un usuario con ese ``login`` y verifica que su contraseña sea la correcta.
     Si encuentra a un usuario y su contraseña coincide, devuelve a ese usuario, de lo contrario devuelve ``None``.
+    Si la contraseña del usuario encontrado es ``None``, siempre devuelve ``None``, aunque la contraseña indicada en las credenciales también sea ``None``.
 
 auth_token(credentials, token_life=None):
     Toma un diccionario del que trata de leer un valor ``token``; Este valor debe tener el formato generado por ``authcode.get_token`` (que a su vez puede ser invocado desde una instancia de usuario: ``usuario.get_token``).

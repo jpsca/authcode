@@ -10,7 +10,6 @@ SQLALCHEMY_URI = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite')
 SECRET_KEY = os.getenv('SECRET_KEY', 'development key')
 
 AUTH_SETTINGS = {
-    'pepper': os.getenv('AUTH_PEPPER', 'pepper is good for you'),
     'sign_in_redirect': lambda r: url_for('profile'),
     'sign_out_redirect': lambda r: url_for('index'),
     'password_minlen': 6,

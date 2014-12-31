@@ -252,3 +252,67 @@ Solo necesitas hacer tres cambios más para lograrlo:
 
 De esta forma, encontrarás al usuario logueado en el primer Auth en ``g.user`` y el de la segunda en ``g.bouser``.
 Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión en cualquiera de los Auth, solo se borre el identificador de usuario que corresponda, en vez de borrarla por completo.
+
+
+.. _advanced.custom_setup
+
+Un ``setup_for_`` personalizado
+=============================================
+
+TO DO
+
+Aunque Authcode no depende de ningún framework web específico, si necesita que exista cierta infraestructura básica para funcionar:
+
+- Una ``session`` con una interfaz similar a la de un diccionario.
+    Debe permitir hacer cosas como ``session['foo'] = 'bar`` y ``session.get('foo', None)``. Tu framework ya debe de tener alguna. O si no puedes usar la de `Beaker`_.
+
+- Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask) y `WebOb`_ (Pyramid), pero es fácilmente extensible para trabajar con otros, como el de `CherryPy`_ por ejemplo.
+
+- Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy_Wrapper`_ [#]_ o `Flask_SQLAlchemy`_ ya tienes uno.
+
+.. _Beaker: http://beaker.readthedocs.org/
+.. _Werkzeug: http://werkzeug.pocoo.org/
+.. _WebOb: http://webob.org/
+.. _CherryPy: http://www.cherrypy.org/
+.. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
+.. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
+
+
+.. _advanced.naked_sqlalchemy:
+
+SQLalchemy sin ayuda
+===============================================
+
+¿Estás usando SQLAlchemy diréctamente y no tienes un objeto ``db`` para inicializar ``Auth``? Simplemente usa una clase similar a esta:
+
+.. code-block:: python
+
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.orm import scoped_session, sessionmaker
+
+    engine = create_engine('sqlite://', ...)
+
+    class DB(object):
+        Session = scoped_session(sessionmaker(bind=engine, ...))
+        Model = declarative_base()
+
+        @property
+        def session(self):
+            return self.Session()
+
+        def shutdown(response=None):
+            self.session.remove()
+            return response
+
+        def rollback(error=None):
+            try:
+                self.session.rollback()
+            except Exception:
+                pass
+
+    # y finalmente...
+    db = DB()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+*No olvides conectarlo a tu framework para que, al final de cada ciclo de request, refresque la sesión llamando a ``db.shutdown()``*

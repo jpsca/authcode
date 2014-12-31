@@ -50,7 +50,7 @@ class ViewsMixin(object):
 
     def render(self, template, **kwargs):
         """Should be overwritten in the setup"""
-        return self.default_render(template, **kwargs)
+        return self.default_render(template, **kwargs)  # pragma: no cover
 
     def send_email(self, user, subject, msg):
         """Should be overwritten in the setup"""

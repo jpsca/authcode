@@ -15,6 +15,8 @@ class AuthenticationMixin(object):
         )
 
     def hash_password(self, secret):
+        if secret is None:
+            return None
         secret = self.prepare_password(secret)
         hashed = self.hasher.encrypt(secret)
         return hashed

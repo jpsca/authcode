@@ -639,8 +639,8 @@ p.topic-title {
   margin: 10px 0 15px;
   position: relative;
   clear: both;
+  font-size: 15px;
 }
-
 .admonition:after {
   content: '';
   display: block;
@@ -656,37 +656,46 @@ p.topic-title {
 .admonition-title {
   display: none;
 }
-
+.admonition p {
+  margin-bottom: 1em;
+}
 .admonition dt {
   font-weight: bold;
 }
-
 .admonition dl {
   margin-bottom: 0;
 }
-
-.warning {
+.admonition pre, .admonition code {
+  font-size: 14px;
+}
+.admonition.warning {
   background-color: #f9d9d8;
   border: none;
   padding: 1.25em 1.25em 0.25em 32px;
   margin: 0.25em 0 1.5em 22px;
 }
-.warning:after {
+.admonition.warning:after {
   background-image: url(../images/tab-warning.gif);
 }
 
-.note {
+.admonition.note {
   background-color: #d5e9f6;
   border: none;
   padding: 1em 1em 0.25em 32px;
   margin: 0.25em 0 1.5em 22px;
 }
-.note:after {
+.admonition.note:after {
   background-image: url(../images/tab-info.gif);
 }
 
-.warning p, .note p, .info p {
-  margin-bottom: 1em;
+.admonition.tip {
+  background-color: #FFFFD6;
+  border: none;
+  padding: 1em 1em 0.25em 32px;
+  margin: 0.25em 0 1.5em 22px;
+}
+.admonition.tip:after {
+  background-image: url(../images/tab-tip.gif);
 }
 
 /* -- tables ---------------------------------------------------------------- */

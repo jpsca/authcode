@@ -17,6 +17,7 @@ def test_user_model():
     db.commit()
 
     assert user.login == u'meh'
+    assert user.email == user.login
     assert hasattr(user, 'password')
     assert hasattr(user, 'last_sign_in')
     assert repr(user) == '<User meh>'
@@ -218,3 +219,41 @@ def test_models_mixins():
     assert repr(user) == 'overwrited'
 
     assert hasattr(Role, 'description')
+
+
+def test_naked_sqlalchemy():
+    from sqlalchemy import create_engine
+    from sqlalchemy.ext.declarative import declarative_base
+    from sqlalchemy.orm import scoped_session, sessionmaker
+
+    engine = create_engine('sqlite://')
+
+    class DB(object):
+        Session = scoped_session(sessionmaker(bind=engine))
+        Model = declarative_base()
+
+        @property
+        def session(self):
+            return self.Session()
+
+    db = DB()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+    User = auth.User
+    db.Model.metadata.create_all(bind=engine)
+
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    assert User.by_id(user.id) == user
+    assert User.by_id(33) == None
+
+    assert User.by_login(u'meh') == user
+    assert User.by_login(u'foobar') == None
+
+    assert user.has_password('foobar')
+    assert not user.has_password('abracadabra')
+
+    assert user.get_token()
+    assert user.get_uhmac()

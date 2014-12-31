@@ -24,7 +24,7 @@ Authcode en cambio, aprovecha el poder de SQLAlchemy y los *mixins* para dar la 
 
 Funciona de esta forma: parte de una estructura mínima predefinida para el modelo de usuarios y le agrega cualquier otro campo o método que tu definas en una clase.
 
-..note::
+.. note::
 
     Puedes llamar la tabla como quieras incluyendo un atributo ``__tablename__`` (si no, por defecto es ``users``), y también puedes cambiar el nombre con que SQLAlchemy conoce al modelo. Mira el resto de opciones en :ref:`api.auth`.
 
@@ -150,6 +150,15 @@ Cualquier valor que le asignes a la propiedad ``password`` de un usuario, autom�
     >>> print(user.password)
     '$pbkdf2-sha512$10$E6JUKkVozVnL2RsDYKx1jg$GTG6q7WPH2/IO2DHvEM5rO6RrU (...)'
 
+.. note::
+
+    El formato del hash final varía con la función utilizada, pero en general tiene esta estructura:
+
+    .. code ::
+
+        $ nombredelhash $ numero de repeticiones $ sal $ hash de la contraseña
+
+
 Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``has_password``, pero usualmente no necesitas hacerlo por que Authcode se encarga de manejar todo el proceso de autenticación por ti.
 
 .. code-block:: python
@@ -199,31 +208,6 @@ Tanto la función de hashing a usar como el número de repeticiones puedes defin
     auth = authcode.Auth(SECRET_KEY, hash='sha512_crypt', rounds=12000)
 
 Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. *No recomiendo que definas un número de rondas a menos que realmente necesites ese tipo de control*. Por defecto se usa el número recomendado por PassLib para el algoritmo elegido.
-
-
-Pimienta (sal global)
----------------------------------------------
-
-Authcode soporta el concepto de “pimienta” o “sal global”. Una *pimienta* es un texto fijo que se agrega a todas las contraseñas antes de hashearlas, para hacerlas inmunes a un *ataque por diccionario*.
-
-A diferencia de la *sal*, este es un texto que (1) no cambia entre hashes, (2) es secreto y (3) lo defines tu mismo, al inicializar Authcode.
-
-.. code-block :: python
-
-    auth = authcode.Auth(SECRET_KEY, pepper='lorem ipsum')
-
-Si no defines una, no se usará ninguna; Pero si lo haces, **recomiendo que sea de almenos 32 caracteres** ¡No uses la del ejemplo!
-
-
-Formato del hash
----------------------------------------------
-
-El formato del hash final varía con la función utilizada, pero en general tiene esta estructura:
-
-.. code ::
-
-    $ nombredelhash $ numero de repeticiones $ sal $ hash de la contraseña
-
 
 
 Vistas automáticas

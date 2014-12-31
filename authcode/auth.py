@@ -58,9 +58,11 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
         'wsgi': wsgi.werkzeug,
         'user_name': 'user',
+
+        'pepper': u'',  # considering deprecating it
     }
 
-    def __init__(self, secret_key, pepper=u'', hash=DEFAULT_HASHER, rounds=None,
+    def __init__(self, secret_key, hash=DEFAULT_HASHER, rounds=None,
                  db=None, UserMixin=None, RoleMixin=None,
                  users_model_name='User', roles_model_name='Role',
                  roles=False, lazy_roles=True,
@@ -69,7 +71,6 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
             "`secret_key` must be at least {0} chars long".format(MIN_SECRET_LENGTH)
-        self.pepper = pepper
         self.set_hasher(hash, rounds)
 
         self.db = db

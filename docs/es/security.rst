@@ -61,13 +61,18 @@ La sal se genera al azar y cambia *para cada contraseña*. Y no es un secreto, s
 .. figure:: _static/salt.png
    :align: center
 
-Agregar una sal tiene la ventaja agregada que aunque dos contraseñas sean iguales sus dos hashes van a ser siempre diferentes.
+Agregar una sal tiene la ventaja agregada que, aunque dos contraseñas sean iguales, sus dos hashes van a ser siempre diferentes.
 
 
 Pimienta (o “sal global”)
 ---------------------------------------------
 
-No importa que tan avanzado sea tu sistema de hashing si la contraseña que usas es “pasword”.
+.. warning::
+
+    El principal problema de la pimienta es que cambiarla hace inválidas **todas** las contraseñas guardadas, y entonces no puedes cambiarla aunque se haya filtrado.
+
+    Por si las dudas, AuthCode no usa ninguna a menos que tu se la pases como parámetro ``pepper``,
+
 
 Otro tipo de ataque, órdenes de magnitud más rápido que la fuerza bruta, es un *ataque de diccionario*. Es básicamente probar una lista de palabras –y combinaciones de ellas— comúnmente usadas en contraseñas. “12345678”, “pizzapizza” o incluso variaciones en apariencia seguras como “p4$$word" y “123456789j” son casos perdidos contra este ataque.
 
@@ -78,14 +83,7 @@ A diferencia de la sal, este valor es (1) único para todos los hashes del siste
 .. figure:: _static/pepper.png
    :align: center
 
-Aunque se tenga una copia de la base de datos la teoría, es que sin acceso al código fuente, incluso un ataque por fuerza bruta se vuelve prácticamente imposible [#]_.
-
-
-.. warning::
-
-    A algunas personas les preocupa que no haya sido categóricamente demostrado que agregar una pimienta realmente aumente la seguridad o que de alguna forma inesperada no la disminuya.
-
-    Por si las dudas, a menos que tu le pases una como parámetro ``pepper``, Authcode no usa ninguna.
+Aunque se tenga una copia de la base de datos, la teoría es que *sin acceso al código fuente*, incluso un ataque por fuerza bruta se vuelve *prácticamente* inviable [#]_.
 
 
 .. _security.response:
@@ -99,7 +97,7 @@ Reportar un problema de seguridad
 
 Mantener la seguridad de una biblioteca de autenticación es crítico, por que afecta potencialmente a todos los que la usan. Tus opiniones y comentarios al respecto son siempre bien recibidos.
 
-Si el problema que quieres reportar es urgente o sensible (puede causar que un atacante tenga acceso a la información de otro usuario o que pueda suplantarlo) envíalo diréctamente a security@lucumalabs.com. Usa `nuestra llave pública <http://lucumalabs.com/lucumalabs-security.pub>`_ para mantener tu mensaje seguro[#]_ y por favor danos una forma segura para responderte. Te responderemos apenas nos sea posible, usualmente dentro de las siguientes 24 horas.
+Si el problema que quieres reportar es urgente o sensible (puede causar que un atacante tenga acceso a la información de otro usuario o que pueda suplantarlo) envíalo diréctamente a security@lucumalabs.com. Usa `nuestra llave pública <http://lucumalabs.com/lucumalabs-security.pub>`_ para mantener tu mensaje seguro [#]_ y por favor danos una forma segura para responderte. Te responderemos apenas nos sea posible, usualmente dentro de las siguientes 24 horas.
 
 Para otro tipo de problemas, por favor crea un reporte en https://github.com/lucuma/authcode/issues .
 
@@ -107,6 +105,6 @@ Para otro tipo de problemas, por favor crea un reporte en https://github.com/luc
 
 .. rubric:: Notas al pie
 
-.. [#] O económicamente impráctico si eres la NSA. Pero no olvides esto: http://xkcd.com/538/
+.. [#] Pero no olvides esto: http://xkcd.com/538/
 
 .. [#] Usando PGP. Puedes leer como en este sitio: https://ssd.eff.org/es/module/como-usar-pgp-para-windows-pc (también hay instrucciones para Mac y Linux)

@@ -78,6 +78,7 @@ def test_use_pepper():
     auth = authcode.Auth(SECRET_KEY, pepper='123', hash='sha512_crypt')
     hashed = auth.hash_password(p)
     assert auth.password_is_valid(p, hashed)
+
     auth = authcode.Auth(SECRET_KEY, pepper='abc', hash='sha512_crypt')
     assert not auth.password_is_valid(p, hashed)
 
@@ -128,6 +129,7 @@ def test_authenticate_with_password():
     user = User(**credentials)
     db.session.add(user)
     db.session.commit()
+
     auth_user = auth.authenticate(credentials)
     assert user.login == auth_user.login
 
@@ -138,6 +140,67 @@ def test_authenticate_with_password():
     assert not auth_user
 
     auth_user = auth.authenticate({'login': u'wtf', 'password': 'foobar'})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh', 'password': 'lalala'})
+    assert not auth_user
+
+
+def test_user_has_none_password():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+    User = auth.User
+
+    db.create_all()
+    user = User(login=u'meh', password=None)
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.password is None
+
+    auth_user = auth.authenticate({})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh', 'password': None})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh'})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'wtf', 'password': ''})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh', 'password': 'lalala'})
+    assert not auth_user
+
+
+def test_user_has_empty_password():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+    User = auth.User
+
+    db.create_all()
+    user = User(login=u'meh', password=u'')
+    db.session.add(user)
+    db.session.commit()
+
+    assert user.password != u''
+
+    auth_user = auth.authenticate({'login': u'meh', 'password': u''})
+    assert auth_user
+
+    auth_user = auth.authenticate({})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh', 'password': None})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'meh'})
+    assert not auth_user
+
+    auth_user = auth.authenticate({'login': u'wtf', 'password': ''})
     assert not auth_user
 
     auth_user = auth.authenticate({'login': u'meh', 'password': 'lalala'})
@@ -298,6 +361,7 @@ def test_clear_session_on_logout():
     session['foo'] = 'bar'
 
     print(session)
+    assert auth.session_key in session
     assert 'foo' in session
 
     auth.logout(session=session)
@@ -322,6 +386,7 @@ def test_dont_clear_session_on_logout():
     session['foo'] = 'bar'
 
     print(session)
+    assert auth.session_key in session
     assert 'foo' in session
 
     auth.logout(session=session)

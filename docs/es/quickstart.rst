@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =============================================
-Introducción
+Inicio rápido
 =============================================
 
 .. container:: lead
@@ -9,47 +9,49 @@ Introducción
     Esta guía cubre lo que necesitas saber para empezar a usar Authcode.
 
 
-Requisitos
-=============================================
-
-Aunque Authcode no depende de ningún framework web específico, si necesita que exista cierta infraestructura básica para funcionar:
-
-- Una ``sesion`` con una interfaz similar a la de un diccionario.
-    Debe permitir hacer cosas como ``sesion['foo'] = 'bar`` y ``sesion.get('foo', None)``. Tu framework ya debe de tener alguna. O si no puedes usar la de `Beaker`_.
-
-- Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask) y `WebOb`_ (Pyramid), pero es fácilmente extensible para trabajar con otros, como el de `CherryPy`_ por ejemplo.
-
-- Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy_Wrapper`_ [#]_ o `Flask_SQLAlchemy`_ ya tienes uno.
-
-.. _Beaker: http://beaker.readthedocs.org/
-.. _Werkzeug: http://werkzeug.pocoo.org/
-.. _WebOb: http://webob.org/
-.. _CherryPy: http://www.cherrypy.org/
-.. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
-.. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
-
-
-Inicio rápido
-=============================================
-
 Para usar Authcode bastan solo tres pasos.
 
-Lo primero es configurar Authcode, hay varios parámetros que puedes usar, pero lo mínimo necesario es una clave secreta y la conexión a SQLAlchemy.
+
+1. Crear un objeto Auth
+----------------------------------------------
+
+Hay varios parámetros que puedes usar para configurarlo, pero lo mínimo necesario es una clave secreta y una conexión a SQLAlchemy.
 
 .. code-block:: python
 
     auth = authcode.Auth(SECRET_KEY, db=db)
+    User = auth.User
 
-Lo siguiente es conectarlo a tu aplicación web, esta parte es específica del framework web que estés usando. Por ejemplo, para Flask:
+El objeto ``db`` que es te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
+
+``auth.User`` es el modelo de usuario generado automáticamente por Authcode. Necesitarás esa referencia para crear usuarios o conectarlos a tus otros modelos.
+
+.. tip::
+
+    ¿No tienes un objeto ``db`` por que estás usando SQLAlchemy diréctamente? [1]_
+    **¡No lo hagas!** Incluso su documentación te recomienda que uses una capa intermedia en aplicaciones web.
+
+    Si realmente **necesitas** hacerlo, lee esta sección: :ref:`advanced.naked_sqlalchemy` para saber como.
+
+2. Ajustarlo a tu framework
+----------------------------------------------
+
+Lo siguiente es ajustar el objeto Auuth recién creado al framework web que estés usando. Por ejemplo, para Flask:
 
 .. code-block:: python
 
     authcode.setup_for_flask(auth, app)
-    User = auth.User
 
-``auth.user`` contiene el modelo de usuario generado automáticamente por Authcode. Necesitarás esa referencia para crear usuarios o conectarlos a tus otros modelos.
+Esta función de setup se encarga de terminar de conectar a Authcode con las peculiaridades del framework que uses, por ejemplo como interpretar las plantillas, agregar vistas y esas cosas. Por ahora estos son las framework incluidos (lo que no significa que no puedas agregar el tuyo):
 
-Finalmente usas ``auth.protected`` para decorar las vistas que quieres que sean solo accesibles para usuarios.
+* `Flask <http://flask.pocoo.org/>`_ (``setup_for_flask``)
+* *¡Más próximamente!*
+
+
+3. Proteger tus vistas
+----------------------------------------------
+
+Finalmente, usas ``auth.protected`` para decorar las vistas que quieres que sean solo accesibles para usuarios.
 
 .. code-block:: python
 

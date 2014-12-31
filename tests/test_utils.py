@@ -48,6 +48,13 @@ def test_get_token_nonascii_secret():
     assert token
 
 
+def test_get_hash_extract():
+    hash = u'$pbkdf2-sha512$19000$Y4wRAqA05rzX0123456789$fP0ECUz1LUtw...'
+    assert utils.get_hash_extract('') == u''
+    assert utils.get_hash_extract(None) == u''
+    assert utils.get_hash_extract(hash) == u'0123456789'
+
+
 class Meh(object):
     pass
 
