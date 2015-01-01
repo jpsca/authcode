@@ -1,7 +1,7 @@
 .. _quickstart:
 
 =============================================
-Mini tutorial
+Tutorial
 =============================================
 
 .. container:: lead
@@ -9,11 +9,14 @@ Mini tutorial
     Esta guía cubre lo que necesitas saber para empezar a usar Authcode.
 
 
+Inicio rápido
+----------------------------------------------
+
 Para usar Authcode bastan solo tres pasos.
 
 
 1. Crear un objeto Auth
-----------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++
 
 Hay varios parámetros que puedes usar para configurarlo, pero lo mínimo necesario es una clave secreta y una conexión a SQLAlchemy.
 
@@ -31,10 +34,10 @@ El objeto ``db`` que es te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQL
     ¿No tienes un objeto ``db`` por que estás usando SQLAlchemy diréctamente? [1]_
     **¡No lo hagas!** Incluso su documentación te recomienda que uses una capa intermedia en aplicaciones web.
 
-    Si realmente **necesitas** hacerlo, lee esta sección: :ref:`advanced.naked_sqlalchemy` para saber como.
+    Si necesitas hacerlo, lee la sección :ref:`advanced.naked_sqlalchemy` para saber como.
 
 2. Ajustarlo a tu framework
-----------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++
 
 Lo siguiente es ajustar el objeto Auuth recién creado al framework web que estés usando. Por ejemplo, para Flask:
 
@@ -44,12 +47,12 @@ Lo siguiente es ajustar el objeto Auuth recién creado al framework web que est�
 
 Esta función de setup se encarga de terminar de conectar a Authcode con las peculiaridades del framework que uses, por ejemplo como interpretar las plantillas, agregar vistas y esas cosas. Por ahora estos son las framework incluidos (lo que no significa que no puedas agregar el tuyo):
 
-* `Flask <http://flask.pocoo.org/>`_ (``setup_for_flask``)
-* *¡Más próximamente!*
+* `Flask <http://flask.pocoo.org/>`_ (Mira :ref:`api.setup_for_flask`)
+* (*¡Más próximamente!*)
 
 
 3. Proteger tus vistas
-----------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++
 
 Finalmente, usas ``auth.protected`` para decorar las vistas que quieres que sean solo accesibles para usuarios.
 

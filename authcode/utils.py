@@ -6,6 +6,12 @@ from time import time
 from ._compat import to_bytes, to_unicode
 
 
+def eval_url(url):
+    if callable(url):
+        url = url()
+    return url
+
+
 def test_hasher(hasher):
     hasher.encrypt('test', rounds=hasher.min_rounds)
 

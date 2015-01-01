@@ -3,4 +3,3 @@
 
 passlib>=1.6.1
 sqlalchemy>=0.8.2
-# "sqlalchemy_wrapper" or "flask-sqlalchemy!=1.0"

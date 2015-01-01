@@ -11,3 +11,12 @@ Authcode
     Briefly, authentication verifies a user is who they claim to be, and authorization determines what an authenticated user is allowed to do.
 
 It uses SQLAlchemy models but does not depends of any specific web framework.
+
+
+Features
+---------------------------------------------
+
+..class features-list::
+
+    - foo
+    - bar

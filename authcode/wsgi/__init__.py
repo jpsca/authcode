@@ -1,2 +1,2 @@
 # coding=utf-8
-from . import werkzeug, webob  # noqa
+from . import cherrypy, webob, werkzeug  # noqa

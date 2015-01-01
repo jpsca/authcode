@@ -11,7 +11,6 @@
     href="{{ pathto('_static/opensearch.xml', 1) }}"/>
   <link rel="shortcut icon" type="image/x-icon" href="{{ pathto('_static/favicon.ico', 1) }}">
   <link href="{{ pathto('_static/styles/styles.min.css', 1) }}" rel="stylesheet">
-
   {% if hasdoc('genindex') -%}
     <link rel="index" title="{{ _('index') }}" href="{{ pathto('genindex') }}">
   {%- endif %}
@@ -24,6 +23,13 @@
   {% if prev -%}
     <link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}">
   {%- endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ LANG }}">
+  <meta property="og:title" content="{{ title|striptags|e }}{{ titlesuffix }}">
+  {#<meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta name="og:description" content="">
+  <meta name="description" content="">#}
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
 {% include "header.html" %}

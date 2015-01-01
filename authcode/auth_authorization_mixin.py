@@ -1,7 +1,7 @@
 # coding=utf-8
+import functools
 import logging
 from uuid import uuid4
-from functools import wraps
 
 from ._compat import to_unicode
 
@@ -57,7 +57,7 @@ class AuthorizationMixin(object):
         roles = [to_unicode(r) for r in roles]
 
         def decorator(f):
-            @wraps(f)
+            @functools.wraps(f)
             def wrapper(*args, **kwargs):
                 logger = logging.getLogger(__name__)
                 request = options.get('request') or self.request or \
@@ -89,6 +89,45 @@ class AuthorizationMixin(object):
                 return f(*args, **kwargs)
             return wrapper
         return decorator
+
+    def tool_protected(self, *tests, **options):
+        """A version of the protected decorator intended to be used as a
+        CherryPy tool.
+        """
+        logger = logging.getLogger(__name__)
+        csrf = options.get('csrf')
+        roles = options.get('roles') or []
+        role = options.get('role')
+        if role:
+            roles.append(role)
+        roles = [to_unicode(r) for r in roles]
+
+        request = self.request
+        args = request.args
+        kwargs = request.kwargs
+        url_sign_in = self._get_url_sign_in(request, options)
+
+        user = self.get_user()
+        if not user:
+            return self._login_required(request, url_sign_in)
+
+        if hasattr(user, 'has_role') and roles:
+            if not user.has_role(*roles):
+                logger.debug(u'User `{0}`: has_role fail'.format(user.login))
+                logger.debug(u'User roles: {0}'.format([r.name for r in user.roles]))
+                return self.wsgi.raise_forbidden()
+
+        for test in tests:
+            test_pass = test(user, *args, **kwargs)
+            if not test_pass:
+                logger.debug(u'User `{0}`: test fail'.format(user.login))
+                return self.wsgi.raise_forbidden()
+
+        disable_csrf = csrf == False  # noqa
+        if (self.wsgi.not_safe_method(request) and not disable_csrf) or csrf:
+            if not self.csrf_token_is_valid(request):
+                logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
+                return self.wsgi.raise_forbidden("CSFR token isn't valid")
 
     def csrf_token_is_valid(self, request, session=None):
         token = self._get_csrf_token_from_request(request)

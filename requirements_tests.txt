@@ -1,3 +1,4 @@
+cherrypy
 pytest
 pytest-cov
 tox

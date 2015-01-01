@@ -62,8 +62,8 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'pepper': u'',  # considering deprecating it
     }
 
-    def __init__(self, secret_key, hash=DEFAULT_HASHER, rounds=None,
-                 db=None, UserMixin=None, RoleMixin=None,
+    def __init__(self, secret_key, db=None, hash=DEFAULT_HASHER, rounds=None,
+                 UserMixin=None, RoleMixin=None,
                  users_model_name='User', roles_model_name='Role',
                  roles=False, lazy_roles=True,
                  session=None, request=None, **kwargs):

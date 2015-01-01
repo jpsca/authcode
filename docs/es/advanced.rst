@@ -280,7 +280,7 @@ Aunque Authcode no depende de ningún framework web específico, si necesita que
 
 .. _advanced.naked_sqlalchemy:
 
-SQLalchemy sin ayuda
+Reemplazando al objeto ``db``
 ===============================================
 
 ¿Estás usando SQLAlchemy diréctamente y no tienes un objeto ``db`` para inicializar ``Auth``? Simplemente usa una clase similar a esta:

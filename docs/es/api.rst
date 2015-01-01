@@ -14,20 +14,20 @@ API
 Objeto Auth
 =============================================
 
-*class Authcode.Auth(secret_key, **kwargs)*
+*class* **Auth** (secret_key, db=None, **kwargs)
 
 :Parámetros:
     secret_key:
         Llave secreta. Usada para generar el identificador de usuario o el token de recuperación de contraseña.
+
+    db:
+        Interfaz con la base de datos (SQLAlchemy). ``db.session`` debe ser la sesión se la base de datos y ``db.Model`` el modelo (declarativo) base.
 
     hash='pbkdf2_sha512':
         Nombre de la función de hashing a utilizar para guardar las contraseñas. Los valores posibles son ``pbkdf2_sha512``, ``pbkdf2_sha256``, ``sha512_crypt``, ``sha256_crypt`` o ``bcrypt``.
 
     rounds:
         Número de rondas a usar para la función de hashing. No cambies este valor a menos que tengas una razón poderosa para hacerlo.
-
-    db:
-        Interfaz con la base de datos (SQLAlchemy). ``db.session`` debe ser la sesión se la base de datos y ``db.Model`` el modelo (declarativo) base.
 
     UserMixin:
         El *mixin* usado para crear el modelo de usuario final.
@@ -44,8 +44,11 @@ Objeto Auth
     users_model_name='User':
         El nombre usado para el modelo de usuario.
 
-    roles_model_name='Role',:
+    roles_model_name='Role':
         El nombre usado para el modelo de rol.
+
+    user_name='user':
+        Nombre que se usará para guardar el usuario actual en un objeto global. Por ejemplo, en Flask, se guardará en ``g.user``. Otros frameworks podrían guardarlo en el objeto request, por ejemplo.
 
     session_key='_uhmac':
         El nombre con que se guarda el identificador de usuario en la sesión.
@@ -82,7 +85,7 @@ Objeto Auth
         Lista de vistas agregadas por Authcode automáticamente.
 
     views_prefix:
-        Por defecto las vistas automáticas se crean con el nombre “auth_nombre”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``Authcode.Auth`` en una misma aplicación.
+        Por defecto las vistas automáticas se crean con el nombre “auth_nombre”, por ejemplo: “auth_sign_in”. Este parámetro es un prefijo que puede agregarse a esos nombres, útil para cuando se usa más de un ``authcode.Auth`` en una misma aplicación.
 
     template_sign_in:
         Sobreescribe la plantilla para la página de iniciar sesión.
@@ -118,14 +121,14 @@ Objeto Auth
         Al iniciar sesión, si la función de hashing o el número de rondas ha cambiado, actualizar la contraseña guardada con esos nuevos parámetros.
 
     wsgi=wsgi.werkzeug:
-        Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``wsgi.werkzeug`, ``wsgi.webob`` o ``wsgi.cherrypy``.
+        Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``authcode.wsgi.werkzeug` o ``authcode.wsgi.cherrypy``.
 
     pepper=u'':
         Texto fijo que se agrega a todas las contraseñas antes de hashearlas. El problema es que cambiar este valor hace inválidas **todas** las contraseñas guardadas, y entonces no puedes cambiarlo aunque se haya filtrado.
 
+
 Métodos
 ---------------------------------------------
-
 
 set_hasher(hash, rounds=None):
     Reemplaza la función de hasheado por otra nueva, comprobando que este soportada por Authcode.
@@ -150,7 +153,7 @@ auth_password(credentials):
     Si la contraseña del usuario encontrado es ``None``, siempre devuelve ``None``, aunque la contraseña indicada en las credenciales también sea ``None``.
 
 auth_token(credentials, token_life=None):
-    Toma un diccionario del que trata de leer un valor ``token``; Este valor debe tener el formato generado por ``Authcode.get_token`` (que a su vez puede ser invocado desde una instancia de usuario: ``usuario.get_token``).
+    Toma un diccionario del que trata de leer un valor ``token``; Este valor debe tener el formato generado por ``authcode.get_token`` (que a su vez puede ser invocado desde una instancia de usuario: ``usuario.get_token``).
     Si el token es válido devuelve al usuario que autentica, de lo contrario devuelve ``None``.
 
 get_user(session=None):
@@ -200,22 +203,23 @@ protected(*tests, **options):
             Si alguna de las otras condiciones fallan (por ejemplo no hay un usuario logueado), Authcode te redirigirá ahí.
             Puede ser una URL o un ejecutable que devuelva la URL.
 
+protected_tool(*tests, **options):
+    Versión del decorador que se registra como herramienta en CherryPy.
+
 
 .. _api.setup_functions:
 
 Funciones de setup
 =============================================
 
-*function Authcode.setup_for_<framework>(auth, app, send_email=None, user_name='user', render=None, session=None, request=None)*
-
-    *function Authcode.setup_for_flask*
+*function* **setup_for_X** (auth, app=None, send_email=None, render=None, session=None, request=None)
 
 :Parámetros:
     auth:
-        Una instancia de la clase ``Authcode.Auth``.
+        Una instancia de la clase ``Auth``.
 
     app:
-        La aplicación web.
+        La aplicación web. Ingóra este parámetro en frameworks en que no existe un objeto así (como en CherryPy).
 
     send_email:
         Función a la que Authcode llamará para enviar el email de recuperación de contraseña. Esta función deberá tomar como argumentos el usuario, el título del email y el cuerpo del mensaje.
@@ -234,14 +238,43 @@ Funciones de setup
             except Exception as e:
                 print(e)
 
-    user_name='user':
-        Nombre que se usará para guardar el usuario actual en un objeto global. Por ejemplo, en Flask, se guardará en ``g.user``. Otros frameworks podrían guardarlo en el objeto request, por ejemplo.
-
     render:
-        Sobreescribe la función a la que Authcode llamará para generar el HTML de las vistas. Para ``setup_for_flask`` es por defecto ``flask.render_template``.
+        Sobreescribe la función a la que Authcode llamará para generar el HTML de las vistas. La función de render debe tener esta firma:
+
+            render(tmpl, **kwargs)
+
+        donde ``tmpl`` es el nombre de la plantilla y ``kwargs`` los argumentos que se le pasan.
 
     session:
-        Sobreescribe la referencia a la sesión. . Para ``setup_for_flask`` es por defecto ``flask.session``.
+        Sobreescribe la referencia a la sesión.
 
     request:
-        Sobreescribe la referencia a la solicitud de la página actual o a un ejecutable que la devuelva. Para ``setup_for_flask`` es por defecto ``flask.request``.
+        Sobreescribe la referencia a la solicitud de la página actual o a un ejecutable que la devuelva.
+
+
+.. _api.setup_for_flask:
+
+setup_for_flask
+---------------------------------------------
+
+- Agrega a ``flask.g.user`` una referencia (lazy) al usuario autenticado.
+
+- Agrega ``csrf_token`` y ``auth`` a las variables globales de Jinja en ``app.jinja_env.globals``
+
+
+.. _api.setup_for_cherrypy:
+
+setup_for_cherrypy
+---------------------------------------------
+
+**En desarrollo**
+
+La herramienta de sesión debe estar activada.
+
+- Ya que CherryPy no incluye un sistema de plantillas, Authcode usa el sistema por defecto (Jinja2) para las vistas activas, a menos que le pases una función de ``render``. **Tu tienes que agregar manualmente** ``csrf_token`` **y** ``auth`` **a las variables globales de las plantillas que estés usando**.
+
+- Agrega a ``cherrypy.request.user`` una referencia (lazy) al usuario autenticado.
+
+- Agrega una versión de ``auth.protected`` como una herramienta en ``cherrypy.tools.protected``.
+
+

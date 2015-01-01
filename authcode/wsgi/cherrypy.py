@@ -10,14 +10,14 @@ def get_site_name(request):
 
 
 def get_full_path(request):
-    path = request.path_info
-    if request.query_string:
-        path += '?' + request.query_string
-    return path
+    import cherrypy
+
+    return cherrypy.url(base='', relative=False)
 
 
 def make_full_url(request, url):
     import cherrypy
+
     return cherrypy.url(url, relative=False)
 
 
@@ -31,11 +31,13 @@ def not_safe_method(request):
 
 def redirect(url):
     import cherrypy
+
     raise cherrypy.HTTPRedirect(url, SEE_OTHER)
 
 
 def raise_forbidden(msg='You are not allowed to access this resource.'):
     import cherrypy
+
     raise cherrypy.HTTPError("403 Forbidden", msg)
 
 
@@ -53,5 +55,6 @@ def get_post_data(request):
 
 def make_response(body, mimetype='text/html'):
     import cherrypy
+
     cherrypy.response.headers['Content-Type'] = mimetype
     return body
