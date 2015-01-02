@@ -8,7 +8,7 @@
 </head>
 <body {% block bodyclass %}{% endblock %}>
   <header>
-    <div>
+    <div class="wrapper">
       <a class="logo" href="{{ url_for('index') }}">Authcode example</a>
       {% if g.user -%}
       <a class="sign-in" href="{{ url_for('sign_out', _csrf_token=csrf_token()) }}">Sign Out</a></li>
@@ -18,10 +18,10 @@
     </div>
   </header>
   <div id="main-content">
-    <div>{% block content %}{% endblock %}</div>
+    <div class="wrapper">{% block content %}{% endblock %}</div>
   </div>
   <footer>
-    <div>This is an example on how to use the <a href="http://authcode.lucumalabs.com">Authcode</a> python library.</div>
+    <div class="wrapper">This is an example on how to use the <a href="http://authcode.lucumalabs.com">Authcode</a> python library.</div>
   </footer>
 </body>
 </html>

@@ -29,6 +29,9 @@ def setup_for_cherrypy(
 
 
 def setup_for_cherrypy_views(auth, map=None):
+    # INCOMPLETE
+    #! TODO: Use auth.url_sign_in, etc. or find a workaround
+
     import cherrypy
 
     if 'sign_in' in auth.views:
@@ -85,6 +88,6 @@ def setup_for_cherrypy_views(auth, map=None):
             auth.auth_reset_password.__func__,
             alias='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
-                name='auth_reset_password'
+                name='auth_reset_password_token'
             )
         )

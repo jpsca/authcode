@@ -119,8 +119,9 @@ Este ejemplo usa `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/late
     def get_twitter_token(token=None):
         return session.get('twitter_token')
 
+Puedes ver el ejemplo completo corriendo aquí: `http://authcode-tw-fb.herokuapp.com/ <http://authcode-tw-fb.herokuapp.com/>`_
 
-Puedes ver corriendo el ejemplo completo en http://Authcode-tw-fb.herokuapp.com/ y su código fuente en https://github.com/lucuma/Authcode/tree/master/examples/twitter_or_facebook .
+El código fuente del ejemplo completo está en https://github.com/lucuma/Authcode/tree/master/examples/twitter_or_facebook.
 
 
 .. _advanced.multiauth:
@@ -255,27 +256,28 @@ Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión 
 
 
 .. _advanced.custom_setup
+..
+    Un ``setup_for_`` personalizado
+    =============================================
 
-Un ``setup_for_`` personalizado
-=============================================
+    TO DO
 
-TO DO
+    Aunque Authcode no depende de ningún framework web específico, si necesita que exista cierta infraestructura básica para funcionar:
 
-Aunque Authcode no depende de ningún framework web específico, si necesita que exista cierta infraestructura básica para funcionar:
+    - Una ``session`` con una interfaz similar a la de un diccionario.
+        Debe permitir hacer cosas como ``session['foo'] = 'bar`` y ``session.get('foo', None)``. Tu framework ya debe de tener alguna. O si no puedes usar la de `Beaker`_.
 
-- Una ``session`` con una interfaz similar a la de un diccionario.
-    Debe permitir hacer cosas como ``session['foo'] = 'bar`` y ``session.get('foo', None)``. Tu framework ya debe de tener alguna. O si no puedes usar la de `Beaker`_.
+    - Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask), CherryPy`_, `webpy`_ y `WebOb`_ (Pyramid).
 
-- Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask) y `WebOb`_ (Pyramid), pero es fácilmente extensible para trabajar con otros, como el de `CherryPy`_ por ejemplo.
+    - Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy_Wrapper`_ [#]_ o `Flask_SQLAlchemy`_ ya tienes uno.
 
-- Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy_Wrapper`_ [#]_ o `Flask_SQLAlchemy`_ ya tienes uno.
-
-.. _Beaker: http://beaker.readthedocs.org/
-.. _Werkzeug: http://werkzeug.pocoo.org/
-.. _WebOb: http://webob.org/
-.. _CherryPy: http://www.cherrypy.org/
-.. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
-.. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
+    .. _Beaker: http://beaker.readthedocs.org/
+    .. _Werkzeug: http://werkzeug.pocoo.org/
+    .. _webpy: http://webpy.org/
+    .. _WebOb: http://webob.org/
+    .. _CherryPy: http://www.cherrypy.org/
+    .. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
+    .. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
 
 
 .. _advanced.naked_sqlalchemy:

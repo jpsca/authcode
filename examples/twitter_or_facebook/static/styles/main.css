@@ -1,10 +1,10 @@
-* {
-  padding: 0;
-  margin: 0;
+*, *:before, *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  outline: none;
 }
+
 footer,header,section {
   display: block
 }
@@ -336,16 +336,12 @@ body > footer {
   width: 100%;
 }
 
-body > header > div,
-#main-content > div,
-body > footer > div {
-  width: 980px;
+.wrapper {
+  width: 100%;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 20px 40px;
 }
-#main-content > div {
-  padding: 50px 0;
-}
+
 #sign-in #main-content > div {
   padding: 50px 20px;
 }

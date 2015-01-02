@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import authcode
+from authcode import wsgi
 import pytest
 
 from helpers import SECRET_KEY
@@ -10,7 +11,7 @@ from helpers import SECRET_KEY
 def test_setup_for_cherrypy():
     cherrypy = pytest.importorskip("cherrypy")
 
-    auth = authcode.Auth(SECRET_KEY)
+    auth = authcode.Auth(SECRET_KEY, wsgi=wsgi.cherrypy)
     authcode.setup_for_cherrypy(auth)
 
     assert auth.request == cherrypy.request
@@ -26,7 +27,7 @@ def test_setup_for_cherrypy_custom_render():
     def render(tmpl, **kwargs):
         pass
 
-    auth = authcode.Auth(SECRET_KEY)
+    auth = authcode.Auth(SECRET_KEY, wsgi=wsgi.cherrypy)
     authcode.setup_for_cherrypy(auth, render=render, send_email=send_email)
 
     assert auth.render == render

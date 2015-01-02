@@ -13,6 +13,8 @@ def setup_for_flask(
         auth.send_email = send_email
 
     auth.render = render or flask.render_template
+    app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
+    app.jinja_env.globals['auth'] = auth
 
     def set_user():
         # By doing this, ``g`` now has a ``user`` attribute that it's
@@ -20,8 +22,6 @@ def setup_for_flask(
         LazyUser(auth, flask.g, user_name=auth.user_name)
 
     app.before_request_funcs.setdefault(None, []).insert(0, set_user)
-    app.jinja_env.globals['csrf_token'] = auth.get_csrf_token
-    app.jinja_env.globals['auth'] = auth
 
     if auth.views:
         assert auth.render

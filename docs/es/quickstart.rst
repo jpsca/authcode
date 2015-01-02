@@ -9,6 +9,14 @@ Tutorial
     Esta guía cubre lo que necesitas saber para empezar a usar Authcode.
 
 
+Instalación
+----------------------------------------------
+
+.. code-block:: shell
+
+    pip install authcode
+
+
 Inicio rápido
 ----------------------------------------------
 

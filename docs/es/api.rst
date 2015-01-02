@@ -278,3 +278,9 @@ La herramienta de sesión debe estar activada.
 - Agrega una versión de ``auth.protected`` como una herramienta en ``cherrypy.tools.protected``.
 
 
+.. _api.setup_for_webpy:
+
+setup_for_webpy
+---------------------------------------------
+
+**En desarrollo**
