@@ -76,7 +76,16 @@ Finalmente, usas ``auth.protected`` para decorar las vistas que quieres que sean
     Nota que el decorador está siendo llamado (tiene un par de paréntesis al final de la línea). Estos son necesarios, si los olvidas tendrás un error.
 
 .. warning:: ¡Cuidado!
-    Ten mucho cuidado en poner el decorador de autenticación **después** del de la ruta o, de otro modo, tus vistas quedarán desprotegidas.
+    Si defines las rutas a tus vistas con decoradores —como lo hace Flask— ten mucho cuidado en poner el decorador de autenticación **después** del de la ruta o, de otro modo, tus vistas quedarán desprotegidas. Hazlo de esta forma:
+
+   .. code-block:: python
+      :emphasize-lines: 2
+
+        @app.route('/admin/')
+        @auth.protected()
+        def myview():
+            ...
+
 
 Puedes ver este ejemplo completo en https://github.com/lucuma/Authcode/tree/master/examples/minimal.
 

@@ -307,12 +307,6 @@ Reemplazando al objeto ``db``
             self.session.remove()
             return response
 
-        def rollback(error=None):
-            try:
-                self.session.rollback()
-            except Exception:
-                pass
-
     # y finalmente...
     db = DB()
     auth = Authcode.Auth(SECRET_KEY, db=db)
