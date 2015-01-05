@@ -17,3 +17,27 @@ function setupDropdown(dd){
         $target.slideDown();
     }
 }
+
+function setupPopup($section){
+    $section.magnificPopup({
+        delegate: 'a.image-reference',
+        type: 'image',
+        gallery: {
+            enabled: true
+        },
+        zoom: {
+            enabled: true,
+            duration: 300,
+            easing: 'ease-in-out'
+        }
+    });
+}
+
+function setupPopups(){
+    // Each section is a separate gallery in this way
+    $('.section a.image-reference').closest('.section').each(function(){
+        var $section = $(this);
+        setupPopup($section);
+    });
+}
+setupPopups();

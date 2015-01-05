@@ -10,9 +10,7 @@ Authcode
 
     Brevemente, la autenticación es verificar que un usuario es quien dice ser, y la autorización es manejar lo que un usuario autenticado tiene permiso para hacer
 
-Depende de SQLAlchemy.
-
-Por ahora solo está probado con `Flask <http://flask.pocoo.org/>`_ , pero próximamente lo hará con `CherryPy <http://www.cherrypy.org/>`_, `Web.py <http://webpy.org/>`_ y otros.
+Depende de SQLAlchemy y puedes usarla con `Flask <http://flask.pocoo.org/>`_ (y pronto con `CherryPy <http://www.cherrypy.org/>`_, `web.py <http://webpy.org/>`_ y otros).
 
 
 Ventajas

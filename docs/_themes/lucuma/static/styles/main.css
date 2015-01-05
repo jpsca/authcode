@@ -22,6 +22,10 @@ html, body {
   overflow-x: hidden;
 }
 
+a img {
+  border: none;
+}
+
 input,
 button,
 select,

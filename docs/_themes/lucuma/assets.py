@@ -20,6 +20,7 @@ assets_env.register(
     'styles/type.css',
     'styles/responsive.css',
     'styles/pygments.css',
+    'styles/magnific-popup.css',
     'styles/print.css',
 
     filters='less,cssmin',
@@ -32,6 +33,7 @@ assets_env.register(
     'scripts/jquery.js',
     'scripts/lodash.js',
     'scripts/doctools.js',
+    'scripts/magnific-popup.js',
     'scripts/main.js',
 
     filters='closure_js',

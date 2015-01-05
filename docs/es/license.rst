@@ -21,7 +21,7 @@ Definiciones generales de la licencia
 Licencia de Authcode
 ---------------------------------------
 
-Copyright © 2012-2015 por Juan-Pablo Scaletti
+Copyright © Juan-Pablo Scaletti
 
 Se concede permiso por la presente, de forma gratuita, a cualquier persona que obtenga una copia de este software y de los archivos de documentación asociados (el "Software"), para utilizar el Software sin restricción, incluyendo sin limitación los derechos de usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender copias de este Software, y para permitir a las personas a las que se les proporcione el Software a hacer lo mismo, sujeto a las siguientes condiciones:
 
@@ -46,7 +46,7 @@ El contenido de la documentación de Authcode está bajo una licencia `Creative 
 Licencia del arte
 ---------------------------------------
 
-Copyright © 2015 por XXXX.
+Copyright © XXXX.
 Algunos derechos reservados.
 
 Este logotipo o una versión modificada puede ser utilizados por cualquier persona para referirse al proyecto Authcode, pero esto no implica un aval del proyecto.

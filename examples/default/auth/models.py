@@ -18,6 +18,7 @@ def send_email(user, subject, msg):
     if not user.email:
         return
     try:
+        print(msg)
         mailer.send(
             subject, html_content=msg,
             from_email=settings.MAILER_SENDER,

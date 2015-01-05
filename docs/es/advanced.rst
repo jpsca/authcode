@@ -283,7 +283,7 @@ Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión 
 .. _advanced.naked_sqlalchemy:
 
 Reemplazando al objeto ``db``
-===============================================
+=============================================
 
 ¿Estás usando SQLAlchemy diréctamente y no tienes un objeto ``db`` para inicializar ``Auth``? Simplemente usa una clase similar a esta:
 

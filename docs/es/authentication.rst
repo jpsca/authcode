@@ -48,7 +48,7 @@ De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “
 lo que se traduce a:
 
 .. figure:: _static/usermixin.png
-   :width: 100 %
+   :align: center
 
 El modelo combinado está en ``auth.User``, para que lo conectes con el resto de tus modelos.
 
@@ -152,7 +152,7 @@ Cualquier valor que le asignes a la propiedad ``password`` de un usuario, autom�
 
 .. note::
 
-    El formato del hash final varía con la función utilizada, pero en general tiene esta estructura:
+    El formato del hash final varía con la función de hashing elegida, pero en general tendrá esta estructura:
 
     .. code ::
 
@@ -172,9 +172,9 @@ Puedes verificar si un usuario tiene cierta contraseña utilizando el método ``
 Funciones de hashing
 ---------------------------------------------
 
-Authcode no implementa los algoritmos de hasheado, sino que se apoya en la biblioteca `PassLib <https://pythonhosted.org/passlib/>`_.
+Authcode no implementa los algoritmos de hashing, sino que se apoya en la biblioteca `PassLib <https://pythonhosted.org/passlib/>`_ para hacerlo.
 
-Aunque puede leer algunos otros, por motivos de seguridad solo puedes elegir tres familias de funciones de hashing:
+Por motivos de seguridad solo puedes elegir tres familias de funciones de hashing (aunque puede leer algunos otros):
 
 - bcrypt.
 - sha512_crypt y sha256_crypt.
@@ -195,7 +195,7 @@ Según la función que elijas, puede ser necesario o recomendado instalar una bi
     Puedes usar: `bcrypt <https://pypi.python.org/pypi/bcrypt>`_, `py-bcrypt <https://pypi.python.org/pypi/py-bcrypt>`_ o `bcryptor <https://bitbucket.org/ares/bcryptor/overview>`_.
 
 - pbkdf2_sha512 y pbkdf2_sha256:
-    No es necesario (se incluye una versión en Python puro), pero es muy recomendable que instales `M2Crypto <https://pypi.python.org/pypi/M2Crypto>`_ para mejorar la velocidad de los cálculos.
+    No es necesario (porque se incluye una versión en Python puro), pero es muy recomendable que instales `M2Crypto <https://pypi.python.org/pypi/M2Crypto>`_ para mejorar la velocidad de los cálculos.
 
 - sha512_crypt o sha256_crypt:
     Linux y OSX traen soporte nativo para ella, pero se incluye también una versión en Python puro para otros sistemas.
@@ -218,15 +218,25 @@ TO DO
 Iniciar sesión
 ---------------------------------------------
 
-.. figure:: _static/loginpage.png
+.. figure:: _static/login.png
    :align: center
 
-   Página estándar de inicio de sesión.
+   Plantilla estándar de inicio de sesión.
 
 TO DO
 
 Recuperar contraseña
 ---------------------------------------------
+
+.. image:: _static/reset_password.png
+   :width: 30%
+
+.. image:: _static/reset_password_sent.png
+   :width: 30%
+
+.. image:: _static/change_password.png
+   :width: 30%
+
 
 TO DO
 
