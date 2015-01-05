@@ -14,6 +14,30 @@ Authcode is a clean solution for both authentication and authorization of Python
 
 It uses SQLAlchemy models and works out of the box with Flask, web.py and CherryPy (needs more testing), but can be adapted to use it with many other web frameworks.
 
+.. code:: python
+
+    # 1. Setup
+
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
+    User = auth.User
+    Role = auth.Role
+
+    # 2. Customize
+
+    authcode.setup_for_flask(auth, app)
+
+    # 3. Protect
+
+    @app.route('/')
+    @auth.protected()
+    def index():
+        return u'Welcome ' + g.user.login
+
+    @app.route('/top-secret/')
+    @auth.protected(role='007')
+    def top_secret():
+        return 'For your eyes only'
+
 
 Highlights
 ======================
@@ -53,10 +77,14 @@ TODO
 Contributing
 ======================
 
-1. Check for `open issues <https://github.com/lucuma/Authcode/issues>`_ or open a fresh issue to start a discussion around a feature idea or a bug..
-2. Fork the `Authcode repository on Github <https://github.com/lucuma/Authcode>`_ to start making your changes.
-3. Write a test which shows that the bug was fixed or that the feature works as expected.
-4. Send a pull request and bug the maintainer until it gets merged and published. :) Make sure to add yourself to ``AUTHORS``.
+#. Check for `open issues <https://github.com/lucuma/Authcode/issues>`_ or open
+   a fresh issue to start a discussion around a feature idea or a bug.
+#. Fork the `Authcode repository on Github <https://github.com/lucuma/Authcode>`_
+   to start making your changes.
+#. Write a test which shows that the bug was fixed or that the feature works
+   as expected.
+#. Send a pull request and bug the maintainer until it gets merged and published.
+   :) Make sure to add yourself to ``AUTHORS``.
 
 
 Run the tests
