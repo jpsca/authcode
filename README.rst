@@ -63,18 +63,18 @@ Contributing
 Run the tests
 ======================
 
-We use some external dependencies, listed in ``requirements_tests.txt``:
+We use some external dependencies, listed in ``requirements_tests.txt``::
 
-    $  pip install -r requirements_tests.txt
-    $  python setup.py install
+    $ pip install -r requirements_tests.txt
+    $ python setup.py install
 
 To run the tests in your current Python version do::
 
-    $  make test
+    $ make test
 
 To run them in every supported Python version do::
 
-    $  tox
+    $ tox
 
 Our test suite `runs continuously on Travis CI <https://travis-ci.org/lucuma/Authcode>`_ with every update.
 
