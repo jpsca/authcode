@@ -16,14 +16,14 @@ It uses SQLAlchemy models and works out of the box with Flask, web.py and Cherry
 
 .. code:: python
 
-    # --- 1. Setup ---
+    # --- 1. Create ---
 
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
     Role = auth.Role
 
 
-    # --- 2. Customize ---
+    # --- 2. Setup ---
 
     authcode.setup_for_flask(auth, app)
 
