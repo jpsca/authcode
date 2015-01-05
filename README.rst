@@ -15,15 +15,14 @@ Authcode is a clean solution for both authentication and authorization of Python
 It uses SQLAlchemy models and works out of the box with Flask, web.py and CherryPy (needs more testing), but can be adapted to use it with many other web frameworks.
 
 
-Features
+Highlights
 ======================
 
--  Framework independent
 -  Default but fully customizable User & Role models.
 -  Ready to use authentication views and templates.
+-  Support multiple users models at the same time
 -  Password-reset tokens.
 -  Cross Site Request Forgery (CSRF) protection.
--  Support multiple users models at the same time
 -  Uses the most secure hash algorithms.
 -  Auto-update of old password hashes.
 -  Compatible with Python 2.7, 3.4+ and Pypy.
