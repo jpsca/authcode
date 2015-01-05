@@ -16,9 +16,7 @@ Awesome authentication code.
 
 Authcode is a clean solution for both authentication and authorization of Python web applications. Briefly, authentication verifies a user is who they claim to be, and authorization determines what an authenticated user is allowed to do.
 
-It uses SQLAlchemy models and works out of the box with Flask, web.py and CherryPy[#], but can be adapted to use it with many other web frameworks.
-
-[#] CherryPy needs more testing.
+It uses SQLAlchemy models and works out of the box with Flask, web.py and CherryPy (needs more testing), but can be adapted to use it with many other web frameworks.
 
 
 Features
@@ -60,8 +58,6 @@ TODO
 Contributing
 ======================
 
-How to contribute:
-
 1. Check for `open issues <https://github.com/lucuma/Authcode/issues>`_ or open a fresh issue to start a discussion around a feature idea or a bug..
 2. Fork the `Authcode repository on Github <https://github.com/lucuma/Authcode>`_ to start making your changes.
 3. Write a test which shows that the bug was fixed or that the feature works as expected.
@@ -71,7 +67,7 @@ How to contribute:
 Run the tests
 ======================
 
-We use some external dependencies, listed in ``requirements_tests.txt``
+We use some external dependencies, listed in ``requirements_tests.txt``:
 
     $  pip install -r requirements_tests.txt
     $  python setup.py install
