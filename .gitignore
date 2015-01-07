@@ -20,4 +20,5 @@ docs/_assets/*
 docs/_build/*
 docs/_theme_*/*
 docs/_themes/lucuma/static/.webassets-cache/*
+ghostdriver.log
 temp

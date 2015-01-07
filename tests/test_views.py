@@ -19,6 +19,9 @@ def _get_flask_app(roles=False, **kwargs):
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.add(user)
+
+    user2 = User(login=u'foo', password='bar')
+    db.add(user2)
     db.commit()
 
     app = Flask('test')
@@ -117,6 +120,30 @@ def test_login_redirect_if_already_logged_in():
     auth.session[auth.redirect_key] = 'http://google.com'
     r = client.get(auth.url_sign_in)
     assert r.status == '303 SEE OTHER'
+
+
+def test_logout_before_login_again():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+
+    data = {
+        'login': user.login,
+        'password': 'foobar',
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    client.post(auth.url_sign_in, data=data)
+    assert auth.session_key in auth.session
+    uhmac1 = auth.session[auth.session_key]
+
+    data = {
+        'login': 'foo',
+        'password': 'bar',
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    client.post(auth.url_sign_in, data=data)
+    assert auth.session_key in auth.session
+    uhmac2 = auth.session[auth.session_key]
+    assert uhmac1 != uhmac2
 
 
 def test_unprotected_logout():

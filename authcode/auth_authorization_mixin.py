@@ -81,7 +81,7 @@ class AuthorizationMixin(object):
                         return self.wsgi.raise_forbidden()
 
                 disable_csrf = csrf == False  # noqa
-                if (self.wsgi.not_safe_method(request) and not disable_csrf) or csrf:
+                if (not self.wsgi.is_idempotent(request) and not disable_csrf) or csrf:
                     if not self.csrf_token_is_valid(request):
                         logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
                         return self.wsgi.raise_forbidden("CSFR token isn't valid")
@@ -124,7 +124,7 @@ class AuthorizationMixin(object):
                 return self.wsgi.raise_forbidden()
 
         disable_csrf = csrf == False  # noqa
-        if (self.wsgi.not_safe_method(request) and not disable_csrf) or csrf:
+        if (not self.wsgi.is_idempotent(request) and not disable_csrf) or csrf:
             if not self.csrf_token_is_valid(request):
                 logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
                 return self.wsgi.raise_forbidden("CSFR token isn't valid")

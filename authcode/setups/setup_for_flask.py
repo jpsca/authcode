@@ -8,7 +8,10 @@ def setup_for_flask(
     import flask
 
     auth.request = request or flask.request
-    auth.session = session or flask.session
+    if session is not None:
+        auth.session = session
+    else:
+        auth.session = flask.session
     if send_email:
         auth.send_email = send_email
 

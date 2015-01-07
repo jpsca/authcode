@@ -10,11 +10,12 @@ def setup_for_webpy(
         auth.send_email = send_email
 
     if render:
-        render._add_global('csrf_token', auth.get_csrf_token)
-        render._add_global('auth', auth)
+        if hasattr(render, '_add_global') and callable(render._add_global):
+            render._add_global('csrf_token', auth.get_csrf_token)
+            render._add_global('auth', auth)
         auth.render = render
 
-    if session:
+    if session is not None:
         auth.session = session
 
     def set_user():

@@ -345,6 +345,28 @@ def test_login_logout():
     assert auth.session_key not in session
 
 
+def test_login_repeated_logout():
+    db = SQLAlchemy()
+    auth = authcode.Auth(SECRET_KEY, db=db)
+
+    User = auth.User
+
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.session.commit()
+
+    session = {}
+    auth.login(user, session=session)
+    assert session[auth.session_key] == user.get_uhmac()
+
+    auth.logout(session=session)
+    assert auth.session_key not in session
+
+    auth.logout(session=session)
+    assert auth.session_key not in session
+
+
 def test_clear_session_on_logout():
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db)

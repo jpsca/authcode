@@ -56,7 +56,7 @@ def test_flask_sqlalchemy():
     assert repr(user) == '<User meh>'
 
 
-def test_setup_flask_custom_render():
+def test_setup_flask_custom():
     app = Flask(__name__)
     db = SQLAlchemy('sqlite:///', app)
     auth = authcode.Auth(SECRET_KEY, db=db)
@@ -67,11 +67,15 @@ def test_setup_flask_custom_render():
     def render(tmpl, **kwargs):
         pass
 
-    authcode.setup_for_flask(auth, app, send_email=send_email, render=render)
-    assert auth.send_email == send_email
+    session = {}
+
+    authcode.setup_for_flask(
+        auth, app,
+        render=render, send_email=send_email, session=session
+    )
     assert auth.render == render
-    assert app.jinja_env.globals['csrf_token']
-    assert app.jinja_env.globals['auth']
+    assert auth.send_email == send_email
+    assert auth.session == session
 
 
 def test_setup_flask_render():

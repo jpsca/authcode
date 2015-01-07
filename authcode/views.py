@@ -12,7 +12,7 @@ def pop_next_url(auth, request, session):
 
 
 def sign_in(auth, request, session, *args, **kwargs):
-    if auth.get_user():
+    if auth.get_user() and not auth.wsgi.is_post(request):
         next = pop_next_url(auth, request, session)
         return auth.wsgi.redirect(next)
 

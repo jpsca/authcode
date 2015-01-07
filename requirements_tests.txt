@@ -8,5 +8,6 @@ sqlalchemy_wrapper
 jinja2
 flask
 flask-sqlalchemy
+requests
 werkzeug
 webob

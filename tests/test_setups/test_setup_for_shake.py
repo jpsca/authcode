@@ -17,7 +17,7 @@ def test_setup_for_shake():
     assert auth.render == app.render
 
 
-def test_setup_shake_custom_render():
+def test_setup_shake_custom():
     shake = pytest.importorskip("shake")
 
     app = shake.Shake(__file__, {})
@@ -33,9 +33,16 @@ def test_setup_shake_custom_render():
     class Render(object):
         env = Env()
 
-    render = Render()
+    class Session(object):
+        pass
 
-    authcode.setup_for_shake(auth, app, send_email=send_email, render=render)
+    render = Render()
+    session = Session()
+
+    authcode.setup_for_shake(
+        auth, app,
+        send_email=send_email, render=render, session=session
+    )
     assert auth.send_email == send_email
     assert auth.render == render
     assert app.render.env.globals['csrf_token']
