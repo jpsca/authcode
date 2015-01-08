@@ -109,7 +109,7 @@ def make_wepapp():
         exposed = True
 
         def GET(self):
-            body = '{"foo": "bar"}'
+            body = b'{"foo": "bar"}'
             mime = 'application/json'
             return wsgi.cherrypy.make_response(body, mime)
 
