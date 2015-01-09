@@ -49,7 +49,7 @@ def make_wepapp():
                 endpoint, values = adapter.match()
                 return getattr(self, 'on_' + endpoint)(request, **values)
             except HTTPException as e:
-                return Response(e.message, status=e.code)
+                return Response(str(e), status=e.code)
 
         def on_get_site_name(self, request):
             return wsgi.werkzeug.get_site_name(request)
@@ -94,11 +94,9 @@ def make_wepapp():
             return wsgi.werkzeug.make_response(body, mime)
 
     app = Application()
-    run_simple('127.0.0.1', 8082, app, use_debugger=False, use_reloader=False)
+    run_simple('0.0.0.0', 8082, app, use_debugger=False, use_reloader=False)
 
 
 @pytest.mark.slow
 def test_wsgi_werkzeug():
-    pytest.importorskip('werkzeug')
-    url_base = 'http://127.0.0.1:8082'
-    wsgi_tester(make_wepapp, url_base)
+    wsgi_tester(make_wepapp, 8082)

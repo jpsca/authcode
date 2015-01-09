@@ -125,6 +125,8 @@ class AuthenticationMixin(object):
             session = self.session
         session['permanent'] = remember
         session[self.session_key] = user.get_uhmac()
+        if callable(getattr(session, 'save', None)):
+            session.save()
 
     def logout(self, session=None):
         if session is None:
@@ -133,3 +135,5 @@ class AuthenticationMixin(object):
             del session[self.session_key]
         if self.clear_session_on_logout:
             session.clear()
+        if callable(getattr(session, 'save', None)):
+            session.save()

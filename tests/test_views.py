@@ -11,6 +11,13 @@ import authcode
 from helpers import SECRET_KEY
 
 
+class Session(dict):
+    saved = 0
+
+    def save(self):
+        self.saved += 1
+
+
 def _get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
@@ -27,6 +34,11 @@ def _get_flask_app(roles=False, **kwargs):
     app = Flask('test')
     app.secret_key = os.urandom(32)
     app.testing = True
+
+    @app.route('/protected/')
+    @auth.protected()
+    def protected():
+        return u'Welcome'
 
     authcode.setup_for_flask(auth, app)
     auth.session = {}
@@ -383,3 +395,41 @@ def test_custom_templates():
     url = '{0}?_csrf_token={1}'.format(auth.url_sign_out, auth.get_csrf_token())
     resp = client.get(url)
     assert resp.data == b'OK SIGN OUT'
+
+
+def test_pop_next_url_save():
+    auth = authcode.Auth(SECRET_KEY)
+    session = Session({auth.redirect_key: '/abc/'})
+    next_url = pop_next_url(auth, request, session)
+    assert next_url == '/abc/'
+    assert session.saved == 1
+
+
+def test_login_logout_save():
+    auth, app, user = _get_flask_app()
+    auth.session = Session()
+    client = app.test_client()
+
+    auth.session.saved = 0
+
+    resp = client.get('/protected/')
+    print(resp.data)
+    assert auth.session_key not in auth.session
+    assert auth.redirect_key in auth.session
+    assert auth.session.saved == 1
+
+    data = {
+        'login': user.login,
+        'password': 'foobar',
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    client.post(auth.url_sign_in, data=data)
+    assert auth.session_key in auth.session
+    assert auth.session.saved == 4
+
+    data = {
+        '_csrf_token': auth.get_csrf_token(),
+    }
+    client.post(auth.url_sign_out, data=data)
+    assert auth.session_key not in auth.session
+    assert auth.session.saved == 5

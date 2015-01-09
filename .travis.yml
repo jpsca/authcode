@@ -9,4 +9,4 @@ install:
     - python setup.py install
     - pip install -r requirements_tests.txt
 script:
-    py.test -m 'not slow' -x tests/
+    py.test -x tests/

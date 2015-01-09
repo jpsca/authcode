@@ -4,12 +4,12 @@ from __future__ import absolute_import
 from .._compat import to_native
 
 
-SEE_OTHER = 303
+HTTP_SEE_OTHER = 303
 
 
 def get_site_name(request):
     """Return the domain:port part of the URL without scheme.
-    Eg: facebook.com, 0.0.0.0:8080, etc.
+    Eg: facebook.com, 127.0.0.1:5000, etc.
     """
     return request.host
 
@@ -48,7 +48,7 @@ def redirect(url):
     idiom of the framework.
     """
     from werkzeug.utils import redirect
-    return redirect(url, code=SEE_OTHER)
+    return redirect(url, code=HTTP_SEE_OTHER)
 
 
 def raise_forbidden(msg='You are not allowed to access this.'):

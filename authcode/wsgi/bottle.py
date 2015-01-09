@@ -1,38 +1,41 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+from .._compat import to_native
 
-SEE_OTHER = 303
+
+HTTP_FORBIDDEN = 403
 
 
 def get_site_name(request):
     """Return the domain:port part of the URL without scheme.
-    Eg: facebook.com, 0.0.0.0:8080, etc.
+    Eg: facebook.com, 127.0.0.1:8080, etc.
     """
-    return request.base.replace(request.scheme + '://', '')
+    urlparts = request.urlparts
+    return ':'.join([urlparts.hostname, str(urlparts.port)])
 
 
 def get_full_path(request):
     """Return the current relative path including the query string.
     Eg: “/foo/bar/?page=1”
     """
-    import cherrypy
-    path = cherrypy.url(base='', relative=False)
-    query = '&'.join(
-        '{key}={val}'.format(key=key, val=val)
-        for key, val in cherrypy.request.params.items()
-    )
-    if not query:
-        return path
-    return '{path}?{query}'.format(path=path, query=query)
+    path = request.fullpath
+    query_string = request.environ.get('QUERY_STRING')
+    if query_string:
+        path += '?' + to_native(query_string)
+    return path
 
 
 def make_full_url(request, url):
     """Get a relative URL and returns the absolute version.
     Eg: “/foo/bar?q=is-open” ==> “http://example.com/foo/bar?q=is-open”
     """
-    import cherrypy
-    return cherrypy.url(url, relative=False)
+    urlparts = request.urlparts
+    return '{scheme}://{site}/{url}'.format(
+        scheme=urlparts.scheme,
+        site=get_site_name(request),
+        url=url.lstrip('/'),
+    )
 
 
 def is_post(request):
@@ -51,22 +54,22 @@ def redirect(url):
     """Return an HTTP 303 See Other response for this url, in the
     idiom of the framework.
     """
-    import cherrypy
-    raise cherrypy.HTTPRedirect(url, SEE_OTHER)
+    from bottle import redirect
+    redirect(url)
 
 
-def raise_forbidden(msg='You are not allowed to access this resource.'):
+def raise_forbidden(msg='You are not allowed to access this.'):
     """Return an HTTP 403 Forbidden response (with the passed message), in the
     idiom of the framework.
     """
-    import cherrypy
-    raise cherrypy.HTTPError("403 Forbidden", msg)
+    from bottle import abort
+    abort(HTTP_FORBIDDEN, msg)
 
 
 def get_from_params(request, key):
     """Try to read a value named ``key`` from the GET parameters.
     """
-    return request.params.get(key)
+    return request.query.get(key)
 
 
 def get_from_headers(request, key):
@@ -78,13 +81,13 @@ def get_from_headers(request, key):
 def get_post_data(request):
     """Return all the POST data from the request.
     """
-    return getattr(request, 'body_params', request.body.params)
+    return request.forms
 
 
 def make_response(body, mimetype='text/html'):
     """Build a framework specific HTPP response, containing ``body`` and
     marked as the type ``mimetype``.
     """
-    import cherrypy
-    cherrypy.response.headers['Content-Type'] = mimetype
-    return body
+    from bottle import response
+    response.content_type = mimetype
+    return body or u''

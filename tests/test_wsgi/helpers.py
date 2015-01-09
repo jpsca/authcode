@@ -1,17 +1,23 @@
 # coding=utf-8
+from time import sleep
 import threading
 
 import requests
 
 
-def wsgi_tester(run_func, url_base):
+URL_BASE = 'http://localhost:{port}'
+
+
+def wsgi_tester(run_func, port):
     t = threading.Thread(target=run_func)
     t.daemon = True
     t.start()
-    _run_tests(url_base)
+    sleep(1)
+    _run_tests(port)
 
 
-def _run_tests(url_base):
+def _run_tests(port):
+    url_base = URL_BASE.format(port=port)
     _test_get_site_name(url_base)
     _test_get_full_path(url_base)
     _test_make_full_url(url_base)
@@ -50,7 +56,8 @@ def _test_get_full_path(url_base):
 
 def _test_make_full_url(url_base):
     req = requests.get(url_base + '/tests/make_full_url/')
-    assert url_base + '/tests/get_site_name/' in req.text
+    url = url_base + '/tests/get_site_name/'
+    assert url in req.text
 
 
 def _test_is_post(url_base):
@@ -97,6 +104,10 @@ def _test_raise_forbidden(url_base):
 
 def _test_get_from_params(url_base):
     req = requests.get(url_base + '/tests/get_from_params/?foo=bar')
+    assert req.text == 'bar'
+
+    data = {'foo': u'meh'}
+    req = requests.post(url_base + '/tests/get_from_params/?foo=bar', data=data)
     assert req.text == 'bar'
 
 

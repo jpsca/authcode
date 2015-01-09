@@ -1,8 +1,6 @@
-cherrypy
+bottle
 flask
 flask-sqlalchemy
-jinja2
-passlib
 pytest
 pytest-cov
 requests

@@ -4,7 +4,7 @@ import os
 
 import authcode
 from authcode._compat import to_native
-from flask import Flask, g
+from flask import Flask
 from sqlalchemy_wrapper import SQLAlchemy
 
 from helpers import SECRET_KEY
@@ -38,29 +38,6 @@ def get_flask_app(roles=False, views=None, **kwargs):
         return 'logout'
 
     return auth, app, user
-
-
-def test_setup_for_flask():
-    auth, app, user = get_flask_app()
-    client = app.test_client()
-
-    @app.route('/get/')
-    def get_user():
-        if g.user:
-            login = g.user.login
-            return login
-        return ''
-
-    resp = client.get('/get/')
-    assert resp.data == b''
-
-    client.get('/login/')
-    resp = client.get('/get/')
-    assert resp.data == b'meh'
-
-    client.get('/logout/')
-    resp = client.get('/get/')
-    assert resp.data == b''
 
 
 def test_protected():
