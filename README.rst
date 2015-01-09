@@ -14,21 +14,23 @@ Authcode is a clean solution for both authentication and authorization of Python
 
 It uses SQLAlchemy models and works out of the box with Flask, web.py and CherryPy (needs more testing), but can be adapted to use it with many other web frameworks.
 
-.. code:: python
+(1) Create
 
-    # --- 1. Create ---
+.. code:: python
 
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
     Role = auth.Role
 
+(2) Setup
 
-    # --- 2. Setup ---
+.. code:: python
 
     authcode.setup_for_flask(auth, app)
 
+(3) Protect
 
-    # --- 3. Protect ---
+.. code:: python
 
     @app.route('/')
     @auth.protected()
