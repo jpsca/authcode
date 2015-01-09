@@ -57,22 +57,15 @@ Highlights
 TODO
 ======================
 
-* More documentation (always!)
-    - English documentation
+- More documentation (always!)
     - Automatic views: how to use and customize
     - Manual views
-
-    - Examples:
-        - Default
-        - Twitter + login/password example
-        - Mozilla Persona example
-        - Login/Password + Mozilla Persona example
-
-    - Tutorials, etc.
-
-* Code:
-    - Test setup functions for CherryPy, bottle, webpy, etc.
-    - <Your web framework here> setup and tests
+- Examples:
+    - Default
+    - Twitter + login/password example
+    - Mozilla Persona example?
+- Tutorials, etc.
+- Code:
     - MultiAuth tests
 
 
@@ -96,9 +89,6 @@ We use some external dependencies, listed in ``requirements_tests.txt``::
 
     $  pip install -r requirements_tests.txt
     $  python setup.py install
-
-We also uses `Splinter <https://splinter.readthedocs.org>`_ so you'll need
-to install ``phantomjs`` as well (or Firefox, but it's slower).
 
 To run the tests in your current Python version do::
 
