@@ -121,7 +121,7 @@ Objeto Auth
         Al iniciar sesión, si la función de hashing o el número de rondas ha cambiado, actualizar la contraseña guardada con esos nuevos parámetros.
 
     wsgi=wsgi.werkzeug:
-        Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``authcode.wsgi.werkzeug` o ``authcode.wsgi.cherrypy``.
+        Módulo con la de interfaz para el *request* a usar. Los valores posibles son ``authcode.wsgi.werkzeug` y ``authcode.wsgi.bottle``.
 
     pepper=u'':
         Texto fijo que se agrega a todas las contraseñas antes de hashearlas. El problema es que cambiar este valor hace inválidas **todas** las contraseñas guardadas, y entonces no puedes cambiarlo aunque se haya filtrado.
@@ -203,9 +203,6 @@ protected(*tests, **options):
             Si alguna de las otras condiciones fallan (por ejemplo no hay un usuario logueado), Authcode te redirigirá ahí.
             Puede ser una URL o un ejecutable que devuelva la URL.
 
-protected_tool(*tests, **options):
-    Versión del decorador que se registra como herramienta en CherryPy.
-
 
 .. _api.setup_functions:
 
@@ -219,7 +216,7 @@ Funciones de setup
         Una instancia de la clase ``Auth``.
 
     app:
-        La aplicación web. Ingóra este parámetro en frameworks en que no existe un objeto así (como en CherryPy).
+        La aplicación web. Ingóra este parámetro en frameworks en que no existe un objeto así.
 
     send_email:
         Función a la que Authcode llamará para enviar el email de recuperación de contraseña. Esta función deberá tomar como argumentos el usuario, el título del email y el cuerpo del mensaje.
@@ -262,25 +259,13 @@ setup_for_flask
 - Agrega ``csrf_token`` y ``auth`` a las variables globales de Jinja en ``app.jinja_env.globals``
 
 
-.. _api.setup_for_cherrypy:
+.. _api.setup_for_bottle:
 
-setup_for_cherrypy
+setup_for_bottle
 ---------------------------------------------
 
-**En desarrollo**
+- Las sesiones deben estar activa. Por defecto la busca en ``bottle.request.session`` o la de Beaker.
 
-La herramienta de sesión debe estar activada.
+- Cualquiera de los sistemas de plantillas soportados por Bottle funcionará, pero si no es Jinja2, tienes que proveer tus propias plantillas.
 
-- Ya que CherryPy no incluye un sistema de plantillas, Authcode usa el sistema por defecto (Jinja2) para las vistas activas, a menos que le pases una función de ``render``. **Tu tienes que agregar manualmente** ``csrf_token`` **y** ``auth`` **a las variables globales de las plantillas que estés usando**.
-
-- Agrega a ``cherrypy.request.user`` una referencia (lazy) al usuario autenticado.
-
-- Agrega una versión de ``auth.protected`` como una herramienta en ``cherrypy.tools.protected``.
-
-
-.. _api.setup_for_webpy:
-
-setup_for_webpy
----------------------------------------------
-
-**En desarrollo**
+- Agrega a ``bottle.request.user`` una referencia (lazy) al usuario autenticado.

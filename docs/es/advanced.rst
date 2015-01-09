@@ -267,15 +267,13 @@ Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión 
     - Una ``session`` con una interfaz similar a la de un diccionario.
         Debe permitir hacer cosas como ``session['foo'] = 'bar`` y ``session.get('foo', None)``. Tu framework ya debe de tener alguna. O si no puedes usar la de `Beaker`_.
 
-    - Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask), CherryPy`_, `webpy`_ y `WebOb`_ (Pyramid).
+    - Un objeto ``request`` que represente a la solicitud de página actual. Por ahora solo soporta el formato de `Werkzeug`_ (Flask), y `Bottle`_ (Pyramid).
 
     - Un argumento ``db`` usado para comunicarse con SQLAlchemy. Si estás usando `SQLAlchemy_Wrapper`_ [#]_ o `Flask_SQLAlchemy`_ ya tienes uno.
 
     .. _Beaker: http://beaker.readthedocs.org/
     .. _Werkzeug: http://werkzeug.pocoo.org/
-    .. _webpy: http://webpy.org/
-    .. _WebOb: http://webob.org/
-    .. _CherryPy: http://www.cherrypy.org/
+    .. _Bottle: http://bottlepy.org/
     .. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
     .. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
 

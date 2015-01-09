@@ -55,7 +55,7 @@ Lo siguiente es ajustar el objeto Auth recién creado al framework web que esté
 Esta función de setup se encarga de terminar de conectar a Authcode con las peculiaridades del framework que uses, por ejemplo como interpretar las plantillas, agregar vistas y esas cosas. Por ahora estos son las framework incluidos (lo que no significa que no puedas agregar el tuyo):
 
 * `Flask <http://flask.pocoo.org/>`_ (Mira :ref:`api.setup_for_flask`)
-* (*¡Más próximamente!*)
+* `Bottle <http://bottlepy.org/>`_ (Mira :ref:`api.setup_for_bottle`)
 
 
 3. Proteger tus vistas
