@@ -99,7 +99,7 @@ To run them in every supported Python version do::
     $  tox
 
 It's also neccesary to run the coverage report to make sure all lines of code
-are touch by the tests.
+are touch by the tests::
 
     $  make coverage
 
