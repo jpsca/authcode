@@ -52,7 +52,15 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         # information stored in the session.
         'clear_session_on_logout': True,
 
+        # Trying to save any password shorter than this will raise a ValueError.
         'password_minlen': 5,
+
+        # To help preventing denial-of-service via large passwords
+        # See: https://www.djangoproject.com/weblog/2013/sep/15/security/
+        # Authenticaction with any password longer than this will automatically fail.
+        # Trying to save any password longer than this will raise a ValueError.
+        'password_maxlen': 2048,
+
         'token_life': 3 * 60,  # minutes
         'update_hash': True,
 

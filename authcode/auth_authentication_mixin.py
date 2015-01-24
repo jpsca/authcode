@@ -17,6 +17,17 @@ class AuthenticationMixin(object):
     def hash_password(self, secret):
         if secret is None:
             return None
+
+        len_secret = len(secret)
+        if len_secret < self.password_minlen:
+            raise ValueError(
+                'Password is too short. Must have at least {} chars long'.format(
+                    self.password_minlen))
+        if len_secret > self.password_maxlen:
+            raise ValueError(
+                'Password is too long. Must have at most {} chars long'.format(
+                    self.password_maxlen))
+
         secret = self.prepare_password(secret)
         hashed = self.hasher.encrypt(secret)
         return hashed
@@ -24,6 +35,12 @@ class AuthenticationMixin(object):
     def password_is_valid(self, secret, hashed):
         if secret is None or hashed is None:
             return False
+
+        # To help preventing denial-of-service via large passwords
+        # See: https://www.djangoproject.com/weblog/2013/sep/15/security/
+        if len(secret) > self.password_maxlen:
+            return False
+
         secret = self.prepare_password(secret)
         try:
             return self.hasher.verify(secret, hashed)

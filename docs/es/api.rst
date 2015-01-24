@@ -112,7 +112,15 @@ Objeto Auth
         Borrar todos los datos guardados en la sesión al cerrarla, en vez de solo el identificador del usuario. La idea es prevenir un *ataque de persistencia de sesión*.
 
     password_minlen=5:
-        Largo mínimo que debe tener una contraseña.
+        Largo mínimo que debe tener una contraseña. Tratar de guardar una contraseña más corta fallará con una excepción ``ValueError``.
+
+    password_maxlen=2048:
+        Largo máximo que puede tener una contraseña.
+
+        Esto existe para ayudar a a prevenir ataques de denegación de servicio mediante contraseñas muy largas. Lee https://www.djangoproject.com/weblog/2013/sep/15/security/ para un caso real.
+
+        La autenticación con cualquier contraseña más larga que este valor fallará automáticamente.
+        Tratar de guardar una contraseña más larga fallará con una excepción ``ValueError``.
 
     token_life=3*60:
         Minutos durante los cuales el enlace para recuperar una contraseña es válido.

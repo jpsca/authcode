@@ -20,7 +20,8 @@ class Session(dict):
 
 def _get_flask_app(roles=False, **kwargs):
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, **kwargs)
+    auth = authcode.Auth(
+        SECRET_KEY, db=db, roles=roles, password_minlen=3, **kwargs)
     User = auth.User
 
     db.create_all()
@@ -298,7 +299,7 @@ def test_reset_password_good_token():
     assert r.status == '303 SEE OTHER'
 
 
-def test_change_password():
+def test_change_password_redir():
     auth, app, user = _get_flask_app()
     client = app.test_client()
 
@@ -306,27 +307,67 @@ def test_change_password():
     assert r.status == '303 SEE OTHER'
 
     auth.login(user)
-    csrf_token = auth.get_csrf_token()
 
     r = client.get(auth.url_change_password)
     data = to_unicode(r.data)
     assert u'Change password' in data
     assert u'current password' in data
 
+
+def test_change_password_no_current_password():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
+
     r = client.post(auth.url_change_password, data=dict(
         np1='lalala', np2='lalala', _csrf_token=csrf_token))
     data = to_unicode(r.data)
     assert u'<!-- ERROR FAIL -->' in data
+
+
+def test_change_password_wrong_current_password():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
 
     r = client.post(auth.url_change_password, data=dict(
         password='lalala', np1='lalala', np2='lalala', _csrf_token=csrf_token))
     data = to_unicode(r.data)
     assert u'<!-- ERROR FAIL -->' in data
 
+
+def test_change_password_too_short():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
+
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='a', np2='a', _csrf_token=csrf_token))
     data = to_unicode(r.data)
     assert u'<!-- ERROR TOO SHORT -->' in data
+
+
+def test_change_password_too_long():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
+
+    HUGE_PASSWORD = 'x' * 5000
+    r = client.post(auth.url_change_password, data=dict(
+        password='foobar', np1=HUGE_PASSWORD, np2=HUGE_PASSWORD, _csrf_token=csrf_token))
+    data = to_unicode(r.data)
+    assert u'<!-- ERROR TOO LONG -->' in data
+
+
+def test_change_password_mismatch():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalalala', np2='a', _csrf_token=csrf_token))
@@ -334,9 +375,22 @@ def test_change_password():
     print(data)
     assert u'<!-- ERROR MISMATCH -->' in data
 
+
+def test_change_password_no_csrf():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalala', np2='lalala'))
     assert r.status == '403 FORBIDDEN'
+
+
+def test_change_password_ok():
+    auth, app, user = _get_flask_app()
+    client = app.test_client()
+    auth.login(user)
+    csrf_token = auth.get_csrf_token()
 
     r = client.post(auth.url_change_password, data=dict(
         password='foobar', np1='lalala', np2='lalala', _csrf_token=csrf_token))

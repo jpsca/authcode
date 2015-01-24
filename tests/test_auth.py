@@ -73,6 +73,20 @@ def test_hash_password():
     assert not auth.password_is_valid(None, None)
 
 
+def test_hash_password_too_short():
+    p = '123'
+    auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512')
+    with pytest.raises(ValueError):
+        auth.hash_password(p)
+
+
+def test_hash_password_too_long():
+    p = '1' * 5000
+    auth = authcode.Auth(SECRET_KEY, hash='pbkdf2_sha512')
+    with pytest.raises(ValueError):
+        auth.hash_password(p)
+
+
 def test_use_pepper():
     p = 'password'
     auth = authcode.Auth(SECRET_KEY, pepper='123', hash='sha512_crypt')
@@ -177,7 +191,7 @@ def test_user_has_none_password():
 
 def test_user_has_empty_password():
     db = SQLAlchemy()
-    auth = authcode.Auth(SECRET_KEY, db=db)
+    auth = authcode.Auth(SECRET_KEY, db=db, password_minlen=0)
 
     User = auth.User
 

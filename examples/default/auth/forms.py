@@ -26,6 +26,7 @@ class RegisterForm(f.Form):
         hidden=True,
         validate=[
             v.Required,
-            v.LongerThan(auth.password_minlen)
+            v.LongerThan(auth.password_minlen),
+            v.ShorterThan(auth.password_maxlen)
         ]
     )

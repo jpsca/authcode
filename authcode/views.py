@@ -129,10 +129,13 @@ def change_password(auth, request, manual=True, *args, **kwargs):
         password = auth.wsgi.get_from_params(request, 'password') or ''
         np1 = auth.wsgi.get_from_params(request, 'np1') or ''
         np2 = auth.wsgi.get_from_params(request, 'np2') or ''
+        len_np1 = len(np1)
 
-        # Validate the new password
-        if len(np1) < auth.password_minlen:
+        if len_np1 < auth.password_minlen:
             kwargs['error'] = 'TOO SHORT'
+
+        elif len_np1 > auth.password_maxlen:
+            kwargs['error'] = 'TOO LONG'
 
         elif (not np2) or (np1 != np2):
             kwargs['error'] = 'MISMATCH'
