@@ -5,10 +5,6 @@ Authcode
 
 Awesome authentication code for Flask and Bottle web apps.
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
-   :alt: Join the chat at https://gitter.im/lucuma/authcode
-   :target: https://gitter.im/lucuma/authcode?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-
 .. image:: https://travis-ci.org/lucuma/authcode.svg?branch=master
    :target: https://travis-ci.org/lucuma/Authcode
    :alt: Build Status
