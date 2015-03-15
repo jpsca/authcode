@@ -135,13 +135,30 @@ En muchos casos, un solo Auth y la flexibilidad que te dan los roles, es más qu
 Auth excluyentes
 ---------------------------------------------
 
-Para lograr dos o más Auth **en que los usuarios de diferentes Auth nunca deban estar logueados en la misma sesión al mismo tiempo**, todo se reduce a tres cosas:
-
-1. Elegir otro nombre para el modelo de usuario. Pues SQLAlchemy no permite que dos se llamen igual, aunque sus tablas no; y
-2. Elegir un prefijo para las vistas automáticas (esto es, solo si usas vistas automáticas en ambos sistemas).
-3. Definir nuevas URLs y, si lo deseas, plantillas separadas para sus vistas.
+Para lograr dos o más Auth **en que los usuarios de diferentes Auth nunca deban estar logueados en la misma sesión al mismo tiempo**, solo necesitas pasarle a Authocode un argumento ``prefix``:
 
 .. code-block:: python
+
+    Auth(
+        config.SECRET_KEY, db=db, UserMixin=UserMixin, roles=True,
+        prefix='bo', **AUTH_SETTINGS
+    )
+
+
+Ese prefijo se usará para:
+
+1. Cambiar el nombre del modelo de usuario (a la clase, no a la tabla) a ``PrefijoUser`` (por ejemplo, ``BoUser``, y el de roles (si lo usas) a ``PrefijoRole``. Esto es necesario porque SQLAlchemy no permite que dos modelos se llamen igual, aunque sus tablas ya tengan nombres diferentes.
+2. Darle ese prefijo a los nombres de las vistas automáticas (esto es, si usas vistas automáticas). Por ejemplo, ``bo_auth_sign_in`` en vez de ``auth_sign_in``.
+3. Darle ese prefijo a las URLs de esas vistas: ``/bo/sign-in/`` en vez de ``/sign-in/``.
+
+Todo o parte de esto puedes definirlo manualmente, si lo necesitas, con las opciones:
+``users_model_name``, ``roles_model_name``, ``views_prefix``, ``url_sign_in``, ``url_sign_out``, ``url_reset_password`` y ``url_change_password``.
+
+También podrías queres definir plantillas para las vistas diferentes de las por defecto, el título del email de recuperación de contraseña, etc.
+
+.. code-block:: python
+
+    # --- AUTH 1 ---
 
     AUTH_SETTINGS = {
         ...
@@ -156,15 +173,9 @@ Para lograr dos o más Auth **en que los usuarios de diferentes Auth nunca deban
     User = auth.User
     Role = auth.Role
 
+    # --- AUTH 2 ---
+
     BOAUTH_SETTINGS = {
-        'sign_in_redirect': '/bo/dashboard/',
-        'sign_out_redirect': '/bo/ingresar/',
-
-        'url_sign_in': '/bo/ingresar/',
-        'url_sign_out': '/bo/salir/',
-        'url_reset_password': '/bo/restablecer-contrasena/',
-        'url_change_password': '/bo/cambiar-contrasena/',
-
         'template_sign_in': 'backoffice/auth/sign-in.html',
         'template_sign_out': None,
         'template_reset': 'backoffice/auth/reset-password.html',
@@ -172,22 +183,21 @@ Para lograr dos o más Auth **en que los usuarios de diferentes Auth nunca deban
         'template_reset_email': 'emails/reset-password-bo.html',
         'reset_email_subject': u'Restablecer tu contraseña de BackOffice',
 
-        'users_model_name': 'BoUser',
-        'views_prefix': 'bo_',
         ...
     }
 
     boauth = Auth(
         config.SECRET_KEY, db=db, roles=False, UserMixin=BoUserMixin,
-        **BOAUTH_SETTINGS
+        prefix='bo', **BOAUTH_SETTINGS
     )
     setup_for_flask(boauth, app, send_email=send_auth_email)
 
     BoUser = boauth.User
 
+
 Como ves, cada Auth puede tener distinta configuración o compartir cosas como la llave secreta, la función de envío de emails, etc.
 
-Como has definido el prefijo para las vistas automáticas como `bo_``, estas se llamarán ``bo_auth_sign_in``, ``bo_auth_sign_out``, ``bo_auth_reset_password`` y ``bo_auth_change_password``.
+En el ejemplo, como he definido el prefijo como `bo_``, las vistas automáticas se llamarán ``bo_auth_sign_in``, ``bo_auth_sign_out``, ``bo_auth_reset_password`` y ``bo_auth_change_password``.
 
 
 Auth en paralelo
@@ -195,14 +205,16 @@ Auth en paralelo
 
 El otro caso posible es que necesites que los **usuarios de diferentes Auth puedan mantenerse logueados en la misma sesión al mismo tiempo**. Podría ser que se trate de un super-admin que deba poder tomar la identidad de otros usuarios a voluntad, o un caso similar.
 
-Solo necesitas hacer tres cambios más para lograrlo:
+Solo necesitas hacer tres cosas más para lograrlo:
 
-3. Elegir el nombre bajo el que se guardará el identificador de usuario de este Auth en la sesión.
-4. Elegir un nombre con el que el usuario logueado se guardará globalmente (por ejemplo, para Flask por defecto es ``g.user``, pero no quieres que un Auth sobreescriba el valor guardado por otra); y
-5. Asegurarte que la sesión no se destruye por completo al cerrar sesión en alguna de las Auth.
+#. Elegir el nombre bajo el que se guardará el identificador de usuario de este Auth en la sesión (opción ``session_key``).
+#. Elegir un nombre con el que el usuario logueado se guardará. (opción ``user_name``)
+#. Asegurarte que la sesión no se destruye por completo al cerrar sesión en alguna de las Auth.
 
 .. code-block:: python
-   :emphasize-lines: 2,34,35,36
+   :emphasize-lines: 4,21,22,23,28,29
+
+    # --- AUTH 1 ---
 
     AUTH_SETTINGS = {
         clear_session_on_logout: False,
@@ -218,24 +230,9 @@ Solo necesitas hacer tres cambios más para lograrlo:
     User = auth.User
     Role = auth.Role
 
+    # --- AUTH 2 ---
+
     BOAUTH_SETTINGS = {
-        'sign_in_redirect': '/bo/dashboard/',
-        'sign_out_redirect': '/bo/ingresar/',
-
-        'url_sign_in': '/bo/ingresar/',
-        'url_sign_out': '/bo/salir/',
-        'url_reset_password': '/bo/restablecer-contrasena/',
-        'url_change_password': '/bo/cambiar-contrasena/',
-
-        'template_sign_in': 'backoffice/auth/sign-in.html',
-        'template_sign_out': None,
-        'template_reset': 'backoffice/auth/reset-password.html',
-        'template_change_password': 'backoffice/auth/change-password.html',
-        'template_reset_email': 'emails/reset-password-bo.html',
-        'reset_email_subject': u'Restablecer tu contraseña de BackOffice',
-
-        'users_model_name': 'BoUser',
-        'views_prefix': 'bo_',
 
         'session_key': '_bohm',
         'user_name': 'bouser',
@@ -245,14 +242,15 @@ Solo necesitas hacer tres cambios más para lograrlo:
 
     boauth = Auth(
         config.SECRET_KEY, db=db, roles=False, UserMixin=BoUserMixin,
-        **BOAUTH_SETTINGS
+        prefix='bo', **BOAUTH_SETTINGS
     )
     setup_for_flask(boauth, app, send_email=send_auth_email)
 
     BoUser = boauth.User
 
 De esta forma, encontrarás al usuario logueado en el primer Auth en ``g.user`` y el de la segunda en ``g.bouser``.
-Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión en cualquiera de los Auth, solo se borre el identificador de usuario que corresponda, en vez de borrarla por completo.
+
+Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión en cualquiera de los Auth, solo se borre el identificador de usuario que corresponda, en vez de borrar la sesión por completo.
 
 
 .. _advanced.custom_setup
@@ -280,7 +278,7 @@ Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión 
 
 .. _advanced.naked_sqlalchemy:
 
-Reemplazando al objeto ``db``
+Reemplazando al objeto db
 =============================================
 
 ¿Estás usando SQLAlchemy diréctamente y no tienes un objeto ``db`` para inicializar ``Auth``? Simplemente usa una clase similar a esta:

@@ -8,11 +8,14 @@ def setup_for_shake(
     if send_email:
         auth.send_email = send_email
 
+    auth.request = request
     auth.render = render or app.render
 
     def set_user(_request, **kwargs):
+        _request = request or _request
+        auth.request = _request
         auth.session = session or _request.session
-        LazyUser(auth, request or _request, user_name=auth.user_name)
+        LazyUser(auth, _request, user_name=auth.user_name)
 
     app.before_request_funcs.insert(0, set_user)
     app.render.env.globals['csrf_token'] = auth.get_csrf_token

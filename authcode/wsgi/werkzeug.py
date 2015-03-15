@@ -84,4 +84,7 @@ def make_response(body, mimetype='text/html'):
     marked as the type ``mimetype``.
     """
     from werkzeug.wrappers import Response
+    if isinstance(body, Response):
+        body.mimetype = mimetype
+        return body
     return Response(body, mimetype=mimetype)

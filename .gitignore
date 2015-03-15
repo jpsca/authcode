@@ -22,3 +22,4 @@ docs/_theme_*/*
 docs/_themes/lucuma/static/.webassets-cache/*
 ghostdriver.log
 temp
+test.db

@@ -19,8 +19,10 @@ class WrongHashAlgorithm(Exception):
 
 class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
-    defaults = {
+    default_settings = {
         'session_key': '_uhmac',
+        'user_name': 'user',
+
         'csrf_key': '_csrf_token',
         'csrf_header': 'X-CSRFToken',
         'redirect_key': 'next',
@@ -34,7 +36,6 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'url_change_password': '/change-password/',
 
         'views': 'sign_in sign_out reset_password change_password'.split(' '),
-        'views_prefix': u'',
 
         'template_sign_in': None,
         'template_sign_out': None,
@@ -59,49 +60,82 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         # See: https://www.djangoproject.com/weblog/2013/sep/15/security/
         # Authenticaction with any password longer than this will automatically fail.
         # Trying to save any password longer than this will raise a ValueError.
-        'password_maxlen': 2048,
+        'password_maxlen': 1024,
 
         'token_life': 3 * 60,  # minutes
         'update_hash': True,
-
         'wsgi': wsgi.werkzeug,
-        'user_name': 'user',
 
         'pepper': u'',  # considering deprecating it
     }
 
     def __init__(self, secret_key, db=None, hash=DEFAULT_HASHER, rounds=None,
-                 UserMixin=None, RoleMixin=None,
-                 users_model_name='User', roles_model_name='Role',
-                 roles=False, lazy_roles=True,
-                 session=None, request=None, **kwargs):
+                 UserMixin=None, RoleMixin=None, roles=False, lazy_roles=True,
+                 prefix=None, views_prefix=None,
+                 users_model_name=None, roles_model_name=None,
+                 **settings):
 
         self.secret_key = str(secret_key)
         assert len(self.secret_key) >= MIN_SECRET_LENGTH, \
-            "`secret_key` must be at least {0} chars long".format(MIN_SECRET_LENGTH)
+            "`secret_key` must be at least {} chars long".format(MIN_SECRET_LENGTH)
         self.set_hasher(hash, rounds)
+
+        if prefix:
+            prefix = prefix.lower().replace(' ', '')
+            if not users_model_name:
+                users_model_name = '{}User'.format(prefix.title())
+            if not roles_model_name:
+                roles_model_name = '{}Role'.format(prefix.title())
+            if not views_prefix:
+                views_prefix = '{}_'.format(prefix)
+            settings.setdefault(
+                'url_sign_in',
+                '/{prefix}{url}'.format(
+                    prefix=prefix,
+                    url=self.default_settings['url_sign_in']
+                )
+            )
+            settings.setdefault(
+                'url_sign_out',
+                '/{prefix}{url}'.format(
+                    prefix=prefix,
+                    url=self.default_settings['url_sign_out']
+                )
+            )
+            settings.setdefault(
+                'url_reset_password',
+                '/{prefix}{url}'.format(
+                    prefix=prefix,
+                    url=self.default_settings['url_reset_password']
+                )
+            )
+            settings.setdefault(
+                'url_change_password',
+                '/{prefix}{url}'.format(
+                    prefix=prefix,
+                    url=self.default_settings['url_change_password']
+                )
+            )
 
         self.db = db
         if db:
-            self.users_model_name = users_model_name
+            self.users_model_name = users_model_name or 'User'
             self.lazy_roles = lazy_roles
             roles = roles or RoleMixin
             self.User = extend_user_model(self, UserMixin, roles=roles)
             if roles:
-                self.roles_model_name = roles_model_name
+                self.roles_model_name = roles_model_name or 'Role'
                 self.Role = extend_role_model(self, self.User, RoleMixin)
 
         self.backends = [
             self.auth_password,
             self.auth_token,
         ]
+        self.session = {}
+        self.views_prefix = views_prefix or u''
 
-        for key, val in self.defaults.items():
-            setattr(self, key, kwargs.get(key, self.defaults[key]))
-
-        # backwards compatibility
-        self.session = session or {}
-        self.request = request
+        for name in self.default_settings:
+            setattr(self, name, settings.get(name, self.default_settings[name]))
 
     def set_hasher(self, hash, rounds=None):
         """Updates the has algorithm and, optionally, the number of rounds
@@ -129,6 +163,5 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
             hash + '__default_rounds': rounds
         }
         self.hasher = CryptContext(**op)
-        # For testing
-        self.hash = hash.replace('_', '-')
+        self.hash = hash.replace('_', '-')  # For testing
         self.rounds = rounds

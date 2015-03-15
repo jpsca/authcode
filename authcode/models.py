@@ -1,9 +1,9 @@
 # coding=utf-8
 import logging
 
-from sqlalchemy import (Table, Column, Integer, Unicode, String, DateTime,
-                        Boolean, ForeignKey)
-from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import (
+    Table, Column, Integer, Unicode, String, DateTime, Boolean, ForeignKey
+)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates, relationship, backref
 
@@ -17,7 +17,9 @@ def extend_user_model(auth, UserMixin=None, roles=False):
 
     if UserMixin is not None:
         parents = (UserMixin, AuthUserMixin, db.Model)
-        tablename = getattr(UserMixin, '__tablename__', 'users')
+        tablename = getattr(UserMixin, '__tablename__', None)
+        if not tablename:
+            tablename = auth.users_model_name.lower().rstrip('s') + 's'
     else:
         parents = (AuthUserMixin, db.Model)
         tablename = 'users'
@@ -100,14 +102,6 @@ def get_auth_user_mixin(auth, roles=False):
             repr = '<User {0}>'.format(self.login)
             return to_native(repr)
 
-    if roles and auth.lazy_roles:
-        def _auth_base_query(cls, lazy_roles=auth.lazy_roles):
-            q = db.session.query(cls)
-            if lazy_roles:
-                q = q.options(db.lazyload('roles'))
-            return q
-        AuthUserMixin._auth_base_query = classmethod(_auth_base_query)
-
     return AuthUserMixin
 
 
@@ -117,21 +111,29 @@ def extend_role_model(auth, User, RoleMixin=None):
 
     if RoleMixin is not None:
         parents = (RoleMixin, AuthRoleMixin, db.Model)
-        tablename = getattr(RoleMixin, '__tablename__', 'roles')
+        tablename = getattr(RoleMixin, '__tablename__', None)
+        if not tablename:
+            tablename = auth.roles_model_name.lower().rstrip('s') + 's'
     else:
         parents = (AuthRoleMixin, db.Model)
         tablename = 'roles'
 
     Role = type(auth.roles_model_name, parents, {'__tablename__': tablename})
 
-    Table(
+    UserRolesTable = Table(
         '{0}_{1}'.format(User.__tablename__, Role.__tablename__),
         db.metadata,
         Column('user_id', Integer, ForeignKey(User.id), index=True),
         Column('role_id', Integer, ForeignKey(Role.id), index=True)
     )
 
-    extend_user_model_with_role_methods(User, Role)
+    Role.users = relationship(
+        User, lazy='dynamic', order_by=User.login,
+        secondary=UserRolesTable, enable_typechecks=False,
+        backref=backref('roles', lazy='joined')
+    )
+
+    extend_user_model_with_role_methods(auth, db, User, Role)
     return Role
 
 
@@ -161,14 +163,6 @@ def get_auth_role_mixin(auth, User):
             db.session.add(role)
             return role
 
-        @declared_attr
-        def users(cls):
-            return relationship(
-                User, lazy='dynamic', order_by='User.login',
-                secondary='users_roles', enable_typechecks=False,
-                backref=backref('roles', lazy='joined')
-            )
-
         def __repr__(self):
             repr = '<Role {0}>'.format(self.name)
             return to_native(repr)
@@ -176,7 +170,16 @@ def get_auth_role_mixin(auth, User):
     return AuthRoleMixin
 
 
-def extend_user_model_with_role_methods(User, Role):
+def extend_user_model_with_role_methods(auth, db, User, Role):
+
+    def _auth_base_query(cls, lazy_roles=auth.lazy_roles):
+        query = db.session.query(cls)
+        if lazy_roles:
+            query = query.options(db.lazyload('roles'))
+        return query
+
+    User._auth_base_query = classmethod(_auth_base_query)
+
     def _add_role(self, name):
         """Adds a role (by name) to the user."""
         role = Role.get_or_create(name)
