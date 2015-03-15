@@ -3,7 +3,7 @@
 Authcode
 ===========================
 
-Awesome authentication code.
+Awesome authentication code for Flask and Bottle web apps.
 
 .. image:: https://travis-ci.org/lucuma/authcode.svg?branch=master
    :target: https://travis-ci.org/lucuma/Authcode
