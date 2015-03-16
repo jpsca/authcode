@@ -112,11 +112,6 @@ def test_lazy_user():
     assert storage.user == user
 
     storage.user = None
-    delattr(lazy, 'last_sign_in')
-    assert storage.user == user
-    assert getattr(user, 'last_sign_in', None) is None
-
-    storage.user = None
     assert lazy == user
     assert storage.user == user
 
@@ -135,6 +130,11 @@ def test_lazy_user():
     storage.user = None
     assert hash(lazy) == hash(user)
     assert storage.user == user
+
+    storage.user = None
+    delattr(lazy, 'last_sign_in')
+    assert storage.user == user
+    assert getattr(user, 'last_sign_in', None) is None
 
 
 def test_lazy_user_unusual_methods():
