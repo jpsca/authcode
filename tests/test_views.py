@@ -19,7 +19,7 @@ class Session(dict):
 
 
 def _get_flask_app(roles=False, **kwargs):
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(
         SECRET_KEY, db=db, roles=roles, password_minlen=3, **kwargs)
     User = auth.User
@@ -400,7 +400,7 @@ def test_change_password_ok():
 
 
 def test_custom_templates():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     options = {
         'template_sign_in': 'sign-in.html',
         'template_sign_out': 'sign-out.html',

@@ -4,7 +4,6 @@ python:
   - "2.7"
   - "pypy"
   - "3.3"
-  - "2.6"
 install:
     - python setup.py install
     - pip install -r requirements-tests.txt

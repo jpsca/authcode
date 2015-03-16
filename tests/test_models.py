@@ -8,13 +8,12 @@ from helpers import SECRET_KEY
 
 
 def test_user_model():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     assert auth.users_model_name == 'User'
     assert auth.roles_model_name == 'Role'
 
     User = auth.User
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -28,10 +27,9 @@ def test_user_model():
 
 
 def test_backwards_compatibility():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
     User = auth.User
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -43,10 +41,9 @@ def test_backwards_compatibility():
 
 
 def test_user_model_methods():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
     User = auth.User
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -66,10 +63,9 @@ def test_user_model_methods():
 
 
 def test_set_raw_password():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -81,10 +77,9 @@ def test_set_raw_password():
 
 
 def test_role_model():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     Role = auth.Role
-    db.drop_all()
     db.create_all()
     role = Role(name=u'admin')
     db.session.add(role)
@@ -95,10 +90,9 @@ def test_role_model():
 
 
 def test_role_model_methods():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     Role = auth.Role
-    db.drop_all()
     db.create_all()
     role = Role(name=u'admin')
     db.session.add(role)
@@ -122,11 +116,10 @@ def test_role_model_methods():
 
 
 def test_add_role():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
     Role = auth.Role
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -163,11 +156,10 @@ def test_add_role():
 
 
 def test_remove_role():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
     Role = auth.Role
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar')
     db.session.add(user)
@@ -202,7 +194,7 @@ def test_remove_role():
 
 
 def test_models_mixins():
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
 
     class UserMixin(object):
         email = db.Column(db.Unicode(300))
@@ -217,7 +209,6 @@ def test_models_mixins():
     User = auth.User
     Role = auth.Role
 
-    db.drop_all()
     db.create_all()
     user = User(login=u'meh', password='foobar', email=u'text@example.com')
     db.session.add(user)

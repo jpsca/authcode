@@ -18,13 +18,8 @@ except MissingBackendError:
 
 
 def test_prefix():
-    db = SQLAlchemy('sqlite:///test.db')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True, prefix='foobar')
-    assert auth.User
-    assert auth.Role
-    db.create_all()
-    db.session.add(auth.User(login=u'MeH', password='foobar'))
-    db.session.commit()
 
     assert auth.users_model_name == 'FoobarUser'
     assert auth.roles_model_name == 'FoobarRole'
@@ -36,7 +31,7 @@ def test_prefix():
 
 
 def test_automatic_case_insensitiveness():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
     User = auth.User
     db.create_all()
@@ -49,7 +44,7 @@ def test_automatic_case_insensitiveness():
 
 
 def test_disabled_case_insensitiveness():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, case_insensitive=False)
     User = auth.User
     db.create_all()
@@ -64,7 +59,7 @@ def test_disabled_case_insensitiveness():
 
 
 def test_automatic_password_hashing():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512', rounds=10)
 
     User = auth.User
@@ -131,7 +126,7 @@ def test_legacy_reader():
 
 
 def test_sql_injection():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
     User = auth.User
     db.create_all()
@@ -151,7 +146,7 @@ def test_sql_injection():
 
 
 def test_authenticate_with_password():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -179,7 +174,7 @@ def test_authenticate_with_password():
 
 
 def test_user_has_none_password():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -208,7 +203,7 @@ def test_user_has_none_password():
 
 
 def test_user_has_empty_password():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, password_minlen=0)
 
     User = auth.User
@@ -240,7 +235,7 @@ def test_user_has_empty_password():
 
 
 def test_update_on_authenticate():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
                          update_hash=True)
     User = auth.User
@@ -265,7 +260,7 @@ def test_update_on_authenticate():
 
 
 def test_disable_update_on_authenticate():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, hash='pbkdf2_sha512',
                          update_hash=False)
     User = auth.User
@@ -288,7 +283,7 @@ def test_disable_update_on_authenticate():
 
 def test_get_token():
     from time import time, sleep
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -311,7 +306,7 @@ def test_get_token():
 
 def test_authenticate_with_token():
     from time import time
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, token_life=3 * 60)
 
     User = auth.User
@@ -344,7 +339,7 @@ def test_authenticate_with_token():
 
 
 def test_get_uhmac():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -359,7 +354,7 @@ def test_get_uhmac():
 
 
 def test_login_logout():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -378,7 +373,7 @@ def test_login_logout():
 
 
 def test_login_repeated_logout():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -400,7 +395,7 @@ def test_login_repeated_logout():
 
 
 def test_clear_session_on_logout():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -425,7 +420,7 @@ def test_clear_session_on_logout():
 
 
 def test_dont_clear_session_on_logout():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db, clear_session_on_logout=False)
 
     User = auth.User
@@ -450,7 +445,7 @@ def test_dont_clear_session_on_logout():
 
 
 def test_get_user():
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
 
     User = auth.User
@@ -500,7 +495,7 @@ def test_replace_hash_password_method():
                 return False
             return self.hash_password(secret) == hashed
 
-    db = SQLAlchemy('sqlite://')
+    db = SQLAlchemy('sqlite:///:memory:')
     auth = CustomAuth(SECRET_KEY, db=db)
     User = auth.User
     db.create_all()

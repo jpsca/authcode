@@ -11,7 +11,7 @@ from helpers import SECRET_KEY
 
 
 def get_flask_app(roles=False, views=None, **kwargs):
-    db = SQLAlchemy()
+    db = SQLAlchemy('sqlite:///:memory:')
     views = views or []
     auth = authcode.Auth(SECRET_KEY, db=db, roles=roles, views=views, **kwargs)
     User = auth.User
