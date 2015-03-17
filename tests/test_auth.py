@@ -19,15 +19,25 @@ except MissingBackendError:
 
 def test_prefix():
     db = SQLAlchemy('sqlite:///:memory:')
-    auth = authcode.Auth(SECRET_KEY, db=db, roles=True, prefix='foobar')
+    auth1 = authcode.Auth(SECRET_KEY, db=db, roles=True, prefix='foobar')
 
-    assert auth.users_model_name == 'FoobarUser'
-    assert auth.roles_model_name == 'FoobarRole'
-    assert auth.views_prefix == 'foobar_'
-    assert auth.url_sign_in == '/foobar/sign-in/'
-    assert auth.url_sign_out == '/foobar/sign-out/'
-    assert auth.url_reset_password == '/foobar/reset-password/'
-    assert auth.url_change_password == '/foobar/change-password/'
+    assert auth1.users_model_name == 'FoobarUser'
+    assert auth1.roles_model_name == 'FoobarRole'
+    assert auth1.views_prefix == 'foobar_'
+    assert auth1.url_sign_in == '/foobar/sign-in/'
+    assert auth1.url_sign_out == '/foobar/sign-out/'
+    assert auth1.url_reset_password == '/foobar/reset-password/'
+    assert auth1.url_change_password == '/foobar/change-password/'
+
+    auth2 = authcode.Auth(SECRET_KEY, db=db, roles=True, prefix='meh')
+
+    assert auth2.users_model_name == 'MehUser'
+    assert auth2.roles_model_name == 'MehRole'
+    assert auth2.views_prefix == 'meh_'
+    assert auth2.url_sign_in == '/meh/sign-in/'
+    assert auth2.url_sign_out == '/meh/sign-out/'
+    assert auth2.url_reset_password == '/meh/reset-password/'
+    assert auth2.url_change_password == '/meh/change-password/'
 
 
 def test_automatic_case_insensitiveness():

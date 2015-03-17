@@ -22,7 +22,7 @@ def extend_user_model(auth, UserMixin=None, roles=False):
             tablename = auth.users_model_name.lower().rstrip('s') + 's'
     else:
         parents = (AuthUserMixin, db.Model)
-        tablename = 'users'
+        tablename = auth.users_model_name.lower().rstrip('s') + 's'
 
     return type(auth.users_model_name, parents, {'__tablename__': tablename})
 
@@ -116,7 +116,7 @@ def extend_role_model(auth, User, RoleMixin=None):
             tablename = auth.roles_model_name.lower().rstrip('s') + 's'
     else:
         parents = (AuthRoleMixin, db.Model)
-        tablename = 'roles'
+        tablename = auth.roles_model_name.lower().rstrip('s') + 's'
 
     Role = type(auth.roles_model_name, parents, {'__tablename__': tablename})
 
