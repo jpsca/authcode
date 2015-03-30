@@ -24,12 +24,14 @@ def sign_in(auth, request, session, *args, **kwargs):
     if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
         if auth.session_key in session:
             del session[auth.session_key]
+
         user = auth.authenticate(credentials)
         if user and not user.deleted:
             user.last_sign_in = datetime.utcnow()
-            auth.db.session.commit()
             remember = bool(credentials.get('remember', True))
             auth.login(user, remember=remember)
+            auth.db.session.commit()
+
             next = pop_next_url(auth, request, session)
             return auth.wsgi.redirect(next)
 
@@ -45,6 +47,7 @@ def sign_in(auth, request, session, *args, **kwargs):
 def sign_out(auth, request, *args, **kwargs):
     # the logout action itself must be CSRF protected,
     # but the view could be called twice by mistake
+    # so we ignore the second one instead of raising an error
     if auth.csrf_token_is_valid(request):
         auth.logout()
 
