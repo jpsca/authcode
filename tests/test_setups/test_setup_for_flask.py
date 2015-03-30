@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 import flask
-from flask import Flask, render_template
+from flask import Flask
 from sqlalchemy_wrapper import SQLAlchemy
 import authcode
 
@@ -100,8 +100,8 @@ def test_setup_flask_partial_views_1():
 
     assert 'auth_sign_in' in names
     assert 'auth_sign_out' in names
-    assert not 'auth_reset_password' in names
-    assert not 'auth_change_password' in names
+    assert 'auth_reset_password' not in names
+    assert 'auth_change_password' not in names
 
 
 def test_setup_flask_partial_views_2():
@@ -113,9 +113,9 @@ def test_setup_flask_partial_views_2():
     rules = app.url_map._rules
     names = [ru.endpoint for ru in rules]
 
-    assert not 'auth_sign_in' in names
-    assert not 'auth_sign_out' in names
-    assert not 'auth_reset_password' in names
+    assert 'auth_sign_in' not in names
+    assert 'auth_sign_out' not in names
+    assert 'auth_reset_password' not in names
     assert 'auth_change_password' in names
 
 

@@ -63,10 +63,10 @@ def test_user_model_methods():
     db.commit()
 
     assert User.by_id(user.id) == user
-    assert User.by_id(33) == None
+    assert User.by_id(33) is None
 
     assert User.by_login(u'meh') == user
-    assert User.by_login(u'foobar') == None
+    assert User.by_login(u'foobar') is None
 
     assert user.has_password('foobar')
     assert not user.has_password('abracadabra')
@@ -125,10 +125,10 @@ def test_role_model_methods():
     db.commit()
 
     assert Role.by_id(role.id) == role
-    assert Role.by_id(33) == None
+    assert Role.by_id(33) is None
 
     assert Role.by_name(u'admin') == role
-    assert Role.by_name(u'foobar') == None
+    assert Role.by_name(u'foobar') is None
 
     assert Role.get_or_create(u'admin') == role
 
@@ -276,10 +276,10 @@ def test_naked_sqlalchemy():
     db.session.commit()
 
     assert User.by_id(user.id) == user
-    assert User.by_id(33) == None
+    assert User.by_id(33) is None
 
     assert User.by_login(u'meh') == user
-    assert User.by_login(u'foobar') == None
+    assert User.by_login(u'foobar') is None
 
     assert user.has_password('foobar')
     assert not user.has_password('abracadabra')
