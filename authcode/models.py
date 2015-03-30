@@ -11,17 +11,30 @@ from .utils import get_uhmac, get_token
 from ._compat import to_unicode, to_native
 
 
+class DictSerializable(object):
+    """Makes an object serializable to a dictionary.
+    """
+
+    def _asdict(self):
+        repr(self)  # Force to load the data
+        dictrep = self.__dict__.copy()
+        dictrep.pop('_sa_instance_state', None)
+        return dictrep
+
+    to_dict = _asdict
+
+
 def extend_user_model(auth, UserMixin=None, roles=False):
     db = auth.db
     AuthUserMixin = get_auth_user_mixin(auth, roles=roles)
 
     if UserMixin is not None:
-        parents = (UserMixin, AuthUserMixin, db.Model)
+        parents = (UserMixin, AuthUserMixin, DictSerializable, db.Model)
         tablename = getattr(UserMixin, '__tablename__', None)
         if not tablename:
             tablename = auth.users_model_name.lower().rstrip('s') + 's'
     else:
-        parents = (AuthUserMixin, db.Model)
+        parents = (AuthUserMixin, DictSerializable, db.Model)
         tablename = auth.users_model_name.lower().rstrip('s') + 's'
 
     return type(auth.users_model_name, parents, {'__tablename__': tablename})
@@ -110,12 +123,12 @@ def extend_role_model(auth, User, RoleMixin=None):
     AuthRoleMixin = get_auth_role_mixin(auth, User)
 
     if RoleMixin is not None:
-        parents = (RoleMixin, AuthRoleMixin, db.Model)
+        parents = (RoleMixin, AuthRoleMixin, DictSerializable, db.Model)
         tablename = getattr(RoleMixin, '__tablename__', None)
         if not tablename:
             tablename = auth.roles_model_name.lower().rstrip('s') + 's'
     else:
-        parents = (AuthRoleMixin, db.Model)
+        parents = (AuthRoleMixin, DictSerializable, db.Model)
         tablename = auth.roles_model_name.lower().rstrip('s') + 's'
 
     Role = type(auth.roles_model_name, parents, {'__tablename__': tablename})

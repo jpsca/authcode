@@ -26,6 +26,19 @@ def test_user_model():
     assert repr(user) == '<User meh>'
 
 
+def test_user_model_to_dict():
+    db = SQLAlchemy('sqlite:///:memory:')
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
+    User = auth.User
+    db.create_all()
+    user = User(login=u'meh', password='foobar')
+    db.session.add(user)
+    db.commit()
+
+    user_dict = user.to_dict()
+    assert user_dict
+
+
 def test_backwards_compatibility():
     db = SQLAlchemy('sqlite:///:memory:')
     auth = authcode.Auth(SECRET_KEY, db=db)
@@ -87,6 +100,19 @@ def test_role_model():
 
     assert role.name == u'admin'
     assert repr(role) == '<Role admin>'
+
+
+def test_role_model_to_dict():
+    db = SQLAlchemy('sqlite:///:memory:')
+    auth = authcode.Auth(SECRET_KEY, db=db, roles=True)
+    Role = auth.Role
+    db.create_all()
+    role = Role(name=u'admin')
+    db.session.add(role)
+    db.commit()
+
+    role_dict = role.to_dict()
+    assert role_dict
 
 
 def test_role_model_methods():
