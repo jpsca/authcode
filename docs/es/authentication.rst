@@ -213,20 +213,61 @@ Si no lo especificas, la función de hashing que se usa es ``pbkdf2_sha512``. *N
 Vistas automáticas
 =============================================
 
-TO DO
+Una de las ventajas de usar Authcode son sus vistas automáticas para iniciar sesión y recuperación de contraseñas.
 
-Iniciar sesión
+Las vistas son prácticas pero no obligatorias, puedes reemplazar las que necesites por otras, desactivar algunas o todas, cambiar sus URLs o solamente personalizar sus plantillas.
+
+Cuales vistas se usan depende de la opición ``views``:
+
+.. code-block:: python
+
+    'views': ['sign_in', 'sign_out', 'reset_password', 'change_password']
+
+
+Inicio/Fin de sesión
 ---------------------------------------------
+
+Opciones:
+
+.. code-block:: python
+
+    'url_sign_in': '/sign-in/',
+    'url_sign_out': '/sign-out/',
+
+    'template_sign_in': 'sign-in.html',
+    'template_sign_out': None,
+
+    'sign_in_redirect': '/',
+    'sign_out_redirect': '/',
+
+
+Las vistas de inicio y fin de sesión trabajan juntas. Las opciones ``sign_in_redirect`` y ``sign_out_redirect`` indican a donde redirige al usuario cuando inicia una sesión exitósamente y cuando la termina.
 
 .. figure:: _static/login.png
    :align: center
 
    Plantilla estándar de inicio de sesión.
 
-TO DO
+Por defecto, solo la vista de inicio de sesión (``sign_in``) tiene una plantilla, pero si le pasas una para ``template_sign_out``, al salir de sesión mostrará esa en vez de hacer la redirección.
 
-Recuperar contraseña
+
+Recuperar/cambiar contraseña
 ---------------------------------------------
+
+Opciones:
+
+.. code-block:: python
+
+    'url_reset_password': '/reset-password/',
+    'url_change_password': '/change-password/',
+
+    'template_reset': 'reset-password.html',
+    'template_reset_email': 'reset-password-email.html',
+    'reset_email_subject': u'Reset your password',
+    'template_change_password': 'change-password.html',
+
+Las vistas de recuperación de contraseña permiten a un usuarios pedir que se le envíe a su correo un enlace de un solo uso para definir una nueva contraseña.
+
 
 .. image:: _static/reset_password.png
    :width: 30%
@@ -238,7 +279,6 @@ Recuperar contraseña
    :width: 30%
 
 
-TO DO
-
+Esto solo funcionará si el modelo de usuario tiene un atributo ``email`` o usas su email como atributo ``login``. Para enviar el email además utilizará la función ``send_email`` que le pases como argumento en el `setup <http://authcode.lucuma.co/es/quickstart.html#ajustarlo-a-tu-framework>`_.
 
 .. [#] Por supuesto, también puedes crear un modelo de perfil si quieres. Authcode no se quejará.

@@ -114,7 +114,7 @@ Esto **no** debes hacerlo en los formularios que se envían a URLs externas, o e
 
 2. Si la vista correspondiente está decorada con ``@auth.protected`` y el formulario **no** es enviado por ``GET`` o ``HEAD``, no tienes que hacer nada, pues el decorador ya está validando el código CSFR  automáticamente.
 
-Puedes forzar a que se haga la validación con otros métodos de envio, por ejemplo ``GET``, agregando el parámetro ``csrf=True`` al decorador.
+Puedes forzar a que se haga la validación con otros métodos de envio, por ejemplo ``GET``, pasándo el argumento ``csrf=True`` al decorador.
 
 .. code-block:: python
 
