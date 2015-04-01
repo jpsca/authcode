@@ -9,9 +9,7 @@ Authcode está bajo la licencia MIT. Básicamente significa: haz lo que quieras 
 Definiciones generales de la licencia
 ---------------------------------------
 
-- La “:ref:`Authcode_license`” aplica a todo el código fuente distribuido como parte de Authcode: Authcode mismo, tests y al tema base de la documentación (HTML, CSS, JavaScript y traducciones).
-
-- La “:ref:`docs_license`” aplica al contenido de la documentación: texto, imágenes y código de ejemplo.
+- La “:ref:`Authcode_license`” aplica a todo el código fuente distribuido como parte de Authcode: Authcode mismo, tests y a la documentación.
 
 - La “:ref:`artwork_license`” aplica al logotipo de Authcode.
 
@@ -33,20 +31,12 @@ EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O 
 La versión oficial de esta licencia está en el archivo `LICENSE <http://github.com/lucuma/Authcode/blob/master/LICENSE>`_ en el código fuente.
 
 
-.. _docs_license:
-
-Licencia de la documentación
----------------------------------------
-
-El contenido de la documentación de Authcode está bajo una licencia `Creative Commons Attribution-ShareAlike 4.0 International License <http://creativecommons.org/licenses/by-sa/4.0/>`_.
-
-
 .. _artwork_license:
 
 Licencia del arte
 ---------------------------------------
 
-Copyright © XXXX.
+Copyright © Juan-Pablo Scaletti.
 Algunos derechos reservados.
 
 Este logotipo o una versión modificada puede ser utilizados por cualquier persona para referirse al proyecto Authcode, pero esto no implica un aval del proyecto.

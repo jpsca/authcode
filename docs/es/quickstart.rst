@@ -34,7 +34,7 @@ Para usar Authcode bastan solo tres pasos.
 
 Hay varios parámetros que puedes usar para configurarlo, pero lo mínimo necesario es una clave secreta y una conexión a SQLAlchemy.
 
-El objeto ``db`` que es te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
+El objeto ``db`` es lo que te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
 
 ``auth.User`` es el modelo de usuario generado automáticamente por Authcode. Necesitarás esa referencia para crear usuarios o conectarlos a tus otros modelos.
 
@@ -89,16 +89,16 @@ Finalmente, usas ``auth.protected`` para decorar las vistas que quieres que sean
 
     Este decorador tiene otras opciones, como especificar roles que debe tener el usuario para ingresar a una página. Pueds ver más en la guía de :ref:`authorization`.
 
-Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que cuando intentes visitar la página del ejemplo, te redirigirá a otra para ingresar tu usuario y contraseña (en el ejemplo ambos son “Authcode”).
+Authcode genera automáticamente vistas para inicar sesión, salir y recuperar tu contraseña, así que si intentas visitar esa página, te redirigirá a la página por defecto de inicio de sesión.
 
 .. figure:: _static/login.png
    :align: center
 
-   Página estándar de inicio de sesión.
+   Página por defecto de inicio de sesión.
 
 Puedes ver que esa página también tiene un enlace a otra para recuperar tu contraseña; El método es el estándar: escribes tu nombre de usuario y Authcode te envía un correo con un enlace especial para que elijas una nueva contraseña.
 
-Para que esto funciona, al ejemplo le hace falta una forma de enviar el email, eso es una funcionalidad que tiene que darle tu aplicación [2]_. Por ejemplo, podría verse así:
+Para que esto funciona, hace falta una forma de enviar el email, eso es una funcionalidad que tiene que darle tu aplicación [2]_. Por ejemplo, podría verse así:
 
 .. code-block:: python
 
