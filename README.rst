@@ -110,5 +110,5 @@ Our test suite `runs continuously on Travis CI <https://travis-ci.org/lucuma/Aut
 
 ______
 
-:copyright: © `Juan-Pablo Scaletti <http://jpscaletti.com>`_.
+:copyright: `Juan-Pablo Scaletti <http://jpscaletti.com>`_.
 :license: MIT, see LICENSE for more details.

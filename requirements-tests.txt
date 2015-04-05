@@ -1,4 +1,5 @@
 bottle
+flake8
 flask
 flask-sqlalchemy
 pytest

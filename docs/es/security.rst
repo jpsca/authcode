@@ -34,7 +34,7 @@ En segundo lugar, muchos de las funciones más populares, como MD5, SHA1, etc. s
 
 Cuando un atacante ha conseguido una copia de tu base de datos –ya que no es posible obtener la contraseña original desde el hash– lo que le queda  es probar uno por uno, los hash de todas las combinaciones de números, letras y símbolos. Es lo que se llama un ataque *por fuerza bruta*.
 
-Suena como un proceso imposíblemente largo, pero cuando usas una función de hashing que puede botar miles de resultados por segundo, es cuestión de horas ¡Incluso de minutos en algunos casos!
+Suena como un proceso imposíblemente largo, pero cuando usas una función de hashing que puede generar miles de resultados por segundo, es cuestión de horas ¡Incluso de minutos en algunos casos!
 
 .. pull-quote::
 

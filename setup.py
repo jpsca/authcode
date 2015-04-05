@@ -34,7 +34,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     url='http://github.com/lucuma/authcode',
-    license='MIT license (http://www.opensource.org/licenses/mit-license.php)',
+    license='MIT license (see LICENSE)',
     description='Awesome authentication code',
     long_description=desc,
     install_requires=get_requirements(),
