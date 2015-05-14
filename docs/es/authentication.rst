@@ -43,7 +43,7 @@ De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “
             return u'{} {}'.format(self.name, self.surname).strip()
 
     auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, **AUTH_SETTINGS)
-    User = auth.User  # Modelo de Usuario
+    User = auth.User  # Modelo de usuario
 
 lo que se traduce a:
 
@@ -90,21 +90,21 @@ Hay dos formas de activar los roles; Una es inicializando Authcode con el argume
 
 .. code-block:: python
 
-    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, roles=True,
-                **AUTH_SETTINGS)
+    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin,
+                roles=True, **AUTH_SETTINGS)
 
-    User = auth.User  # Modelo de Usuario
-    Role = auth.Role  # Modelo de Rol
+    User = auth.User  # Modelo de usuario
+    Role = auth.Role  # Modelo de rol
 
 la otra es pasarle un *mixin* para la tabla de roles:
 
 .. code-block:: python
 
-    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, RoleMixin=RoleMixin,
-                **AUTH_SETTINGS)
+    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin,
+                RoleMixin=RoleMixin, **AUTH_SETTINGS)
 
-    User = auth.User  # Modelo de Usuario
-    Role = auth.Role  # Modelo de Rol
+    User = auth.User  # Modelo de usuario
+    Role = auth.Role  # Modelo de rol
 
 Este mixin es muy similar al de la tabla de usuarios. Por defecto un rol tiene solo un campo —su nombre. Utilizando este mixin puedes agregarle los campos extra que quieras (como una descripción, por ejemplo). El modelo final de roles está en ``auth.Role``.
 
