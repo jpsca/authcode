@@ -4,9 +4,12 @@
 build
 dist
 *.egg*
+
 .idea
 *.sublime-project
 *.sublime-workspace
+*.nja
+
 .coverage
 .tox
 htmlcov
