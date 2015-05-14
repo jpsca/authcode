@@ -1,10 +1,12 @@
 
+compile:
+	msgfmt -o _locale/es/LC_MESSAGES/lucuma.mo _locale/es/LC_MESSAGES/lucuma.po
+	msgfmt -o _locale/es/LC_MESSAGES/sphinx.mo _locale/es/LC_MESSAGES/sphinx.po
+	msgfmt -o _locale/en/LC_MESSAGES/lucuma.mo _locale/en/LC_MESSAGES/lucuma.po
+	msgfmt -o _locale/en/LC_MESSAGES/sphinx.mo _locale/en/LC_MESSAGES/sphinx.po
+
 extract:
 	pybabel extract -F babel.cfg -o _locale/lucuma.pot lucuma
-
-compile:
-	msgfmt.py _locale/es/LC_MESSAGES/*.po
-	msgfmt.py _locale/en/LC_MESSAGES/*.po
 
 clean:
 	rm -f _locale/lucuma.pot
