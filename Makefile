@@ -26,6 +26,9 @@ coverage:
 	py.test -x --cov-config .coveragerc --cov authcode --cov-report html tests/
 	open htmlcov/index.html
 
+flake8:
+	flake8 authcode tests
+
 publish: clean
 	python setup.py sdist upload
 	python setup.py bdist_wheel upload

@@ -24,65 +24,86 @@ class AuthorizationMixin(object):
     def make_csrf_token(self):
         return str(uuid4()).replace('-', '')
 
-    def protected(self, *tests, **options):
+    def protected(self, *tests, **kwargs):
         """Factory of decorators for limit the access to views.
 
-        :Parameters:
-            tests : *function, optional
-                One or more functions that takes the args and kwargs of the
-                view and returns either `True` or `False`.
-                All test must return True to show the view.
+        :tests: *function, optional
+            One or more functions that takes the args and kwargs of the
+            view and returns either `True` or `False`.
+            All test must return True to show the view.
 
-        :Options:
-            role : str, optional
-                Test for the user having a role with this name.
+        Options:
 
-            roles : list, optional
-                Test for the user having **any** role in this list of names.
+        :role: str, optional
+            Test for the user having a role with this name.
 
-            csrf : bool, None, optional
-                If ``None`` (the default), the decorator will check the value
-                of the CSFR token for POST, PUT or DELETE requests.
-                If ``True`` it will do the same also for all requests.
-                If ``False``, the value of the CSFR token will not be checked.
+        :roles: list, optional
+            Test for the user having **any** role in this list of names.
 
-            url_sign_in : str, function, optional
-                If any required condition fail, redirect to this place.
-                Override the default URL. This can also be a callable.
+        :csrf: bool, None, optional
+            If ``None`` (the default), the decorator will check the value
+            of the CSFR token for POST, PUT or DELETE requests.
+            If ``True`` it will do the same also for all requests.
+            If ``False``, the value of the CSFR token will not be checked.
+
+        :url_sign_in: str, function, optional
+            If any required condition fail, redirect to this place.
+            Override the default URL. This can also be a callable.
+
+        :request: obj, optional
+            Overwrite the request for testing.
+
+        The rest of the ``key=value`` pairs in ``kwargs`` are interpreted as tests.
+        The user must have a property `key` with a value equals to `value`.
+        If the user has a method named `key`, that method is called with
+        `value` as a single argument and must return True to show the view.
 
         """
-        csrf = options.get('csrf')
-        roles = options.get('roles') or []
-        role = options.get('role')
-        if role:
-            roles.append(role)
-        roles = [to_unicode(r) for r in roles]
+        _role = kwargs.pop('role', None)
+        _roles = kwargs.pop('roles', None) or []
+        _csrf = kwargs.pop('csrf', None)
+        _url_sign_in = kwargs.pop('url_sign_in', None)
+        _request = kwargs.pop('request', None)
+
+        if _role:
+            _roles.append(_role)
+        _roles = [to_unicode(r) for r in _roles]
+
+        _tests = tests
+        _user_tests = kwargs
 
         def decorator(f):
             @functools.wraps(f)
             def wrapper(*args, **kwargs):
                 logger = logging.getLogger(__name__)
-                request = options.get('request') or self.request or args and args[0]
-                url_sign_in = self._get_url_sign_in(request, options)
+                request = _request or self.request or args and args[0]
+                url_sign_in = self._get_url_sign_in(request, _url_sign_in)
 
                 user = self.get_user()
                 if not user:
                     return self._login_required(request, url_sign_in)
 
-                if hasattr(user, 'has_role') and roles:
-                    if not user.has_role(*roles):
+                if hasattr(user, 'has_role') and _roles:
+                    if not user.has_role(*_roles):
                         logger.debug(u'User `{0}`: has_role fail'.format(user.login))
                         logger.debug(u'User roles: {0}'.format([r.name for r in user.roles]))
                         return self.wsgi.raise_forbidden()
 
-                for test in tests:
+                for test in _tests:
                     test_pass = test(user, *args, **kwargs)
                     if not test_pass:
                         logger.debug(u'User `{0}`: test fail'.format(user.login))
                         return self.wsgi.raise_forbidden()
 
-                disable_csrf = csrf == False  # noqa
-                if (not self.wsgi.is_idempotent(request) and not disable_csrf) or csrf:
+                for name, value in _user_tests.items():
+                    user_test = getattr(user, name)
+                    test_pass = user_test(user, value, *args, **kwargs)
+                    if not test_pass:
+                        logger.debug(u'User `{0}`: test fail'.format(user.login))
+                        return self.wsgi.raise_forbidden()
+
+                disable_csrf = _csrf == False  # noqa
+                if (not self.wsgi.is_idempotent(request) and not disable_csrf) or _csrf:
                     if not self.csrf_token_is_valid(request):
                         logger.debug(u'User `{0}`: invalid CSFR token'.format(user.login))
                         return self.wsgi.raise_forbidden("CSFR token isn't valid")
@@ -105,8 +126,8 @@ class AuthorizationMixin(object):
             self.session.save()
         return self.wsgi.redirect(url_sign_in)
 
-    def _get_url_sign_in(self, request, options):
-        url_sign_in = options.get('url_sign_in') or self.url_sign_in
+    def _get_url_sign_in(self, request, url_sign_in):
+        url_sign_in = url_sign_in or self.url_sign_in
         if callable(url_sign_in):
             url_sign_in = url_sign_in(request)
         return url_sign_in or '/'

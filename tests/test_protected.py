@@ -5,6 +5,7 @@ import os
 import authcode
 from authcode._compat import to_native
 from flask import Flask
+import pytest
 from sqlalchemy_wrapper import SQLAlchemy
 
 from helpers import SECRET_KEY
@@ -117,44 +118,6 @@ def test_protected_role():
     assert resp.data == b'admin2'
 
 
-def test_protected_tests():
-    auth, app, user = get_flask_app(roles=True)
-    client = app.test_client()
-
-    log = []
-
-    def test1(*args, **kwargs):
-        log.append('test1')
-        return True
-
-    def test2(*args, **kwargs):
-        log.append('test2')
-        return True
-
-    def fail(*args, **kwargs):
-        log.append('fail')
-        return False
-
-    @app.route('/admin1/')
-    @auth.protected(test1, test2)
-    def admin1():
-        return ''
-
-    @app.route('/admin2/')
-    @auth.protected(test1, fail, test2)
-    def admin2():
-        return ''
-
-    client.get('/login/')
-    resp = client.get('/admin1/')
-    assert log == ['test1', 'test2']
-    assert resp.status == '200 OK'
-
-    resp = client.get('/admin2/')
-    assert log == ['test1', 'test2', 'test1', 'fail']
-    assert resp.status == '403 FORBIDDEN'
-
-
 def test_protected_csrf():
     auth, app, user = get_flask_app(roles=True)
     client = app.test_client()
@@ -201,3 +164,80 @@ def test_protected_csrf():
 
     resp = client.post('/update/', headers={'X-CSRFToken': token})
     assert resp.status == '200 OK'
+
+
+def test_protected_tests():
+    auth, app, user = get_flask_app(roles=True)
+    client = app.test_client()
+
+    log = []
+
+    def test1(*args, **kwargs):
+        log.append('test1')
+        return True
+
+    def test2(*args, **kwargs):
+        log.append('test2')
+        return True
+
+    def fail(*args, **kwargs):
+        log.append('fail')
+        return False
+
+    @app.route('/admin1/')
+    @auth.protected(test1, test2)
+    def admin1():
+        return ''
+
+    @app.route('/admin2/')
+    @auth.protected(test1, fail, test2)
+    def admin2():
+        return ''
+
+    client.get('/login/')
+    resp = client.get('/admin1/')
+    assert log == ['test1', 'test2']
+    assert resp.status == '200 OK'
+
+    resp = client.get('/admin2/')
+    assert log == ['test1', 'test2', 'test1', 'fail']
+    assert resp.status == '403 FORBIDDEN'
+
+
+def test_protected_user_tests():
+    auth, app, user = get_flask_app(roles=True)
+    client = app.test_client()
+
+    def echo(self, value, *args, **kwargs):
+        return value
+
+    user.echo = echo
+
+    @app.route('/yay/')
+    @auth.protected(echo=True)
+    def yay():
+        return 'yay'
+
+    @app.route('/fail/')
+    @auth.protected(echo=False)
+    def fail():
+        return 'fail'
+
+    @app.route('/foobar/')
+    @auth.protected(unknown=False)
+    def foobar():
+        return 'foobar'
+
+    resp = client.get('/yay/')
+    assert resp.status == '303 SEE OTHER'
+
+    client.get('/login/')
+
+    resp = client.get('/yay/')
+    assert resp.status == '200 OK'
+
+    resp = client.get('/fail/')
+    assert resp.status == '403 FORBIDDEN'
+
+    with pytest.raises(AttributeError):
+        resp = client.get('/foobar/')

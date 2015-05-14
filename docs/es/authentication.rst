@@ -42,7 +42,8 @@ De ese modo puedes extenderla sin tener que recurrir a una tabla separada de “
         def fullname(self):
             return u'{} {}'.format(self.name, self.surname).strip()
 
-    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin, **AUTH_SETTINGS)
+    auth = Auth(SECRET_KEY, db=db, UserMixin=UserMixin,
+                **AUTH_SETTINGS)
     User = auth.User  # Modelo de usuario
 
 lo que se traduce a:

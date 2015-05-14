@@ -63,7 +63,8 @@ Ejemplo:
         def myview2():
             return u'Solo puede verme los usuario con el rol “foo”, el rol “bar” (o ambos)'
 
-Pruebas
+
+Pruebas genéricas
 ---------------------------------------------
 
 El decorador también puede tomar como argumento una o más funciones para “probar” al usuario. Las pruebas toman como argumentos al usuario autenticado y cualquier otro argumento que la vista haya recibido. Solo si todas devuelven `True` se da acceso a la vista al usuario.
@@ -79,7 +80,40 @@ El decorador también puede tomar como argumento una o más funciones para “pr
         ...
 
 
-Finalmente, el último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, como podrás leerlo en la siguiente sección.
+Pruebas del usuario
+---------------------------------------------
+
+Cada uno de los argumentos tipo ``llave=valor`` —siempre y cuando ``llave`` **no sea** ``tests``, ``role``, ``roles``, ``csrf``, ``url_sign_in`` o ``request``— se toma como si fuera un método del modelo de usuario que se quiere usar como prueba, el valor y cualquier otro argumento que la vista haya recibido.
+
+
+.. code-block:: python
+
+    class UserMixin(object):
+
+        permissions =  db.Column(ARRAY(db.String))
+
+        def has_perm(self, name, *args, **kwargs):
+        """Return True if the user has this permission."""
+            return name in self.permissions
+
+    # ...
+
+    @auth.protected(has_perm='can create posts')
+    @app.route('/posts/new/')
+    def new_post():
+        ...
+
+En este ejemplo se llama al método ``user.has_perm('can create posts')`` y solo se da acceso a la vista si este devuelve un valor positivo.
+
+Si el objeto ``user`` no tiene un método con ese nombre, al intentar acceder a la vista, se lanza una excepción ``AttributeError``.
+
+Definir pruebas así te da toda la flexibilidad de las pruebas genéricas, manteniendo el decorador con una sintaxis simple.
+
+
+Una cosa más...
+---------------------------------------------
+
+El último truco del decorador ``@auth.protected`` es el poder activar/desactivar la protección contra ataques CSRF, como podrás leerlo en la siguiente sección.
 
 
 Protección CSRF

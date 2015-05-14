@@ -110,6 +110,14 @@ def test_hash_password_too_long():
         auth.hash_password(p)
 
 
+def test_huge_password_is_never_valid():
+    auth = authcode.Auth(SECRET_KEY)
+    p = '1' * 2000
+    p = auth.prepare_password(p)
+    hashed = auth.hasher.encrypt(p)
+    assert not auth.password_is_valid(p, hashed)
+
+
 def test_use_pepper():
     p = 'password'
     auth = authcode.Auth(SECRET_KEY, pepper='123', hash='sha512_crypt')
