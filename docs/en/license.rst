@@ -4,21 +4,18 @@
 License
 ============================
 
-Authcode is under a MIT license. It basically means: do whatever you want with it as long as the copyright in Flask sticks around, the conditions are not modified and the disclaimer is present.
+Authcode is under a MIT license. It basically means: do whatever you want with it as long as the copyright in Authcode sticks around, the conditions are not modified and the disclaimer is present.
 
 
 General License Definitions
 ---------------------------------------
 
-The following section contains the full license texts for Flask and the documentation.
-
-The “Flask License” applies to all the sourcecode shipped as part of Flask (Flask itself as well as the examples and the unittests) as well as documentation.
-The “Flask Artwork License” applies to the project’s Horn-Logo.
+The following section contains the full license texts for Authcode and the documentation.
 
 
-- The “:ref:`Authcode_license`” applies to all the sourcecode shipped as part of Authcode: Authcode itself, tests and the documentation.
+- The “:ref:`Authcode_license`” applies to all the sourcecode shipped as part of Authcode (Authcode itself as well as the examples and the unittests) as well as documentation.
 
-- The “:ref:`artwork_license`” applies to the project’s logo.
+- La “:ref:`artwork_license`” applies to the project’s logo.
 
 
 .. _Authcode_license:

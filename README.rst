@@ -90,7 +90,7 @@ Run the tests
 
 We use some external dependencies, listed in ``requirements_tests.txt``::
 
-    $  pip install -r requirements_tests.txt
+    $  pip install -r requirements-tests.txt
     $  python setup.py install
 
 To run the tests in your current Python version do::

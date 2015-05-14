@@ -1,6 +1,6 @@
 # Spanish translations for the lucuma sphinx theme.
 # Copyright (C) 2014 Juan-Pablo Scaletti
-# This file is distributed under the same license as the Authcode project.
+# MIT License.
 # Juan-Pablo Scaletti <juanpablo@lucumalabs.com>, 2014.
 #
 #, fuzzy
