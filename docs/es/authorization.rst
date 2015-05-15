@@ -67,7 +67,7 @@ Ejemplo:
 Pruebas genéricas
 ---------------------------------------------
 
-El decorador también puede tomar como argumento una o más funciones para “probar” al usuario. Las pruebas toman como argumentos al usuario autenticado y cualquier otro argumento que la vista haya recibido. Solo si todas devuelven `True` se da acceso a la vista al usuario.
+El decorador también puede tomar como argumento una o más funciones para “probar” al usuario. Las pruebas toman como argumentos al usuario autenticado y cualquier otro argumento que la vista haya recibido. Solo si todas devuelven un valor positivo (como ``True``) se da acceso a la vista al usuario.
 
 .. code-block:: python
 
@@ -83,7 +83,9 @@ El decorador también puede tomar como argumento una o más funciones para “pr
 Pruebas del usuario
 ---------------------------------------------
 
-Cada uno de los argumentos tipo ``llave=valor`` —siempre y cuando ``llave`` **no sea** ``tests``, ``role``, ``roles``, ``csrf``, ``url_sign_in`` o ``request``— se toma como si fuera un método del modelo de usuario que se quiere usar como prueba, el valor y cualquier otro argumento que la vista haya recibido.
+Cada uno de los argumentos tipo ``llave=valor`` —siempre y cuando ``llave`` **no sea** ``tests``, ``role``, ``roles``, ``csrf``, ``url_sign_in`` o ``request``— se toma como si fuera un método del modelo de usuario que se quiere usar como prueba.
+
+Este método se llama pasándole el ``valor`` y cualquier otro argumento que la vista haya recibido, como argumentos.
 
 
 .. code-block:: python

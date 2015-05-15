@@ -29,5 +29,5 @@ clean:
 	rm -rf _build/html/es
 	rm -rf _build/html/en
 
-publish: clean html
+publishdocs: clean html
 	scp -r _build/html/* jps@lucuma3:/var/www/lucumalabs/authcode/
