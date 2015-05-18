@@ -2,7 +2,8 @@
 import logging
 
 from sqlalchemy import (
-    Table, Column, Integer, Unicode, String, DateTime, Boolean, ForeignKey
+    Table, Column, Integer, Unicode, String, DateTime, Boolean, ForeignKey,
+    PrimaryKeyConstraint,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates, relationship, backref
@@ -136,8 +137,8 @@ def extend_role_model(auth, User, RoleMixin=None):
     UserRolesTable = Table(
         '{0}_{1}'.format(User.__tablename__, Role.__tablename__),
         db.metadata,
-        Column('user_id', Integer, ForeignKey(User.id), index=True),
-        Column('role_id', Integer, ForeignKey(Role.id), index=True)
+        Column('user_id', Integer, ForeignKey(User.id), primary_key=True),
+        Column('role_id', Integer, ForeignKey(Role.id), primary_key=True)
     )
 
     Role.users = relationship(

@@ -174,10 +174,9 @@ def test_add_role():
     user.add_role('loremipsum')
     db.session.commit()
     assert user.has_role('loremipsum')
-    assert list(user.roles) == [
-        Role.by_name('admin'),
-        Role.by_name('loremipsum'),
-    ]
+
+    result = sorted([role.name for role in user.roles])
+    assert result == ['admin', 'loremipsum']
     assert db.query(Role).count() == 2
 
 
