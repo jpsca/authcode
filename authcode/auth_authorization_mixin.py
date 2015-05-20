@@ -97,7 +97,7 @@ class AuthorizationMixin(object):
 
                 for name, value in _user_tests.items():
                     user_test = getattr(user, name)
-                    test_pass = user_test(user, value, *args, **kwargs)
+                    test_pass = user_test(value, *args, **kwargs)
                     if not test_pass:
                         logger.debug(u'User `{0}`: test fail'.format(user.login))
                         return self.wsgi.raise_forbidden()

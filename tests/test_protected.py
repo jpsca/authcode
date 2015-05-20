@@ -208,7 +208,7 @@ def test_protected_user_tests():
     auth, app, user = get_flask_app(roles=True)
     client = app.test_client()
 
-    def echo(self, value, *args, **kwargs):
+    def echo(value, *args, **kwargs):
         return value
 
     user.echo = echo
