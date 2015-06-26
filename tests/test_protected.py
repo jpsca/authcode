@@ -114,6 +114,7 @@ def test_protected_role():
     assert resp.data == b'admin1'
 
     resp = client.get('/admin2/?r=456/')
+    print(user.roles.all())
     assert resp.status == '200 OK'
     assert resp.data == b'admin2'
 

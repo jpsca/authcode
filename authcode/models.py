@@ -3,7 +3,6 @@ import logging
 
 from sqlalchemy import (
     Table, Column, Integer, Unicode, String, DateTime, Boolean, ForeignKey,
-    PrimaryKeyConstraint,
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates, relationship, backref
@@ -144,7 +143,7 @@ def extend_role_model(auth, User, RoleMixin=None):
     Role.users = relationship(
         User, lazy='dynamic', order_by=User.login,
         secondary=UserRolesTable, enable_typechecks=False,
-        backref=backref('roles', lazy='joined')
+        backref=backref('roles', lazy='dynamic')
     )
 
     extend_user_model_with_role_methods(auth, db, User, Role)
@@ -186,10 +185,8 @@ def get_auth_role_mixin(auth, User):
 
 def extend_user_model_with_role_methods(auth, db, User, Role):
 
-    def _auth_base_query(cls, lazy_roles=auth.lazy_roles):
+    def _auth_base_query(cls):
         query = db.session.query(cls)
-        if lazy_roles:
-            query = query.options(db.lazyload('roles'))
         return query
 
     User._auth_base_query = classmethod(_auth_base_query)

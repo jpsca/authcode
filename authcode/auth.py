@@ -70,7 +70,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
     }
 
     def __init__(self, secret_key, db=None, hash=DEFAULT_HASHER, rounds=None,
-                 UserMixin=None, RoleMixin=None, roles=False, lazy_roles=True,
+                 UserMixin=None, RoleMixin=None, roles=False,
                  prefix=None, views_prefix=None,
                  users_model_name=None, roles_model_name=None,
                  **settings):
@@ -120,7 +120,6 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         self.db = db
         if db:
             self.users_model_name = users_model_name or 'User'
-            self.lazy_roles = lazy_roles
             roles = roles or RoleMixin
             self.User = extend_user_model(self, UserMixin, roles=roles)
             if roles:
