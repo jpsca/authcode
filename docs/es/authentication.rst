@@ -251,6 +251,12 @@ Las vistas de inicio y fin de sesión trabajan juntas. Las opciones ``sign_in_re
 
 Por defecto, solo la vista de inicio de sesión (``sign_in``) tiene una plantilla, pero si le pasas una para ``template_sign_out``, al salir de sesión mostrará esa en vez de hacer la redirección.
 
+La vista de fin de sesión necesita del código CSRF (aunque funcione en GET) para funcionar, así que el enlace a ella debe ser algo como esto:
+
+.. code-block:: jinja+html
+
+    {{ url_for('auth_sign_out', _csrf_token=csrf_token()) }}
+
 
 Recuperar/cambiar contraseña
 ---------------------------------------------

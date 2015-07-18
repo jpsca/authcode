@@ -1,9 +1,0 @@
-# English translations for Sphinx.
-# Copyright (C) 2013 ORGANIZATION
-# This file is distributed under the same license as the Sphinx project.
-#
-# Translators:
-# Guillem Borrell <guillem@torroja.dmt.upm.es>, 2011
-# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2013
-# Juan-Pablo Scaletti. <juanpablo@lucumalabs.com>, 2014
-#

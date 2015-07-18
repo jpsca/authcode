@@ -2,24 +2,22 @@
   <nav>
     <div class="wrapper clearfix">
       <p class="pull-left">
-        {{ _('site_in_other_languages') }}: <a href="/en/">English</a>, <a href="/es/">Español</a>.
+        {{ t.site_in_other_languages }}: <a href="/">English</a>, <a href="/es/">Español</a>.
       </p>
     </div>
   </nav>
   <div class="credits">
     <div class="wrapper align-center clearfix">
       <p>
-        Authcode <span class="hidden-xs">·</span><br class="hidden-sm hidden-md hidden-lg">
-        {{ _('created_by') }} <a href="http://jpscaletti.com">Juan-Pablo Scaletti</a>
-      </p>
-      <p>
-        {{ _('code_licensed_under') }}
+        {{ t.created_by }} <a href="{{ author_url }}">{{ author }}</a>
+        <span class="hidden-xs">·</span><br class="hidden-sm hidden-md hidden-lg">
+        {{ license }}
       </p>
       <p class="project">
-        <a href="https://github.com/lucuma/Authcode">GitHub Project</a> ·
-        <a href="https://github.com/lucuma/Authcode/issues">Issues</a> ·
+        <a href="{{ github }}">GitHub Project</a> ·
+        <a href="{{ github }}/issues">Issues</a> ·
       </p>
-      <p id="sponsored_by"><span>{{ _('sponsored_by') }}</span> <a href="http://www.lucumalabs.com/"><img src="{{ pathto('_static/images/lucuma-labs.png', 1) }}" width="95" height="24" alt="Lúcuma labs"></a></p>
+      <p id="sponsored_by"><span>{{ t.sponsored_by }}</span> <a href="http://www.lucumalabs.com/"><img src="{{ pathto('_static/images/lucuma-labs.png', 1) }}" width="95" height="24" alt="Lúcuma labs"></a></p>
     </div>
   </div>
 </footer>

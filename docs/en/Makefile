@@ -51,19 +51,19 @@ clean:
 	rm -rf $(BUILDDIR)/$(LANG)
 
 html:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/$(LANG)
+	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html/
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html/$(LANG)."
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html/."
 
 dirhtml:
-	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml/$(LANG)
+	$(SPHINXBUILD) -b dirhtml $(ALLSPHINXOPTS) $(BUILDDIR)/dirhtml/
 	@echo
-	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml/$(LANG)."
+	@echo "Build finished. The HTML pages are in $(BUILDDIR)/dirhtml/."
 
 singlehtml:
-	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml/$(LANG)
+	$(SPHINXBUILD) -b singlehtml $(ALLSPHINXOPTS) $(BUILDDIR)/singlehtml/
 	@echo
-	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml/$(LANG)."
+	@echo "Build finished. The HTML page is in $(BUILDDIR)/singlehtml/."
 
 pickle:
 	$(SPHINXBUILD) -b pickle $(ALLSPHINXOPTS) $(BUILDDIR)/pickle/$(LANG)

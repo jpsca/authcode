@@ -48,6 +48,6 @@ PNG, etc.) de la imagen, con o sin modificaciones, están permitidos sujeto a la
 
 * Los nombres de los autores de Authcode (ver `AUTHORS <http://github.com/lucuma/Authcode/blob/master/AUTHORS>`_) no se utilizarán para respaldar o promocionar productos derivados de este software sin un permiso previo por escrito.
 
-Nota: Agradeceríamos que enlaces la imagen a http://Authcode.lucumalabs.com/ si lo usas en una página web.
+Nota: Agradeceríamos que enlaces la imagen a `http://authcode.lucuma.co/es/` si lo usas en una página web.
 
 La versión oficial de esta licencia está en el archivo `LICENSE-ARTWORK <http://github.com/lucuma/Authcode/blob/master/artwork/LICENSE-ARTWORK>`_ en el código fuente.
