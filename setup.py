@@ -33,7 +33,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    url='http://github.com/lucuma/authcode',
+    url='http://github.com/jpscaletti/authcode',
     license='MIT license (see LICENSE)',
     description='Awesome authentication code',
     long_description=desc,

@@ -121,7 +121,7 @@ Este ejemplo usa `Flask-OAuthlib <https://flask-oauthlib.readthedocs.org/en/late
 
 Puedes ver el ejemplo completo corriendo aquí: `http://authcode-tw-fb.herokuapp.com/ <http://authcode-tw-fb.herokuapp.com/>`_
 
-El código fuente del ejemplo completo está en https://github.com/lucuma/Authcode/tree/master/examples/twitter_or_facebook.
+El código fuente del ejemplo completo está en https://github.com/jpscaletti/Authcode/tree/master/examples/twitter_or_facebook.
 
 
 .. _advanced.multiauth:
@@ -272,7 +272,7 @@ Asi mismo, el argumento ``clear_session_on_logout`` hará que al cerrar sesión 
     .. _Beaker: http://beaker.readthedocs.org/
     .. _Werkzeug: http://werkzeug.pocoo.org/
     .. _Bottle: http://bottlepy.org/
-    .. _SQLAlchemy_Wrapper: https://github.com/lucuma/SQLAlchemy-Wrapper/
+    .. _SQLAlchemy_Wrapper: https://github.com/jpscaletti/SQLAlchemy-Wrapper/
     .. _Flask_SQLAlchemy: http://pythonhosted.org/Flask-SQLAlchemy/
 
 

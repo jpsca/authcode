@@ -5,8 +5,8 @@ Authcode
 
 Awesome authentication code for Flask and Bottle web apps.
 
-.. image:: https://travis-ci.org/lucuma/authcode.svg?branch=master
-   :target: https://travis-ci.org/lucuma/Authcode
+.. image:: https://travis-ci.org/jpscaletti/authcode.svg?branch=master
+   :target: https://travis-ci.org/jpscaletti/Authcode
    :alt: Build Status
 
 
@@ -75,9 +75,9 @@ TODO
 Contributing
 ======================
 
-#. Check for `open issues <https://github.com/lucuma/Authcode/issues>`_ or open
+#. Check for `open issues <https://github.com/jpscaletti/Authcode/issues>`_ or open
    a fresh issue to start a discussion around a feature idea or a bug.
-#. Fork the `Authcode repository on Github <https://github.com/lucuma/Authcode>`_
+#. Fork the `Authcode repository on Github <https://github.com/jpscaletti/Authcode>`_
    to start making your changes.
 #. Write a test which shows that the bug was fixed or that the feature works
    as expected.
@@ -106,7 +106,7 @@ are touch by the tests::
 
     $  make coverage
 
-Our test suite `runs continuously on Travis CI <https://travis-ci.org/lucuma/Authcode>`_ with every update.
+Our test suite `runs continuously on Travis CI <https://travis-ci.org/jpscaletti/Authcode>`_ with every update.
 
 ______
 

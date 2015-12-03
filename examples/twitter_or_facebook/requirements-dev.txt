@@ -1,4 +1,4 @@
-git+git://github.com/lucuma/authcode.git
+git+git://github.com/jpscaletti/authcode.git
 Flask>=0.10.1
 Flask-OAuthlib
 SQLAlchemy-Wrapper>=1.2.2

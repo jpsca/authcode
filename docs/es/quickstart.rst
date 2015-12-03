@@ -34,7 +34,7 @@ Para usar Authcode bastan solo tres pasos.
 
 Hay varios parámetros que puedes usar para configurarlo, pero lo mínimo necesario es una clave secreta y una conexión a SQLAlchemy.
 
-El objeto ``db`` es lo que te da `SQLAlchemy_Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
+El objeto ``db`` es lo que te da `SQLAlchemy_Wrapper <https://github.com/jpscaletti/SQLAlchemy-Wrapper/>`_ [1]_ o `Flask_SQLAlchemy <http://pythonhosted.org/Flask-SQLAlchemy/>`_.
 
 ``auth.User`` es el modelo de usuario generado automáticamente por Authcode. Necesitarás esa referencia para crear usuarios o conectarlos a tus otros modelos.
 
@@ -117,9 +117,9 @@ Para que esto funciona, hace falta una forma de enviar el email, eso es una func
 
 La función que le pasas a ``send_email`` toma como argumentos el usuario que quiere recuperar su contraseña, el título del email y el cuerpo del mensaje (por defecto en HTML). Por supuesto que tienes que tener un email asociado al usuario, de modo que o bien usas su email como nombre de usuario o agregas un campo de email usando un *mixin* como se describe en la siguiente sección (:ref:`authentication`).
 
-El código de este ejemplo en https://github.com/lucuma/Authcode/tree/master/examples/minimal.
+El código de este ejemplo en https://github.com/jpscaletti/Authcode/tree/master/examples/minimal.
 
 
-.. [1] `SQLAlchemy-Wrapper <https://github.com/lucuma/SQLAlchemy-Wrapper/>`_ te ahorrará mucho trabajo al tratar con ``SQLAlchemy``, independientemente si usas o no Authcode. En serio, dale una mirada.
+.. [1] `SQLAlchemy-Wrapper <https://github.com/jpscaletti/SQLAlchemy-Wrapper/>`_ te ahorrará mucho trabajo al tratar con ``SQLAlchemy``, independientemente si usas o no Authcode. En serio, dale una mirada.
 
 .. [2] o también puedes desactivarla por completo en las opciones de configuración.

@@ -1,4 +1,4 @@
-git+git://github.com/lucuma/authcode.git
+git+git://github.com/jpscaletti/authcode.git
 flask
 sqlalchemy_wrapper
 mailshake

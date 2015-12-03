@@ -97,7 +97,7 @@ Maintaining the security of authentication library is critical that potentially 
 
 If the problem you want to report urgent or sensitive (can cause an attacker has access to the data of another user or may supplant) send directly to security@lucumalabs.com. Use `our public key <http://lucumalabs.com/lucumalabs-security.pub>` _ to keep your secure message [#] _ and please give us a safe way to respond. We will respond just as we can, usually within 24 hours.
 
-For other problems, please create a report https://github.com/lucuma/Authcode/issues.
+For other problems, please create a report https://github.com/jpscaletti/Authcode/issues.
 
 
 

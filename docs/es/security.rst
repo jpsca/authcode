@@ -99,7 +99,7 @@ Mantener la seguridad de una biblioteca de autenticación es crítico, por que a
 
 Si el problema que quieres reportar es urgente o sensible (puede causar que un atacante tenga acceso a la información de otro usuario o que pueda suplantarlo) envíalo diréctamente a security@lucumalabs.com. Usa `nuestra llave pública <http://lucumalabs.com/lucumalabs-security.pub>`_ para mantener tu mensaje seguro [#]_ y por favor danos una forma segura para responderte. Te responderemos apenas nos sea posible, usualmente dentro de las siguientes 24 horas.
 
-Para otro tipo de problemas, por favor crea un reporte en https://github.com/lucuma/Authcode/issues .
+Para otro tipo de problemas, por favor crea un reporte en https://github.com/jpscaletti/Authcode/issues .
 
 
 

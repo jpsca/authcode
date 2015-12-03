@@ -28,7 +28,7 @@ las copias o partes sustanciales del Software.
 
 EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES DEL COPYRIGHT SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑOS U OTRAS RESPONSABILIDADES, YA SEA EN UN LITIGIO, AGRAVIO O DE OTRO MODO, QUE SURJA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE.
 
-La versión oficial de esta licencia está en el archivo `LICENSE <http://github.com/lucuma/Authcode/blob/master/LICENSE>`_ en el código fuente.
+La versión oficial de esta licencia está en el archivo `LICENSE <http://github.com/jpscaletti/Authcode/blob/master/LICENSE>`_ en el código fuente.
 
 
 .. _artwork_license:
@@ -46,8 +46,8 @@ PNG, etc.) de la imagen, con o sin modificaciones, están permitidos sujeto a la
 
 * Las redistribuciones del código fuente deben conservar el copyright anterior y esta lista de condiciones.
 
-* Los nombres de los autores de Authcode (ver `AUTHORS <http://github.com/lucuma/Authcode/blob/master/AUTHORS>`_) no se utilizarán para respaldar o promocionar productos derivados de este software sin un permiso previo por escrito.
+* Los nombres de los autores de Authcode (ver `AUTHORS <http://github.com/jpscaletti/Authcode/blob/master/AUTHORS>`_) no se utilizarán para respaldar o promocionar productos derivados de este software sin un permiso previo por escrito.
 
 Nota: Agradeceríamos que enlaces la imagen a `http://authcode.lucuma.co/es/` si lo usas en una página web.
 
-La versión oficial de esta licencia está en el archivo `LICENSE-ARTWORK <http://github.com/lucuma/Authcode/blob/master/artwork/LICENSE-ARTWORK>`_ en el código fuente.
+La versión oficial de esta licencia está en el archivo `LICENSE-ARTWORK <http://github.com/jpscaletti/Authcode/blob/master/artwork/LICENSE-ARTWORK>`_ en el código fuente.
