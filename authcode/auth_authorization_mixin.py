@@ -112,6 +112,25 @@ class AuthorizationMixin(object):
             return wrapper
         return decorator
 
+    def replace_flask_route(self, bp, *args, **kwargs):
+        """Replace the Flask `app.route` or `blueprint.route` with a version
+        that first apply the protected decorator to the view, so all views
+        are automatically protected."""
+        protected = self.protected
+
+        def protected_route(rule, **options):
+            """Like :meth:`Flask.route` but for a blueprint.  The endpoint for the
+            :func:`url_for` function is prefixed with the name of the blueprint.
+            """
+            def decorator(f):
+                endpoint = options.pop("endpoint", f.__name__)
+                protected_f = protected(*args, **kwargs)(f)
+                bp.add_url_rule(rule, endpoint, protected_f, **options)
+                return f
+            return decorator
+
+        bp.route = protected_route
+
     def csrf_token_is_valid(self, request, session=None):
         token = self._get_csrf_token_from_request(request)
         return token and self._csrf_token_is_valid(token, session)

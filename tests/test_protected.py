@@ -4,7 +4,7 @@ import os
 
 import authcode
 from authcode._compat import to_native
-from flask import Flask
+from flask import Flask, Blueprint
 import pytest
 from sqlalchemy_wrapper import SQLAlchemy
 
@@ -242,3 +242,46 @@ def test_protected_user_tests():
 
     with pytest.raises(AttributeError):
         resp = client.get('/foobar/')
+
+
+def test_replace_flask_route():
+    auth, app, user = get_flask_app()
+    auth.url_sign_in = '/login/'
+    client = app.test_client()
+
+    @app.route('/gettoken/')
+    def gettoken():
+        return auth.get_csrf_token()
+
+    auth.replace_flask_route(app, csrf=True)
+
+    @app.route('/page1/')
+    def page1():
+        return 'yay'
+
+    @app.route('/page2/')
+    def page2():
+        return 'yay'
+
+    resp = client.get('/gettoken/')
+    token = to_native(resp.data)
+
+    resp = client.get('/page1/')
+    assert resp.status == '303 SEE OTHER'
+    assert resp.headers.get('location') == 'http://localhost/login/'
+    resp = client.get('/page2/')
+    assert resp.status == '303 SEE OTHER'
+    assert resp.headers.get('location') == 'http://localhost/login/'
+
+    client.get('/login/')
+
+    # Fail because it doesn't have a CSRF token
+    resp = client.get('/page1/')
+    assert resp.status == '403 FORBIDDEN'
+    resp = client.get('/page2/')
+    assert resp.status == '403 FORBIDDEN'
+
+    resp = client.get('/page1/?{0}={1}'.format(auth.csrf_key, token))
+    assert resp.status == '200 OK'
+    resp = client.get('/page2/?{0}={1}'.format(auth.csrf_key, token))
+    assert resp.status == '200 OK'
