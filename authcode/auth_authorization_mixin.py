@@ -8,6 +8,7 @@ from ._compat import to_unicode
 
 class AuthorizationMixin(object):
 
+    # Useful for setting a cookie only if the CSRF token has changed.
     csrf_token_has_changed = False
 
     def get_csrf_token(self, session=None):
