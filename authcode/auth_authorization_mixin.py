@@ -8,6 +8,8 @@ from ._compat import to_unicode
 
 class AuthorizationMixin(object):
 
+    csrf_token_has_changed = False
+
     def get_csrf_token(self, session=None):
         logger = logging.getLogger(__name__)
         if session is None:
@@ -22,6 +24,7 @@ class AuthorizationMixin(object):
         return csrf_token
 
     def make_csrf_token(self):
+        self.csrf_token_has_changed = True
         return str(uuid4()).replace('-', '')
 
     def protected(self, *tests, **kwargs):

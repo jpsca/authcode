@@ -209,15 +209,15 @@ Angular.js
 
 Al hacer una llamada AJAX, ``Angular.js`` busca el código CSRF en una cookie llamada ``XSRF-TOKEN`` y la envía de vuelta usando la cabecera HTTP ``X-XSRF-TOKEN``. Esto es ligeramente diferente a lo que espera por defecto Authcode, así que tienes que hacer unos ajustes.
 
-Primero, crea la cookie con el código CSRF. Esto depende mucho de tu framework específico, pero este es un ejemplo en Flask para hacerlo automáticamente al cargar cada página
+Primero, crea la cookie con el código CSRF cada vez que este cambie. Esto depende mucho de tu framework específico, pero este es un ejemplo en Flask para hacerlo automáticamente al cargar cada página
 
 .. code-block:: python
 
 	@app.after_request
 	def after_request(resp):
 	    user = g.get('user', None)
-	    if user is not None:
-	        token = auth.get_csrf_token()
+        token = auth.get_csrf_token()
+	    if user is not None and auth.csrf_token_has_changed:
 	        resp.set_cookie('XSRF-TOKEN', token.decode('ascii'));
 	    return resp
 
