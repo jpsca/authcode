@@ -182,14 +182,14 @@ En este caso, he insertado el código CSRF en una etiqueta ``<meta>`` en cada p�
 
 .. code-block:: html+jinja
 
-    <meta name="csrf_token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
 y de ahí puede leerlo el código para poner la cabecera en las solicitudes AJAX, ademas de impedir que el código CSRF se envie a otros dominios, usando `settings.crossDomain <http://api.jquery.com/jQuery.ajax>`_ en jQuery 1.5.1 y más nuevos:
 
 .. code-block:: javascript
 
     // Obtengo el código CSRF de mi etiqueta <meta>
-    window.CSRFToken = $('meta[name="csrf_token"]').attr('content');
+    window.CSRFToken = $('meta[name="csrf-token"]').attr('content');
 
     function csrfSafeMethod(method) {
         // Estos métodos HTTP no necesitan protección CSRF
@@ -202,6 +202,31 @@ y de ahí puede leerlo el código para poner la cabecera en las solicitudes AJAX
             }
         }
     });
+
+
+Angular.js
+```````````````````````````````````
+
+Al hacer una llamada AJAX, ``Angular.js`` busca el código CSRF en una cookie llamada ``XSRF-TOKEN`` y la envía de vuelta usando la cabecera HTTP ``X-XSRF-TOKEN``. Esto es ligeramente diferente a lo que espera por defecto Authcode, así que tienes que hacer unos ajustes.
+
+Primero, crea la cookie con el código CSRF. Esto depende mucho de tu framework específico, pero este es un ejemplo en Flask para hacerlo automáticamente al cargar cada página
+
+.. code-block:: python
+
+	@app.after_request
+	def after_request(resp):
+	    user = g.get('user', None)
+	    if user is not None:
+	        token = auth.get_csrf_token()
+	        resp.set_cookie('XSRF-TOKEN', token.decode('ascii'));
+	    return resp
+
+
+Y finalmente, cambia el nombre de la cabecera HTTP desde donde Authcode leerá el código
+
+.. code-block:: python
+
+    auth = authcode.Auth(..., csrf_header='X-XSRF-TOKEN')
 
 
 Autorización denegada
