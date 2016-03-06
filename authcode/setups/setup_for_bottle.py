@@ -3,8 +3,8 @@ from ..utils import LazyUser, eval_url
 
 
 def setup_for_bottle(
-        auth, app, send_email=None,
-        render=None, session=None, request=None):
+        auth, app, send_email=None, render=None,
+        session=None, request=None, urloptions=None):
     import bottle
 
     auth.request = request or bottle.request
@@ -37,10 +37,12 @@ def setup_for_bottle(
 
     if auth.views:
         assert auth.render
-        setup_for_bottle_views(auth, app)
+        setup_for_bottle_views(auth, app, urloptions)
 
 
-def setup_for_bottle_views(auth, app):
+def setup_for_bottle_views(auth, app, urloptions):
+    urloptions = urloptions or {}
+
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(
@@ -51,6 +53,7 @@ def setup_for_bottle_views(auth, app):
                 name='auth_sign_in'
             ),
             callback=auth.auth_sign_in,
+            **urloptions
         )
 
     if 'sign_out' in auth.views:
@@ -63,6 +66,7 @@ def setup_for_bottle_views(auth, app):
                 name='auth_sign_out'
             ),
             callback=auth.auth_sign_out,
+            **urloptions
         )
 
     if 'change_password' in auth.views:
@@ -75,6 +79,7 @@ def setup_for_bottle_views(auth, app):
                 name='auth_change_password'
             ),
             callback=auth.auth_change_password,
+            **urloptions
         )
 
     if 'reset_password' in auth.views:
@@ -87,6 +92,7 @@ def setup_for_bottle_views(auth, app):
                 name='auth_reset_password'
             ),
             callback=auth.auth_reset_password,
+            **urloptions
         )
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
@@ -96,4 +102,5 @@ def setup_for_bottle_views(auth, app):
                 name='auth_reset_password'
             ),
             callback=auth.auth_reset_password,
+            **urloptions
         )

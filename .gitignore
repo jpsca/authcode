@@ -4,6 +4,7 @@
 build
 dist
 *.egg*
+.cache
 
 .idea
 *.sublime-project

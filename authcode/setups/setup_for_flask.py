@@ -3,8 +3,8 @@ from ..utils import LazyUser, eval_url
 
 
 def setup_for_flask(
-        auth, app, send_email=None,
-        render=None, session=None, request=None):
+        auth, app, send_email=None, render=None,
+        session=None, request=None, urloptions=None):
     import flask
 
     auth.request = request or flask.request
@@ -28,19 +28,20 @@ def setup_for_flask(
 
     if auth.views:
         assert auth.render
-        setup_for_flask_views(auth, app)
+        setup_for_flask_views(auth, app, urloptions)
 
 
-def setup_for_flask_views(auth, app):
+def setup_for_flask_views(auth, app, urloptions):
+    urloptions = urloptions or {}
+
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(
             url_sign_in,
             methods=['GET', 'POST'],
             endpoint='{prefix}{name}'.format(
-                prefix=auth.views_prefix,
-                name='auth_sign_in'
-            )
+                prefix=auth.views_prefix, name='auth_sign_in'),
+            **urloptions
         )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
@@ -49,9 +50,8 @@ def setup_for_flask_views(auth, app):
             url_sign_out,
             methods=['GET', 'POST'],
             endpoint='{prefix}{name}'.format(
-                prefix=auth.views_prefix,
-                name='auth_sign_out'
-            )
+                prefix=auth.views_prefix, name='auth_sign_out'),
+            **urloptions
         )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
@@ -60,9 +60,8 @@ def setup_for_flask_views(auth, app):
             url_change_password,
             methods=['GET', 'POST'],
             endpoint='{prefix}{name}'.format(
-                prefix=auth.views_prefix,
-                name='auth_change_password'
-            )
+                prefix=auth.views_prefix, name='auth_change_password'),
+            **urloptions
         )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
@@ -71,15 +70,13 @@ def setup_for_flask_views(auth, app):
             url_reset_password,
             methods=['GET', 'POST'],
             endpoint='{prefix}{name}'.format(
-                prefix=auth.views_prefix,
-                name='auth_reset_password'
-            )
+                prefix=auth.views_prefix, name='auth_reset_password'),
+            **urloptions
         )(auth.auth_reset_password)
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
             methods=['GET', 'POST'],
             endpoint='{prefix}{name}'.format(
-                prefix=auth.views_prefix,
-                name='auth_reset_password'
-            )
+                prefix=auth.views_prefix, name='auth_reset_password'),
+            **urloptions
         )(auth.auth_reset_password)

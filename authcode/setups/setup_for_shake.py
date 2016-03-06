@@ -3,8 +3,8 @@ from ..utils import LazyUser, eval_url
 
 
 def setup_for_shake(
-        auth, app, send_email=None,
-        render=None, session=None, request=None):  # pragma: no cover (deprecated)
+        auth, app, send_email=None, render=None,
+        session=None, request=None, urloptions=None):  # pragma: no cover (deprecated)
     if send_email:
         auth.send_email = send_email
 
@@ -23,10 +23,12 @@ def setup_for_shake(
 
     if auth.views:
         assert auth.render
-        setup_for_shake_views(auth, app)
+        setup_for_shake_views(auth, app, urloptions)
 
 
-def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
+def setup_for_shake_views(auth, app, urloptions):  # pragma: no cover (deprecated)
+    urloptions = urloptions or {}
+
     if 'sign_in' in auth.views:
         url_sign_in = eval_url(auth.url_sign_in)
         app.route(
@@ -35,7 +37,7 @@ def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
             name='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
                 name='auth_sign_in'
-            )
+            ), **urloptions
         )(auth.auth_sign_in)
 
     if 'sign_out' in auth.views:
@@ -46,7 +48,7 @@ def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
             name='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
                 name='auth_sign_out'
-            )
+            ), **urloptions
         )(auth.auth_sign_out)
 
     if 'change_password' in auth.views:
@@ -57,7 +59,7 @@ def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
             name='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
                 name='auth_change_password'
-            )
+            ), **urloptions
         )(auth.auth_change_password)
 
     if 'reset_password' in auth.views:
@@ -68,7 +70,7 @@ def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
             name='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
                 name='auth_reset_password'
-            )
+            ), **urloptions
         )(auth.auth_reset_password)
         app.route(
             url_reset_password.rstrip('/') + '/<token>/',
@@ -76,5 +78,5 @@ def setup_for_shake_views(auth, app):  # pragma: no cover (deprecated)
             name='{prefix}{name}'.format(
                 prefix=auth.views_prefix,
                 name='auth_reset_password'
-            )
+            ), **urloptions
         )(auth.auth_reset_password)
