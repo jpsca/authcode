@@ -490,8 +490,10 @@ def test_get_user():
 
 def test_get_csrf_token():
     auth = authcode.Auth(SECRET_KEY)
+
     session = {}
     token = auth.get_csrf_token(session=session)
+    assert not token.startswith('"b')
     assert token == auth.get_csrf_token(session=session)
     session = {}
     assert token != auth.get_csrf_token(session=session)
