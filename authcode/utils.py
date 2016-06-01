@@ -114,9 +114,7 @@ class LazyUser(object):
         setattr(storage, user_name, self)
 
     def __get_user(self):
-        """Return the current object.  This is useful if you want the real
-        object behind the proxy at a time for performance reasons or because
-        you want to pass the object into a different context.
+        """Return the real user object.
         """
         storage = object.__getattribute__(self, '_LazyUser__storage')
         user = getattr(self.__auth, 'get_user')()

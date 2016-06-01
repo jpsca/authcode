@@ -21,8 +21,8 @@ def get_requirements(filename='requirements.txt'):
 
 
 data = read_from(get_path('authcode', '__init__.py')).encode('utf8')
-version = str(re.search(b"__version__\s*=\s*u?'([^']+)'", data).group(1)).strip()
-desc = str(re.search(b'"""(.+)"""', data, re.DOTALL).group(1)).strip()
+version = (re.search(b"__version__\s*=\s*u?'([^']+)'", data).group(1)).decode('utf8').strip()
+desc = (re.search(b'"""(.+)"""', data, re.DOTALL).group(1)).decode('utf8').strip()
 
 
 setup(
