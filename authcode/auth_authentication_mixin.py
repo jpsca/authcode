@@ -118,11 +118,11 @@ class AuthenticationMixin(object):
             try:
                 uid = utils.split_uhmac(uhmac)
                 user = self.User.by_id(uid)
-                if not user or uhmac != user.get_uhmac():
+                if not user or uhmac != user.get_uhmac() or not user.login:
                     raise ValueError
             except ValueError:
                 logger = logging.getLogger(__name__)
-                logger.info(u'Tampered uhmac?')
+                logger.warn(u'Tampered uhmac?')
                 user = None
                 self.logout(session)
         return user

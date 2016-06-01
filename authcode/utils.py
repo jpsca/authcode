@@ -133,7 +133,8 @@ class LazyUser(object):
         return repr(self.__get_user())
 
     def __bool__(self):
-        return bool(self.__get_user())
+        user = self.__get_user()
+        return user is not None
 
     __nonzero__ = __bool__
 

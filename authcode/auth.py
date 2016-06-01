@@ -30,12 +30,12 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
         'sign_in_redirect': '/',
         'sign_out_redirect': '/',
 
+        'views': 'sign_in sign_out reset_password change_password'.split(' '),
+
         'url_sign_in': '/sign-in/',
         'url_sign_out': '/sign-out/',
         'url_reset_password': '/reset-password/',
         'url_change_password': '/change-password/',
-
-        'views': 'sign_in sign_out reset_password change_password'.split(' '),
 
         'template_sign_in': None,
         'template_sign_out': None,
