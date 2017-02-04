@@ -7,13 +7,6 @@ from .._compat import to_native
 HTTP_SEE_OTHER = 303
 
 
-def get_site_name(request):
-    """Return the domain:port part of the URL without scheme.
-    Eg: facebook.com, 127.0.0.1:5000, etc.
-    """
-    return request.host
-
-
 def get_full_path(request):
     """Return the current relative path including the query string.
     Eg: “/foo/bar/?page=1”

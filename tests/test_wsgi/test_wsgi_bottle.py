@@ -12,10 +12,6 @@ def make_wepapp():
 
     app = Bottle()
 
-    @app.route('/tests/get_site_name/')
-    def get_site_name():
-        return wsgi.bottle.get_site_name(request)
-
     @app.route('/tests/get_full_path/')
     def get_full_path():
         return wsgi.bottle.get_full_path(request)

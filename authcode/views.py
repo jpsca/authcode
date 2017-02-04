@@ -21,21 +21,26 @@ def sign_in(auth, request, session, *args, **kwargs):
     kwargs['error'] = None
     credentials = auth.wsgi.get_post_data(request) or {}
 
-    if auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
+    if auth.wsgi.is_post(request):
         if auth.session_key in session:
             del session[auth.session_key]
 
-        user = auth.authenticate(credentials)
-        if user and not user.deleted:
-            user.last_sign_in = datetime.utcnow()
-            remember = bool(credentials.get('remember', True))
-            auth.login(user, remember=remember)
-            auth.db.session.commit()
+        if not auth.csrf_token_is_valid(request):
+            kwargs['error'] = auth.ERROR_BAD_CSRF
+        else:
+            user = auth.authenticate(credentials)
+            if user and user.deleted:
+                kwargs['error'] = auth.ERROR_SUSPENDED
+            elif user:
+                user.last_sign_in = datetime.utcnow()
+                remember = bool(credentials.get('remember', True))
+                auth.login(user, remember=remember)
+                auth.db.session.commit()
 
-            next = pop_next_url(auth, request, session)
-            return auth.wsgi.redirect(next)
+                next = pop_next_url(auth, request, session)
+                return auth.wsgi.redirect(next)
 
-        kwargs['error'] = True
+            kwargs['error'] = auth.ERROR_CREDENTIALS
 
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
@@ -76,7 +81,7 @@ def reset_password(auth, request, token=None, *args, **kwargs):
         if user:
             auth.login(user)
             return change_password(auth, request, manual=False, **kwargs)
-        kwargs['error'] = 'WRONG TOKEN'
+        kwargs['error'] = auth.ERROR_BAD_TOKEN
 
     elif auth.wsgi.is_post(request) and auth.csrf_token_is_valid(request):
         login = auth.wsgi.get_from_params(request, 'login') or ''
@@ -90,13 +95,12 @@ def reset_password(auth, request, token=None, *args, **kwargs):
                 'user': user,
                 'login': user.login,
                 'reset_url': reset_url,
-                'site_name': auth.wsgi.get_site_name(request),
                 'expire_after': auth.token_life,
             }
             _email_token(auth, user, data)
             kwargs['ok'] = True
         else:
-            kwargs['error'] = 'WRONG USER'
+            kwargs['error'] = auth.ERROR_WRONG_TOKEN_USER
 
     kwargs['auth'] = auth
     kwargs['credentials'] = credentials
@@ -134,16 +138,16 @@ def change_password(auth, request, manual=True, *args, **kwargs):
         len_np1 = len(np1)
 
         if len_np1 < auth.password_minlen:
-            kwargs['error'] = 'TOO SHORT'
+            kwargs['error'] = auth.ERROR_PASSW_TOO_SHORT
 
         elif len_np1 > auth.password_maxlen:
-            kwargs['error'] = 'TOO LONG'
+            kwargs['error'] = auth.ERROR_PASSW_TOO_LONG
 
         elif (not np2) or (np1 != np2):
-            kwargs['error'] = 'MISMATCH'
+            kwargs['error'] = auth.ERROR_PASSW_MISMATCH
 
         elif manual and not user.has_password(password):
-            kwargs['error'] = 'FAIL'
+            kwargs['error'] = auth.ERROR_PASSW_CURRENT
 
         else:
             user.password = np1

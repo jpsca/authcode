@@ -18,9 +18,7 @@ def wsgi_tester(run_func, port):
 
 def _run_tests(port):
     url_base = URL_BASE.format(port=port)
-    _test_get_site_name(url_base)
     _test_get_full_path(url_base)
-    _test_make_full_url(url_base)
     _test_is_post(url_base)
     _test_is_idempotent(url_base)
     _test_redirect(url_base)
@@ -29,11 +27,6 @@ def _run_tests(port):
     _test_get_from_headers(url_base)
     _test_get_post_data(url_base)
     _test_make_response(url_base)
-
-
-def _test_get_site_name(url_base):
-    req = requests.get(url_base + '/tests/get_site_name/', timeout=5)
-    assert url_base.replace('http://', '') in req.text
 
 
 def _test_get_full_path(url_base):
@@ -52,12 +45,6 @@ def _test_get_full_path(url_base):
         full_path1 in req.text or
         full_path2 in req.text
     )
-
-
-def _test_make_full_url(url_base):
-    req = requests.get(url_base + '/tests/make_full_url/')
-    url = url_base + '/tests/get_site_name/'
-    assert url in req.text
 
 
 def _test_is_post(url_base):

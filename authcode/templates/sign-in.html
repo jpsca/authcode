@@ -5,9 +5,12 @@
 {% block content %}
   <form action="" method="POST" class="sign-in">
   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-  {% if error -%}
+  {% if error == auth.ERROR_CREDENTIALS -%}
   <!-- ERROR -->
   <fieldset class="error">Wrong user and/or password.</fieldset>
+  {%- elif error == auth.ERROR_SUSPENDED -%}
+  <!-- ERROR -->
+  <fieldset class="error">Account suspended</fieldset>
   {%- endif %}
 
   <fieldset>

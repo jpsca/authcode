@@ -13,6 +13,18 @@ def_env = Environment(loader=def_loader)
 
 class ViewsMixin(object):
 
+    ERROR_BAD_CSRF = 'BAD CSRF TOKEN'
+    ERROR_SUSPENDED = 'ACCOUNT SUSPENDED'
+    ERROR_CREDENTIALS = 'BAD CREDENTIALS'
+
+    ERROR_BAD_TOKEN = 'WRONG TOKEN'
+    ERROR_WRONG_TOKEN_USER = 'WRONG USER'
+
+    ERROR_PASSW_TOO_SHORT = 'TOO SHORT'
+    ERROR_PASSW_TOO_LONG = 'TOO LONG'
+    ERROR_PASSW_MISMATCH = 'MISMATCH'
+    ERROR_PASSW_CURRENT = 'FAIL'
+
     def auth_sign_in(self, *args, **kwargs):
         request = self.request or kwargs.get('request') or args and args[0]
         return views.sign_in(self, request, self.session, *args, **kwargs)

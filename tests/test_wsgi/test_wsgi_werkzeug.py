@@ -19,7 +19,6 @@ def make_wepapp():
     class Application(object):
         def __init__(self):
             self.url_map = Map([
-                Rule('/tests/get_site_name/', endpoint='get_site_name'),
                 Rule('/tests/get_full_path/', endpoint='get_full_path'),
                 Rule('/tests/make_full_url/', endpoint='make_full_url'),
                 Rule('/tests/is_post/', endpoint='is_post'),
@@ -51,14 +50,8 @@ def make_wepapp():
             except HTTPException as e:
                 return Response(str(e), status=e.code)
 
-        def on_get_site_name(self, request):
-            return wsgi.werkzeug.get_site_name(request)
-
         def on_get_full_path(self, request):
             return wsgi.werkzeug.get_full_path(request)
-
-        def on_make_full_url(self, request):
-            return wsgi.werkzeug.make_full_url(request, '/tests/get_site_name/')
 
         def on_is_post(self, request):
             return 'yes' if wsgi.werkzeug.is_post(request) else 'no'
