@@ -157,5 +157,6 @@ class AuthorizationMixin(object):
 
     def _get_csrf_token_from_request(self, request):
         token = self.wsgi.get_from_params(request, self.csrf_key) or \
-            self.wsgi.get_from_headers(request, self.csrf_header)
+            self.wsgi.get_from_headers(request, self.csrf_header) or \
+            self.wsgi.get_from_headers(request, self.csrf_header_alt)
         return token

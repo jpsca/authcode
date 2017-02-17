@@ -55,7 +55,8 @@ def raise_forbidden(msg='You are not allowed to access this.'):
 def get_from_params(request, key):
     """Try to read a value named ``key`` from the GET parameters.
     """
-    value = request.values.get(key)
+    data = getattr(request, 'json', None) or request.values
+    value = data.get(key)
     return to_native(value)
 
 
@@ -69,7 +70,7 @@ def get_from_headers(request, key):
 def get_post_data(request):
     """Return all the POST data from the request.
     """
-    return request.form
+    return getattr(request, 'json', None) or request.form or {}
 
 
 def make_response(body, mimetype='text/html'):

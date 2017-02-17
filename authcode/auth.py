@@ -25,6 +25,7 @@ class Auth(AuthenticationMixin, AuthorizationMixin, ViewsMixin):
 
         'csrf_key': '_csrf_token',
         'csrf_header': 'X-CSRFToken',
+        'csrf_header_alt': 'X-CSRF-TOKEN',
         'redirect_key': 'next',
 
         'sign_in_redirect': '/',
